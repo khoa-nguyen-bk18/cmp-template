@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProCollector - Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f9f9ff",
+                    "secondary-container": "#bde9db",
+                    "primary-container": "#131d25",
+                    "outline": "#74777b",
+                    "on-tertiary-fixed-variant": "#44474a",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#00201a",
+                    "secondary-fixed-dim": "#a4cfc2",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#f9f9ff",
+                    "primary": "#000000",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#ecf0ff",
+                    "on-background": "#111c2d",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#191c1e",
+                    "primary-fixed-dim": "#bdc8d3",
+                    "tertiary-container": "#191c1e",
+                    "secondary": "#3d665b",
+                    "surface-variant": "#d9e3fb",
+                    "inverse-surface": "#273143",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#c4c7ca",
+                    "on-tertiary-container": "#818487",
+                    "tertiary": "#000000",
+                    "surface-dim": "#d0daf2",
+                    "surface-tint": "#556069",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#d9e4ef",
+                    "outline-variant": "#c4c7cb",
+                    "on-primary-container": "#7b858f",
+                    "background": "#f9f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#426a60",
+                    "on-primary-fixed": "#131d25",
+                    "secondary-fixed": "#c0ecde",
+                    "tertiary-fixed": "#e0e3e6",
+                    "on-surface": "#111c2d",
+                    "surface-container-highest": "#d9e3fb",
+                    "surface-container": "#e8eeff",
+                    "on-surface-variant": "#44474b",
+                    "surface-container-high": "#dfe8ff",
+                    "inverse-primary": "#bdc8d3",
+                    "on-secondary-fixed-variant": "#254e44",
+                    "on-primary-fixed-variant": "#3e4851",
+                    "surface-container-low": "#f0f3ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "space-sm": "8px",
+                    "component-gap": "12px",
+                    "space-md": "16px",
+                    "space-xs": "4px",
+                    "card-padding": "16px",
+                    "space-lg": "24px",
+                    "screen-margin": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "price-display": ["Hanken Grotesk"],
+                    "label-md": ["Hanken Grotesk"],
+                    "headline-md-mobile": ["Hanken Grotesk"],
+                    "body-sm": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "price-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-md-mobile": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface flex justify-between items-center w-full px-screen-margin py-space-sm sticky top-0 z-50">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="Store Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9gJwBHtSqMdpJHy1qwOZKG1dEljQJjTicHhs_qzIEO9YQinutt4UfGmWBdFQ2o6kwioZf_Xd21IV5jsa8x8ZMLbzDhaylo6oSfJja1ILsLe8PlWwrLnBAkQEBJadeVOcmqK-jsq84ifi9K8JZOaUpglwLbaRZWy4didi7PhY8RV9DBOWbhNbZaTtF0j83rs3j60UD2lUy5y93lAAI7ZLByv46nuA9BqO9KiC9VaUCPnT-AzzvaD41Z25Sh5XiqvcqgbOUlBd73HFQ"/>
+</div>
+<h1 class="text-headline-md-mobile font-headline-md-mobile text-on-surface dark:text-on-surface">Good Games Belconnen</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+</header>
+<!-- Main Canvas Area -->
+<main class="flex-grow w-full bg-surface">
+<!-- This area is intentionally blank as requested -->
+</main>
+<!-- BottomNavBar -->
+<!-- Destination Rule Applied: Rendering navigation shell for top-level ecosystem browsing -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-white z-50 rounded-t-xl bg-surface-container-lowest dark:bg-surface-container-lowest shadow-[0_-4px_20px_rgba(0,0,0,0.05)] shadow-lg">
+<!-- Browse Item (Active State Mapping: Intent Fallback for empty screen) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container rounded-lg p-2 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="text-label-md font-label-md">Browse</span>
+</a>
+<!-- Cart Item -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:bg-surface-container dark:hover:bg-surface-container scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+<span class="text-label-md font-label-md">Cart</span>
+</a>
+<!-- Collection Item -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:bg-surface-container dark:hover:bg-surface-container scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="style">style</span>
+<span class="text-label-md font-label-md">Collection</span>
+</a>
+<!-- Profile Item -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:bg-surface-container dark:hover:bg-surface-container scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="text-label-md font-label-md">Profile</span>
+</a>
+</nav>
+<!-- Spacer for Bottom Navigation -->
+<div class="h-20 w-full"></div>
+<script>
+        // Simple micro-interaction for navigation items
+        document.querySelectorAll('nav a').forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Clear active states
+                document.querySelectorAll('nav a').forEach(nav => {
+                    nav.className = "flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:bg-surface-container dark:hover:bg-surface-container scale-95 active:scale-90 transition-transform";
+                    const icon = nav.querySelector('.material-symbols-outlined');
+                    if (icon) icon.style.fontVariationSettings = "'FILL' 0";
+                });
+                
+                // Set active state to clicked item
+                item.className = "flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container rounded-lg p-2 scale-95 active:scale-90 transition-transform";
+                const activeIcon = item.querySelector('.material-symbols-outlined');
+                if (activeIcon) activeIcon.style.fontVariationSettings = "'FILL' 1";
+            });
+        });
+    </script>
+</body></html>
