@@ -26,7 +26,7 @@
 | Baseline Profile present | **No** |
 | Release + R8 representative build | **Yes** (`assembleRelease` OK) |
 
-**Phase 1 gap:** Vaulty is KMP-first; perf gates from the Android audit playbook (Macrobenchmark + Baseline Profile + compiler reports in CI) are not wired yet. **Do not treat debug builds or emulator as baseline.**
+**Phase 1 gap:** cmp templateis KMP-first; perf gates from the Android audit playbook (Macrobenchmark + Baseline Profile + compiler reports in CI) are not wired yet. **Do not treat debug builds or emulator as baseline.**
 
 **Recommended Phase 1 follow-up (before claiming scroll improvements):**
 

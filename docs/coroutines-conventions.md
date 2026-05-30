@@ -7,12 +7,12 @@ Project rules for coroutines aligned with [Android coroutines best practices](ht
 | Layer | Scopes | Dispatchers | API shape |
 |-------|--------|-------------|-----------|
 | **domain** | None | None — pure Kotlin | `suspend` one-shots, cold `Flow` from repositories |
-| **data** | Caller-scoped only (no `GlobalScope`) | Injected via [DispatcherProvider](../data/src/commonMain/kotlin/com/devindie/vaulty/data/coroutines/DispatcherProvider.kt) | Main-safe `suspend`; `withContext(provider.io)` for blocking I/O |
+| **data** | Caller-scoped only (no `GlobalScope`) | Injected via [DispatcherProvider](../data/src/commonMain/kotlin/com/devindie/cmptemplate/data/coroutines/DispatcherProvider.kt) | Main-safe `suspend`; `withContext(provider.io)` for blocking I/O |
 | **shared** (ViewModels) | `viewModelScope` | Do not inject; use `Dispatchers.setMain` in tests | `StateFlow` UI state; `viewModelScope.launch` for work |
 
 ## Inject dispatchers (data layer only)
 
-- **Do** bind [DefaultDispatcherProvider](../data/src/commonMain/kotlin/com/devindie/vaulty/data/coroutines/DefaultDispatcherProvider.kt) in [dispatcherModule](../data/src/commonMain/kotlin/com/devindie/vaulty/data/di/DispatcherModule.kt) (included from `platformDataModule()`).
+- **Do** bind [DefaultDispatcherProvider](../data/src/commonMain/kotlin/com/devindie/cmptemplate/data/coroutines/DefaultDispatcherProvider.kt) in [dispatcherModule](../data/src/commonMain/kotlin/com/devindie/cmptemplate/data/di/DispatcherModule.kt) (included from `platformDataModule()`).
 - **Do** pass `dispatchers.io` into platform DataSources and `getVaultDatabase(..., ioDispatcher)`.
 - **Do not** hardcode `Dispatchers.IO` / `Dispatchers.Default` in DataSource or repository implementations (only in `DefaultDispatcherProvider`).
 
@@ -49,7 +49,7 @@ runDataTest {
 }
 ```
 
-See [RunDataTest.kt](../data/src/commonTest/kotlin/com/devindie/vaulty/data/coroutines/RunDataTest.kt) and [TestDispatcherProvider.kt](../data/src/commonTest/kotlin/com/devindie/vaulty/data/coroutines/TestDispatcherProvider.kt).
+See [RunDataTest.kt](../data/src/commonTest/kotlin/com/devindie/cmptemplate/data/coroutines/RunDataTest.kt) and [TestDispatcherProvider.kt](../data/src/commonTest/kotlin/com/devindie/cmptemplate/data/coroutines/TestDispatcherProvider.kt).
 
 ### ViewModels (`shared/commonTest`)
 

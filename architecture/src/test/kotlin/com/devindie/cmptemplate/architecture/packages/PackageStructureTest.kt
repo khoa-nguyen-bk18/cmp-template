@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.assertTrue as junitAssertTrue
 class PackageStructureTest {
 
     @Test
-    fun `domain production code lives under com devindie vaulty domain`() {
+    fun `domain production code lives under com devindie cmp templatedomain`() {
         val packages = Konsist.scopeFromPackage("com.devindie.cmptemplate.domain..").packages
         junitAssertTrue(packages.isNotEmpty(), "Expected domain packages in project scope")
     }

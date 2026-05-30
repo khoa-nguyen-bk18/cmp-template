@@ -17,7 +17,7 @@ detekt {
 
 kotlin {
     androidLibrary {
-        namespace = "com.devindie.vaulty.domain"
+        namespace = "com.devindie.cmptemplate.domain"
         compileSdk =
             libs.versions.android.compileSdk
                 .get()

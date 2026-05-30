@@ -1,6 +1,6 @@
 # KMP feature playbook — Clean Architecture + native APIs
 
-Step-by-step guide for implementing features in Vaulty that follow Clean Architecture and Kotlin Multiplatform conventions, including Android/iOS native APIs.
+Step-by-step guide for implementing features in cmp templatethat follow Clean Architecture and Kotlin Multiplatform conventions, including Android/iOS native APIs.
 
 **When to use:** Any new feature, especially one that touches platform APIs (file access, permissions, Keychain, pickers, etc.).
 

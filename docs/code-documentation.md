@@ -1,6 +1,6 @@
 # Code documentation conventions
 
-Inline documentation for Vaulty uses **Kotlin KDoc** (`/** ... */`). Layer placement and module boundaries are described in [kmp-feature-playbook.md](kmp-feature-playbook.md); this doc covers **what to write in source** and how symbols connect across layers.
+Inline documentation for cmp templateuses **Kotlin KDoc** (`/** ... */`). Layer placement and module boundaries are described in [kmp-feature-playbook.md](kmp-feature-playbook.md); this doc covers **what to write in source** and how symbols connect across layers.
 
 ---
 
