@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 kotlin {
@@ -15,6 +16,8 @@ dependencies {
     implementation(projects.shared)
     // Platform DI: androidApp supplies platformDataModule() (see README).
     implementation(projects.data)
+
+    baselineProfile(projects.benchmark)
 
     implementation(libs.androidx.activity.compose)
 
@@ -40,11 +43,20 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+        }
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+baselineProfile {
+    automaticGenerationDuringBuild = false
 }

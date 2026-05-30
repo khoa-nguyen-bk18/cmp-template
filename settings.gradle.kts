@@ -29,6 +29,7 @@ dependencyResolutionManagement {
 }
 
 include(":androidApp")
+include(":benchmark")
 include(":architecture")
 include(":data")
 include(":domain")
