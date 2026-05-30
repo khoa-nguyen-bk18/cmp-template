@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import com.devindie.cmptemplate.ui.theme.AppTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,14 +29,11 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    AppTheme {
         var showContent by remember { mutableStateOf(false) }
         LazyColumn(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .testTag("feed")
-                .fillMaxSize(),
+            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .safeContentPadding().testTag("feed").fillMaxSize(),
         ) {
             item {
                 Column(

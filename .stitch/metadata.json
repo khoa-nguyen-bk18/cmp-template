@@ -1,0 +1,41 @@
+{
+  "projectId": "17128375841121903851",
+  "title": "Screenshot to App Generator",
+  "deviceType": "MOBILE",
+  "designSystem": {
+    "displayName": "ProCollector UI",
+    "assetId": "85dbdd7397814a369b3ac5f21255788b",
+    "colorMode": "LIGHT",
+    "colorVariant": "FIDELITY",
+    "font": "HANKEN_GROTESK",
+    "roundness": "ROUND_EIGHT",
+    "seedColor": "#121c24",
+    "overridePrimaryColor": "#121c24",
+    "overrideSecondaryColor": "#76a094",
+    "overrideTertiaryColor": "#f2f4f7",
+    "overrideNeutralColor": "#667085"
+  },
+  "screens": [
+    {
+      "id": "3314824f9bf04c839b33ba4e2b3d5bdd",
+      "title": "Product Listing"
+    },
+    {
+      "id": "b6b8bc0c47c7492ba521ef7f373cd05f",
+      "title": "User Profile"
+    },
+    {
+      "id": "1881e4d805dd49f5a77d1b757f38a9df",
+      "title": "Shopping Cart"
+    },
+    {
+      "id": "ae265c77afb04ef09e9150d533862d22",
+      "title": "Card Details"
+    },
+    {
+      "id": "2963955558666720585",
+      "title": "image.png"
+    }
+  ],
+  "composeThemePackage": "com.devindie.cmptemplate.ui.theme"
+}
