@@ -1,0 +1,557 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "918e09ad44de2346c49986533513398a",
+    "entities": [
+      {
+        "tableName": "vault_index",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`storageKey` TEXT NOT NULL, `displayName` TEXT NOT NULL, `indexedAtEpochMs` INTEGER NOT NULL, `schemaVersion` INTEGER NOT NULL, `status` TEXT NOT NULL, PRIMARY KEY(`storageKey`))",
+        "fields": [
+          {
+            "fieldPath": "storageKey",
+            "columnName": "storageKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "displayName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "indexedAtEpochMs",
+            "columnName": "indexedAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "schemaVersion",
+            "columnName": "schemaVersion",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "storageKey"
+          ]
+        }
+      },
+      {
+        "tableName": "vault_file",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `vaultStorageKey` TEXT NOT NULL, `relativePath` TEXT NOT NULL, `name` TEXT NOT NULL, `extension` TEXT NOT NULL, `mimeCategory` TEXT NOT NULL, `sizeBytes` INTEGER NOT NULL, `modifiedAtEpochMs` INTEGER NOT NULL, `contentHash` TEXT NOT NULL, `indexedAtEpochMs` INTEGER NOT NULL, `isMarkdown` INTEGER NOT NULL, `isText` INTEGER NOT NULL, `propertiesText` TEXT NOT NULL, `contentBody` TEXT NOT NULL, `headings` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vaultStorageKey",
+            "columnName": "vaultStorageKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relativePath",
+            "columnName": "relativePath",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extension",
+            "columnName": "extension",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mimeCategory",
+            "columnName": "mimeCategory",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sizeBytes",
+            "columnName": "sizeBytes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modifiedAtEpochMs",
+            "columnName": "modifiedAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentHash",
+            "columnName": "contentHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "indexedAtEpochMs",
+            "columnName": "indexedAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isMarkdown",
+            "columnName": "isMarkdown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isText",
+            "columnName": "isText",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "propertiesText",
+            "columnName": "propertiesText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentBody",
+            "columnName": "contentBody",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "headings",
+            "columnName": "headings",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vault_file_vaultStorageKey",
+            "unique": false,
+            "columnNames": [
+              "vaultStorageKey"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_file_vaultStorageKey` ON `${TABLE_NAME}` (`vaultStorageKey`)"
+          },
+          {
+            "name": "index_vault_file_vaultStorageKey_relativePath",
+            "unique": true,
+            "columnNames": [
+              "vaultStorageKey",
+              "relativePath"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_vault_file_vaultStorageKey_relativePath` ON `${TABLE_NAME}` (`vaultStorageKey`, `relativePath`)"
+          },
+          {
+            "name": "index_vault_file_contentHash",
+            "unique": false,
+            "columnNames": [
+              "contentHash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_file_contentHash` ON `${TABLE_NAME}` (`contentHash`)"
+          }
+        ]
+      },
+      {
+        "tableName": "vault_file_content",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fileId` INTEGER NOT NULL, `contentText` TEXT NOT NULL, `contentPreview` TEXT NOT NULL, `headings` TEXT NOT NULL, PRIMARY KEY(`fileId`), FOREIGN KEY(`fileId`) REFERENCES `vault_file`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "fileId",
+            "columnName": "fileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentText",
+            "columnName": "contentText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentPreview",
+            "columnName": "contentPreview",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "headings",
+            "columnName": "headings",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fileId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vault_file_content_fileId",
+            "unique": true,
+            "columnNames": [
+              "fileId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_vault_file_content_fileId` ON `${TABLE_NAME}` (`fileId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vault_file",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fileId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "vault_file_property",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fileId` INTEGER NOT NULL, `namespace` TEXT NOT NULL, `key` TEXT NOT NULL, `value` TEXT NOT NULL, FOREIGN KEY(`fileId`) REFERENCES `vault_file`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fileId",
+            "columnName": "fileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "namespace",
+            "columnName": "namespace",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vault_file_property_fileId",
+            "unique": false,
+            "columnNames": [
+              "fileId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_file_property_fileId` ON `${TABLE_NAME}` (`fileId`)"
+          },
+          {
+            "name": "index_vault_file_property_namespace_key_value",
+            "unique": false,
+            "columnNames": [
+              "namespace",
+              "key",
+              "value"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_file_property_namespace_key_value` ON `${TABLE_NAME}` (`namespace`, `key`, `value`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vault_file",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fileId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "vault_link",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sourceFileId` INTEGER NOT NULL, `targetPath` TEXT NOT NULL, `resolvedTargetFileId` INTEGER, `linkKind` TEXT NOT NULL, `anchor` TEXT, `label` TEXT, FOREIGN KEY(`sourceFileId`) REFERENCES `vault_file`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceFileId",
+            "columnName": "sourceFileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "targetPath",
+            "columnName": "targetPath",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resolvedTargetFileId",
+            "columnName": "resolvedTargetFileId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "linkKind",
+            "columnName": "linkKind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anchor",
+            "columnName": "anchor",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vault_link_sourceFileId",
+            "unique": false,
+            "columnNames": [
+              "sourceFileId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_link_sourceFileId` ON `${TABLE_NAME}` (`sourceFileId`)"
+          },
+          {
+            "name": "index_vault_link_resolvedTargetFileId",
+            "unique": false,
+            "columnNames": [
+              "resolvedTargetFileId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_link_resolvedTargetFileId` ON `${TABLE_NAME}` (`resolvedTargetFileId`)"
+          },
+          {
+            "name": "index_vault_link_targetPath",
+            "unique": false,
+            "columnNames": [
+              "targetPath"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_link_targetPath` ON `${TABLE_NAME}` (`targetPath`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vault_file",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sourceFileId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "vault_index_run",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `vaultStorageKey` TEXT NOT NULL, `startedAtEpochMs` INTEGER NOT NULL, `finishedAtEpochMs` INTEGER, `filesProcessed` INTEGER NOT NULL, `errorsCount` INTEGER NOT NULL, `trigger` TEXT NOT NULL, FOREIGN KEY(`vaultStorageKey`) REFERENCES `vault_index`(`storageKey`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vaultStorageKey",
+            "columnName": "vaultStorageKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAtEpochMs",
+            "columnName": "startedAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "finishedAtEpochMs",
+            "columnName": "finishedAtEpochMs",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "filesProcessed",
+            "columnName": "filesProcessed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "errorsCount",
+            "columnName": "errorsCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trigger",
+            "columnName": "trigger",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vault_index_run_vaultStorageKey",
+            "unique": false,
+            "columnNames": [
+              "vaultStorageKey"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vault_index_run_vaultStorageKey` ON `${TABLE_NAME}` (`vaultStorageKey`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vault_index",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "vaultStorageKey"
+            ],
+            "referencedColumns": [
+              "storageKey"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "vault_file_fts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`name` TEXT NOT NULL, `relativePath` TEXT NOT NULL, `extension` TEXT NOT NULL, `propertiesText` TEXT NOT NULL, `contentBody` TEXT NOT NULL, `headings` TEXT NOT NULL, content=`vault_file`)",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relativePath",
+            "columnName": "relativePath",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extension",
+            "columnName": "extension",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "propertiesText",
+            "columnName": "propertiesText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentBody",
+            "columnName": "contentBody",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "headings",
+            "columnName": "headings",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": []
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "vault_file",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_vault_file_fts_BEFORE_UPDATE BEFORE UPDATE ON `vault_file` BEGIN DELETE FROM `vault_file_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_vault_file_fts_BEFORE_DELETE BEFORE DELETE ON `vault_file` BEGIN DELETE FROM `vault_file_fts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_vault_file_fts_AFTER_UPDATE AFTER UPDATE ON `vault_file` BEGIN INSERT INTO `vault_file_fts`(`docid`, `name`, `relativePath`, `extension`, `propertiesText`, `contentBody`, `headings`) VALUES (NEW.`rowid`, NEW.`name`, NEW.`relativePath`, NEW.`extension`, NEW.`propertiesText`, NEW.`contentBody`, NEW.`headings`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_vault_file_fts_AFTER_INSERT AFTER INSERT ON `vault_file` BEGIN INSERT INTO `vault_file_fts`(`docid`, `name`, `relativePath`, `extension`, `propertiesText`, `contentBody`, `headings`) VALUES (NEW.`rowid`, NEW.`name`, NEW.`relativePath`, NEW.`extension`, NEW.`propertiesText`, NEW.`contentBody`, NEW.`headings`); END"
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '918e09ad44de2346c49986533513398a')"
+    ]
+  }
+}

@@ -13,6 +13,8 @@ kotlin {
 }
 dependencies {
     implementation(projects.shared)
+    // Platform DI: androidApp supplies platformDataModule() (see README).
+    implementation(projects.data)
 
     implementation(libs.androidx.activity.compose)
 
