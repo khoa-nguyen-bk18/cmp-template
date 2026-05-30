@@ -17,8 +17,14 @@
   },
   "screens": [
     {
+      "id": "46883a3d84b4442f9912da331c389f5c",
+      "title": "Empty Nav Screen",
+      "composeEntry": "com.devindie.cmptemplate.screens.main.MainScreen"
+    },
+    {
       "id": "3314824f9bf04c839b33ba4e2b3d5bdd",
-      "title": "Product Listing"
+      "title": "Browse Cards",
+      "composeEntry": "com.devindie.cmptemplate.screens.browse.BrowseScreen"
     },
     {
       "id": "b6b8bc0c47c7492ba521ef7f373cd05f",

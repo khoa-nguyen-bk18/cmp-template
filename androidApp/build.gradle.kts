@@ -19,6 +19,7 @@ dependencies {
 
     baselineProfile(projects.benchmark)
 
+    implementation(libs.koin.android)
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.compose.uiToolingPreview)
