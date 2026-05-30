@@ -1,0 +1,42 @@
+---
+description: Implement KMP features with Clean Architecture, platform DataSources, and layer boundaries
+alwaysApply: true
+---
+
+# KMP feature implementation (Vaulty)
+
+When implementing a **new feature** or **extending** domain/data/shared layers, follow [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) end-to-end. Do not skip layers or put platform code in `domain`.
+
+Apply the Karpathy guidelines while doing so:
+
+- **Think before coding:** Clarify assumptions about layer boundaries and platform responsibilities before editing.
+- **Simplicity first:** Add only the repositories, use cases, DataSources, and wiring the feature actually needs — no speculative abstractions.
+- **Surgical changes:** Touch only the files and lines required to follow this playbook; avoid opportunistic refactors.
+- **Goal-driven execution:** Tie work to concrete checks (tests, architecture rules, perf metrics) and keep iterating until they are green.
+
+## Order of work
+
+1. **Domain** — models → `XxxRepository` interface → `XxxUseCase`(s) → register in `VaultDomainModule`
+2. **Data** — `XxxDataSource` interface (`commonMain`) → `Android*` / `Ios*` (`androidMain` / `iosMain`) → `XxxRepositoryImpl` (`commonMain`)
+3. **DI** — bind in `platformDataModule()` actuals; wire from `androidApp` / `doInitKoin()` only (never from `:shared` commonMain)
+4. **Presentation** — `XxxViewModel` + screen in `shared`; ViewModel uses **use cases only** (no `data`, no `*RepositoryImpl`)
+5. **Verify** — `./gradlew :architecture:test`
+
+## Platform APIs
+
+| Need | Pattern | Where |
+|------|---------|-------|
+| Native I/O (files, DB, crypto) | Interface + `Android*` / `Ios*` | `data` platform source sets |
+| Tiny helper | `internal expect` / `actual` | `data` only — never `domain` |
+| Picker / permission UI | App shell callback | `androidApp` / iOS → domain type → use case |
+
+## Hard rules (Konsist)
+
+- `domain`: pure Kotlin — no Android, Compose, Koin, Ktor, `data`
+- `*Repository` in `domain.repository` = **interface**; `*RepositoryImpl` in `data`
+- `shared` / ViewModels: depend on **use cases**, not repositories impl or `data`
+- `androidApp`: may import `data.di` only (not other `data` packages)
+
+Full checklist, diagrams, and examples: **docs/kmp-feature-playbook.md**.
+
+When adding or updating KDoc, follow **docs/code-documentation.md** (connection pattern, vault flow map).
