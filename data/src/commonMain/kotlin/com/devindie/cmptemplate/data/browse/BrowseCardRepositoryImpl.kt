@@ -1,6 +1,7 @@
 package com.devindie.cmptemplate.data.browse
 
 import com.devindie.cmptemplate.data.coroutines.DispatcherProvider
+import com.devindie.cmptemplate.data.coroutines.runIoResult
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard
 import com.devindie.cmptemplate.domain.repository.BrowseCardRepository
@@ -17,7 +18,7 @@ class BrowseCardRepositoryImpl(
     ): Flow<List<CollectibleCard>> = localDataSource.observeCards(query, category)
 
     override suspend fun ensureCatalogSeeded(): Result<Unit> = withContext(dispatchers.io) {
-        runCatching {
+        runIoResult {
             if (localDataSource.count() == 0) {
                 localDataSource.insertAll(BrowseCatalogSeeder.seedEntities())
             }

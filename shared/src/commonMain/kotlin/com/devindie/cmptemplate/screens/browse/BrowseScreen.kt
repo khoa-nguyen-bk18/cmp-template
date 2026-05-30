@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
@@ -143,6 +144,20 @@ private fun BrowseScreenContent(
             }
         }
         when {
+            state.errorMessage != null -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = state.errorMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = colorScheme.error,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+
             state.isLoading -> {
                 Box(
                     modifier = Modifier.fillMaxWidth().weight(1f),

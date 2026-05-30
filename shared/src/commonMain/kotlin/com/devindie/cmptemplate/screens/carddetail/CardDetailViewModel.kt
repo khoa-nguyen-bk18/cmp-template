@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.devindie.cmptemplate.domain.model.carddetail.CardCondition
 import com.devindie.cmptemplate.domain.model.carddetail.CardDetail
 import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,6 +52,7 @@ class CardDetailViewModel(
                     }
                 }
                 .onFailure { error ->
+                    if (error is CancellationException) throw error
                     _uiState.update {
                         it.copy(
                             isLoading = false,

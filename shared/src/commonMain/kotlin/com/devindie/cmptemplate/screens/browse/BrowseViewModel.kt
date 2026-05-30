@@ -6,6 +6,7 @@ import com.devindie.cmptemplate.domain.model.browse.BrowseCardsQuery
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.usecase.browse.EnsureBrowseCatalogSeededUseCase
 import com.devindie.cmptemplate.domain.usecase.browse.ObserveBrowseCardsUseCase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +32,7 @@ class BrowseViewModel(
     private val searchQuery = MutableStateFlow("")
     private val selectedCategory = MutableStateFlow(BrowseCategory.All)
     private val catalogReady = MutableStateFlow(false)
+    private val catalogError = MutableStateFlow<String?>(null)
 
     /** Debounced + distinct query drives Room; [searchQuery] stays immediate for the text field. */
     private val debouncedSearchQuery =
@@ -49,15 +51,26 @@ class BrowseViewModel(
             debouncedSearchQuery,
             selectedCategory,
             catalogReady,
-        ) { displayQuery, queryForSearch, category, ready ->
+            catalogError,
+        ) { displayQuery, queryForSearch, category, ready, seedError ->
             SearchInputs(
                 displayQuery = displayQuery,
                 queryForSearch = queryForSearch,
                 category = category,
                 catalogReady = ready,
+                catalogError = seedError,
             )
         }.flatMapLatest { inputs ->
-            if (!inputs.catalogReady) {
+            if (inputs.catalogError != null) {
+                flowOf(
+                    BrowseScreenUiState(
+                        searchQuery = inputs.displayQuery,
+                        selectedCategory = inputs.category,
+                        isLoading = false,
+                        errorMessage = inputs.catalogError,
+                    ),
+                )
+            } else if (!inputs.catalogReady) {
                 flowOf(
                     BrowseScreenUiState(
                         searchQuery = inputs.displayQuery,
@@ -93,7 +106,13 @@ class BrowseViewModel(
     init {
         viewModelScope.launch {
             ensureBrowseCatalogSeeded()
-            catalogReady.update { true }
+                .onSuccess { catalogReady.update { true } }
+                .onFailure { error ->
+                    if (error is CancellationException) throw error
+                    catalogError.update {
+                        error.message ?: "Unable to load catalog"
+                    }
+                }
         }
     }
 
@@ -111,4 +130,5 @@ private data class SearchInputs(
     val queryForSearch: String,
     val category: BrowseCategory,
     val catalogReady: Boolean,
+    val catalogError: String?,
 )

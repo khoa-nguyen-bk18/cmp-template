@@ -8,4 +8,5 @@ data class BrowseScreenUiState(
     val selectedCategory: BrowseCategory = BrowseCategory.All,
     val cards: List<CollectibleCard> = emptyList(),
     val isLoading: Boolean = true,
+    val errorMessage: String? = null,
 )
