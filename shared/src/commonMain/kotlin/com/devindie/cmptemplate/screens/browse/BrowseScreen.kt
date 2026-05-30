@@ -22,6 +22,9 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -72,9 +75,7 @@ fun BrowseScreen(
         onSearchQueryChange = onSearchQueryChange,
         onCategorySelected = onCategorySelected,
         onCardClick = onCardClick,
-        modifier = modifier
-            .fillMaxSize()
-            .testTag("browse_screen"),
+        modifier = modifier.fillMaxSize().testTag("browse_screen"),
         contentPadding = PaddingValues(
             start = spacing.screenMargin,
             end = spacing.screenMargin,
@@ -95,16 +96,16 @@ private fun BrowseScreenContent(
 ) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
+    var searchText by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = modifier.padding(contentPadding),
         verticalArrangement = Arrangement.spacedBy(spacing.componentGap),
     ) {
         OutlinedTextField(
-            value = state.searchQuery,
-            onValueChange = onSearchQueryChange,
-            modifier = Modifier
-                .fillMaxWidth()
+            value = searchText,
+            onValueChange = { searchText = it; onSearchQueryChange(it) },
+            modifier = Modifier.fillMaxWidth()
                 .semantics { contentDescription = "Search inventory" },
             placeholder = { Text("Search cards…") },
             leadingIcon = {
@@ -143,19 +144,16 @@ private fun BrowseScreenContent(
         when {
             state.isLoading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxWidth().weight(1f),
                     contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator(color = colorScheme.primary)
                 }
             }
+
             state.cards.isEmpty() -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxWidth().weight(1f),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -165,6 +163,7 @@ private fun BrowseScreenContent(
                     )
                 }
             }
+
             else -> {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
