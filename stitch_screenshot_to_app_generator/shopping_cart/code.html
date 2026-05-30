@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shopping Cart - Good Games Belconnen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "surface-bright": "#f9f9ff",
+                    "on-primary-fixed": "#131d25",
+                    "surface-variant": "#d9e3fb",
+                    "primary-container": "#131d25",
+                    "secondary-fixed-dim": "#a4cfc2",
+                    "inverse-surface": "#273143",
+                    "tertiary-container": "#191c1e",
+                    "primary-fixed-dim": "#bdc8d3",
+                    "on-surface": "#111c2d",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#191c1e",
+                    "tertiary": "#000000",
+                    "surface-tint": "#556069",
+                    "surface-container-high": "#dfe8ff",
+                    "inverse-on-surface": "#ecf0ff",
+                    "surface-container-highest": "#d9e3fb",
+                    "surface-dim": "#d0daf2",
+                    "primary": "#000000",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-background": "#111c2d",
+                    "on-tertiary-fixed-variant": "#44474a",
+                    "secondary-container": "#bde9db",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#3e4851",
+                    "surface-container": "#e8eeff",
+                    "secondary-fixed": "#c0ecde",
+                    "outline": "#74777b",
+                    "secondary": "#3d665b",
+                    "on-tertiary-container": "#818487",
+                    "surface-container-low": "#f0f3ff",
+                    "on-secondary-container": "#426a60",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#7b858f",
+                    "outline-variant": "#c4c7cb",
+                    "tertiary-fixed": "#e0e3e6",
+                    "tertiary-fixed-dim": "#c4c7ca",
+                    "on-secondary-fixed-variant": "#254e44",
+                    "primary-fixed": "#d9e4ef",
+                    "surface": "#f9f9ff",
+                    "background": "#f9f9ff",
+                    "inverse-primary": "#bdc8d3",
+                    "on-surface-variant": "#44474b",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#00201a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "space-sm": "8px",
+                    "card-padding": "16px",
+                    "space-xs": "4px",
+                    "space-md": "16px",
+                    "screen-margin": "16px",
+                    "component-gap": "12px",
+                    "space-lg": "24px"
+            },
+            "fontFamily": {
+                    "label-md": ["Hanken Grotesk"],
+                    "headline-md-mobile": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "price-display": ["Hanken Grotesk"],
+                    "body-sm": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-md-mobile": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "price-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body { font-family: 'Hanken Grotesk', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 bg-surface dark:bg-surface flex justify-between items-center w-full px-screen-margin py-space-sm transition-colors duration-200">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="store">store</span>
+</div>
+<h1 class="text-body-lg font-body-lg text-on-surface dark:text-on-surface">Good Games Belconnen</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button class="text-on-surface-variant dark:text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="px-screen-margin pt-6">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-headline-md-mobile font-headline-md-mobile">Your Cart</h2>
+<span class="text-label-md font-label-md text-on-surface-variant">3 Items</span>
+</div>
+<!-- Cart Items List -->
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex gap-4 transition-all active:scale-[0.98]">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional close-up of a vintage Magic The Gathering trading card 'Gaeas Touch', showcasing intricate classic fantasy art of a forest spirit. The lighting is crisp and neutral, highlighting the card's texture and dark green palette. The overall style is clean, corporate, and high-precision, emphasizing the collectible's detail and condition against a soft, light-mode background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKCfYIhqTxe2nkEGbBEcH9WOxfBoPojP57aKFhmlOjW7kJ_hfzOIQ-xdiPhkobJ-hamOT38HnPtaeivywF3Ax2kvqv2k25R3SryR2iBz2RJ3nk3DIod7jI9lT9csVE0EfL24Hx-IY8yJh53xYtT0Mymk-GrGatrePdDSivnufUiLI11u6KdMFmw1KEVmBWQ49lNjVLwrS_7GmxMjJPfxPNeE4mz-IIH8uKYRMvCe0LxC3spVIwrhjYaYb456HYWB02M_vlMo5Ov33F"/>
+</div>
+<div class="flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-headline-md-mobile font-headline-md-mobile">Gaeas Touch</h3>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-2">The Dark • Common</p>
+<div class="inline-flex bg-surface-container-high px-2 py-0.5 rounded text-label-md font-label-md">Near Mint</div>
+</div>
+<div class="flex justify-between items-center mt-2">
+<div class="text-price-display font-price-display">$5.62</div>
+<div class="flex items-center bg-surface-container-low rounded-lg border border-outline-variant">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" data-icon="remove">remove</span></button>
+<span class="px-3 font-bold">1</span>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" data-icon="add">add</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex gap-4 transition-all active:scale-[0.98]">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Detailed macro photography of a 'Soul Warden' trading card from Exodus. The artwork features a serene female cleric character in a warm, ethereal glow. The image is captured with professional clarity and high information density, fitting for a modern corporate TCG marketplace. The color palette is composed of rich browns, golds, and whites, presented in a crisp, light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYve8k4KJDfsQNzfAbZc_OwyOTalYaBogtxgu9ILaR_n6rPKFa4933x0zFs_wrgRsjudRi5kYVoRgkPmFTow4aDLU4r37zQdJicL_FZCkBh0vibmfeVsJZg7PLB_C1wL1_u94Tr9BmZXmnvQ4ugqsXRXAki7S7lfud6bJl0B9BjCDkdtfbrSq5uwEDJoOCBnagUaxplgrJVxHIZozkyQXfgmmpIdHfrE9hrAu0vCYQooz6QAno2UaYUC2cNxwAB71Lp_-kVpUU976d"/>
+</div>
+<div class="flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-headline-md-mobile font-headline-md-mobile">Soul Warden</h3>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-2">Exodus • Common</p>
+<div class="inline-flex bg-surface-container-high px-2 py-0.5 rounded text-label-md font-label-md">Near Mint</div>
+</div>
+<div class="flex justify-between items-center mt-2">
+<div class="text-price-display font-price-display">$6.37</div>
+<div class="flex items-center bg-surface-container-low rounded-lg border border-outline-variant">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" data-icon="remove">remove</span></button>
+<span class="px-3 font-bold">1</span>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" data-icon="add">add</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex gap-4 transition-all active:scale-[0.98]">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A high-fidelity shot of the 'Bubbling Muck' trading card from Urza's Destiny. The card features dark, atmospheric swamp-themed artwork with bubbling textures. The visual style is professional and inventory-focused, emphasizing the card's precise condition and rich dark purple and black ink colors. The lighting is bright and even, reinforcing a trustworthy, modern marketplace atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArP5HA9BZ5VmgFnsALOfGg9ewpFwL2K_7A0fsBUJIJDLC8hhXcyQPUoUuX3h_stk1bFhYgEFf-Q2gH1KVldsbMQTQgVjxaPQbRfbgsswWK8ncp2mzaFBj5MxiCM50RvH-niF-v2us15UEdZUxHiXDnRoT-F-E5VYKLAJBYRM9HBs1J7MTLHUX6-wW0V5mSGTvFy9yw1H2QHgRmf_wCa31I9f91_d8860G_bVhlfSt5QZ4t8t_w2Y91GsuBPXzZTFSzfPQTNiwfQjw5"/>
+</div>
+<div class="flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-headline-md-mobile font-headline-md-mobile">Bubbling Muck</h3>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-2">Urza's Destiny • Common</p>
+<div class="inline-flex bg-surface-container-high px-2 py-0.5 rounded text-label-md font-label-md">Lightly Played</div>
+</div>
+<div class="flex justify-between items-center mt-2">
+<div class="text-price-display font-price-display">$4.86</div>
+<div class="flex items-center bg-surface-container-low rounded-lg border border-outline-variant">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" data-icon="remove">remove</span></button>
+<span class="px-3 font-bold">2</span>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined" data-icon="add">add</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Summary Section -->
+<section class="mt-8 space-y-4 pb-12">
+<h3 class="text-headline-md-mobile font-headline-md-mobile">Order Summary</h3>
+<div class="bg-surface-container-low rounded-xl p-card-padding space-y-3">
+<div class="flex justify-between text-body-md font-body-md text-on-surface-variant">
+<span>Subtotal</span>
+<span>$21.71</span>
+</div>
+<div class="flex justify-between text-body-md font-body-md text-on-surface-variant">
+<span>Estimated Shipping</span>
+<span>$2.50</span>
+</div>
+<div class="pt-3 border-t border-outline-variant flex justify-between items-center">
+<span class="text-body-lg font-body-lg">Total</span>
+<span class="text-price-display font-price-display text-primary">$24.21</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-4 rounded-xl font-body-lg text-body-lg flex justify-center items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="lock" style="font-size: 20px;">lock</span>
+                Proceed to Checkout
+            </button>
+<button class="w-full text-secondary font-label-md text-label-md py-2 hover:bg-secondary-container/20 transition-colors">
+                Continue Browsing
+            </button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-white z-50 rounded-t-xl shadow-lg bg-surface-container-lowest dark:bg-surface-container-lowest">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:bg-surface-container dark:hover:bg-surface-container scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-label-md font-label-md">Browse</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container rounded-lg p-2 transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_basket" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
+<span class="text-label-md font-label-md">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:bg-surface-container dark:hover:bg-surface-container scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="style">style</span>
+<span class="text-label-md font-label-md">Collection</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:bg-surface-container dark:hover:bg-surface-container scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="text-label-md font-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple interactive feedback for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (this.querySelector('.material-symbols-outlined[data-icon="delete"]')) {
+                    const card = this.closest('.bg-surface-container-lowest');
+                    card.style.opacity = '0.5';
+                    card.style.transform = 'translateX(20px)';
+                    setTimeout(() => card.remove(), 200);
+                }
+            });
+        });
+    </script>
+</body></html>
