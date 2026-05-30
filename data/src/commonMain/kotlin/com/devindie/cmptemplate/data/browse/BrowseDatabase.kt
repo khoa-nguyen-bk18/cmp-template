@@ -1,5 +1,6 @@
 package com.devindie.cmptemplate.data.browse
 
+import androidx.room.AutoMigration
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -7,7 +8,10 @@ import androidx.room.RoomDatabaseConstructor
 
 @Database(
     entities = [BrowseCardEntity::class],
-    version = 1,
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+    ],
 )
 @ConstructedBy(BrowseDatabaseConstructor::class)
 abstract class BrowseDatabase : RoomDatabase() {

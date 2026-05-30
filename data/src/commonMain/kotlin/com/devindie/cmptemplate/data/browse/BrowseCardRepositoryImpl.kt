@@ -16,12 +16,11 @@ class BrowseCardRepositoryImpl(
         category: BrowseCategory,
     ): Flow<List<CollectibleCard>> = localDataSource.observeCards(query, category)
 
-    override suspend fun ensureCatalogSeeded(): Result<Unit> =
-        withContext(dispatchers.io) {
-            runCatching {
-                if (localDataSource.count() == 0) {
-                    localDataSource.insertAll(BrowseCatalogSeeder.seedEntities())
-                }
+    override suspend fun ensureCatalogSeeded(): Result<Unit> = withContext(dispatchers.io) {
+        runCatching {
+            if (localDataSource.count() == 0) {
+                localDataSource.insertAll(BrowseCatalogSeeder.seedEntities())
             }
         }
+    }
 }

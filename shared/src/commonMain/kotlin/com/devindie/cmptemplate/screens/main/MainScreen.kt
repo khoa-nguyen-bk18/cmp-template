@@ -5,76 +5,144 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import com.devindie.cmptemplate.ui.insets.appNavigationBarsPadding
-import com.devindie.cmptemplate.ui.insets.appStatusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.devindie.cmptemplate.screens.browse.BrowseScreen
+import com.devindie.cmptemplate.screens.carddetail.CardDetailBottomSheet
+import com.devindie.cmptemplate.ui.insets.appNavigationBarsPadding
+import com.devindie.cmptemplate.ui.insets.appStatusBarsPadding
 import com.devindie.cmptemplate.ui.theme.AppTheme
 import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * State-holder entry for the Stitch "Empty Nav Screen" shell (project 17128375841121903851).
- * Wires [NavHost] tab routes and delegates layout to the previewable UI overload.
+ * Collects [MainViewModel] state/events and delegates layout to the previewable UI overload.
  */
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = koinViewModel(),
+) {
     val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination = MainDestination.fromRoute(navBackStackEntry?.destination?.route)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    MainScreenEffects(
+        viewModel = viewModel,
+        navController = navController,
+    )
 
     MainScreen(
-        state = MainScreenUiState(
-            storeName = DEFAULT_STORE_NAME,
-            selectedDestination = selectedDestination,
-        ),
-        onDestinationSelected = { destination ->
-            navController.navigate(destination.route) {
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
-                }
-                launchSingleTop = true
-                restoreState = true
-            }
-        },
-        onCartClick = {},
+        state = state,
+        onDestinationSelected = viewModel::onDestinationSelected,
+        onCartClick = viewModel::onCartClick,
         modifier = modifier,
         tabContent = { innerPadding ->
-            NavHost(
+            MainTabNavHost(
                 navController = navController,
-                startDestination = MainDestination.Start.route,
-                modifier = Modifier.fillMaxSize().padding(innerPadding)
-                    .consumeWindowInsets(innerPadding),
-            ) {
-                MainDestination.entries.forEach { destination ->
-                    composable(destination.route) {
-                        when (destination) {
-                            MainDestination.Browse -> BrowseScreen(
-                                modifier = Modifier.fillMaxSize(),
-                            )
+                innerPadding = innerPadding,
+                onCardClick = viewModel::onCardClick,
+            )
+        },
+    )
 
-                            else -> EmptyTabContent()
+    MainCardDetailOverlay(
+        cardId = state.visibleDetailCardId,
+        storeName = state.storeName,
+        onDismiss = viewModel::onCardDetailDismiss,
+    )
+}
+
+@Composable
+private fun MainScreenEffects(
+    viewModel: MainViewModel,
+    navController: NavHostController,
+) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val routeDestination = MainDestination.fromRoute(navBackStackEntry?.destination?.route)
+
+    LaunchedEffect(routeDestination) {
+        viewModel.onRouteChanged(routeDestination)
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is MainEvent.NavigateToTab -> {
+                    navController.navigate(event.destination.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 }
             }
-        },
+        }
+    }
+}
+
+@Composable
+private fun MainTabNavHost(
+    navController: NavHostController,
+    innerPadding: PaddingValues,
+    onCardClick: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    NavHost(
+        navController = navController,
+        startDestination = MainDestination.Start.route,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .consumeWindowInsets(innerPadding),
+    ) {
+        MainDestination.entries.forEach { destination ->
+            composable(destination.route) {
+                when (destination) {
+                    MainDestination.Browse -> BrowseScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        onCardClick = { onCardClick(it.id) },
+                    )
+
+                    else -> EmptyTabContent()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MainCardDetailOverlay(
+    cardId: Long?,
+    storeName: String,
+    onDismiss: () -> Unit,
+) {
+    if (cardId == null) return
+
+    CardDetailBottomSheet(
+        cardId = cardId,
+        storeName = storeName,
+        onDismiss = onDismiss,
     )
 }
 
 /**
- * Previewable UI for the empty navigation shell — no [NavController] or DI.
+ * Previewable UI for the empty navigation shell — no [NavController], ViewModel, or DI.
  */
 @Composable
 fun MainScreen(

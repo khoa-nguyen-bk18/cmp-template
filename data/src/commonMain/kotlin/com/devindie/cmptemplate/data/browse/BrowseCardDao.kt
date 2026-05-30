@@ -30,4 +30,7 @@ interface BrowseCardDao {
         query: String,
         category: String,
     ): Flow<List<BrowseCardEntity>>
+
+    @Query("SELECT * FROM browse_card WHERE id = :cardId LIMIT 1")
+    suspend fun getById(cardId: Long): BrowseCardEntity?
 }

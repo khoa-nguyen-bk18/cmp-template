@@ -5,6 +5,27 @@ import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 internal object BrowseCatalogSeeder {
     fun seedEntities(): List<BrowseCardEntity> =
         listOf(
+            detailCard(
+                name = "Gaeas Touch",
+                setName = "The Dark",
+                condition = "NM",
+                priceDollars = 5.62,
+                quantity = 3,
+                category = BrowseCategory.Magic,
+                rarityLabel = "Uncommon #77/119",
+                abilitiesText =
+                    "You may put one additional land in play during each of your turns, " +
+                        "but that land must be a basic forest. You may sacrifice Gaeas Touch to add " +
+                        "GG to your mana pool. This ability is played as an interrupt.",
+                flavorText =
+                    "\"The forest provides for those who cherish its roots as much as its leaves.\"",
+                marketPriceDollars = 5.40,
+                buylistPriceDollars = 3.25,
+                lpPriceDollars = 4.85,
+                mpPriceDollars = 3.90,
+                hpPriceDollars = 2.15,
+                dPriceDollars = 1.05,
+            ),
             card("Charizard ex", "Obsidian Flames", "NM", 189.99, 2, BrowseCategory.Pokemon),
             card("Pikachu VMAX", "Vivid Voltage", "LP", 45.0, 1, BrowseCategory.Pokemon),
             card("Mewtwo GX", "Shining Legends", "NM", 32.5, 3, BrowseCategory.Pokemon),
@@ -98,13 +119,65 @@ internal object BrowseCatalogSeeder {
         priceDollars: Double,
         quantity: Int,
         category: BrowseCategory,
-    ): BrowseCardEntity =
-        BrowseCardEntity(
+    ): BrowseCardEntity = detailCard(
+        name = name,
+        setName = setName,
+        condition = condition,
+        priceDollars = priceDollars,
+        quantity = quantity,
+        category = category,
+    )
+
+    private fun detailCard(
+        name: String,
+        setName: String,
+        condition: String,
+        priceDollars: Double,
+        quantity: Int,
+        category: BrowseCategory,
+        gameName: String = category.toGameName(),
+        rarityLabel: String = "Common",
+        editionLabel: String = "Normal Edition",
+        imageUrl: String? = null,
+        abilitiesText: String = "",
+        flavorText: String = "",
+        marketPriceDollars: Double? = null,
+        buylistPriceDollars: Double? = null,
+        lpPriceDollars: Double? = null,
+        mpPriceDollars: Double? = null,
+        hpPriceDollars: Double? = null,
+        dPriceDollars: Double? = null,
+    ): BrowseCardEntity {
+        val nmCents = dollarsToCents(priceDollars)
+        return BrowseCardEntity(
             name = name,
             setName = setName,
             condition = condition,
-            priceCents = (priceDollars * 100).toLong(),
+            priceCents = nmCents,
             quantity = quantity,
             category = category.name,
+            gameName = gameName,
+            rarityLabel = rarityLabel,
+            editionLabel = editionLabel,
+            imageUrl = imageUrl,
+            abilitiesText = abilitiesText,
+            flavorText = flavorText,
+            marketPriceCents = marketPriceDollars?.let(::dollarsToCents) ?: 0,
+            buylistPriceCents = buylistPriceDollars?.let(::dollarsToCents) ?: 0,
+            lpPriceCents = lpPriceDollars?.let(::dollarsToCents) ?: 0,
+            mpPriceCents = mpPriceDollars?.let(::dollarsToCents) ?: 0,
+            hpPriceCents = hpPriceDollars?.let(::dollarsToCents) ?: 0,
+            dPriceCents = dPriceDollars?.let(::dollarsToCents) ?: 0,
         )
+    }
+
+    private fun dollarsToCents(dollars: Double): Long = (dollars * 100).toLong()
+
+    private fun BrowseCategory.toGameName(): String =
+        when (this) {
+            BrowseCategory.Pokemon -> "Pokémon"
+            BrowseCategory.Magic -> "Magic: The Gathering"
+            BrowseCategory.Sports -> "Sports Cards"
+            BrowseCategory.All -> "Collectibles"
+        }
 }

@@ -44,6 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun BrowseScreen(
     modifier: Modifier = Modifier,
+    onCardClick: (CollectibleCard) -> Unit = {},
     viewModel: BrowseViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -52,7 +53,7 @@ fun BrowseScreen(
         state = state,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onCategorySelected = viewModel::onCategorySelected,
-        onCardClick = {},
+        onCardClick = onCardClick,
         modifier = modifier,
     )
 }
