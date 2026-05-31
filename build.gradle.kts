@@ -1,3 +1,5 @@
+import java.net.HttpURLConnection
+import java.net.URI
 import java.util.Properties
 
 plugins {
@@ -137,6 +139,99 @@ tasks.register("qualityCheck") {
     )
 }
 
+val dockerComposeFile = rootProject.layout.projectDirectory.file("docker-compose.yml")
+
+fun registerDockerComposeTask(
+    name: String,
+    description: String,
+    vararg args: String,
+) {
+    tasks.register<Exec>(name) {
+        group = "sonarqube"
+        this.description = description
+        workingDir = rootProject.layout.projectDirectory.asFile
+        commandLine(
+            listOf("docker", "compose", "-f", dockerComposeFile.asFile.absolutePath) + args,
+        )
+    }
+}
+
+registerDockerComposeTask(
+    "sonarUp",
+    "Starts local SonarQube and PostgreSQL via Docker Compose",
+    "up",
+    "-d",
+)
+registerDockerComposeTask(
+    "sonarDown",
+    "Stops the local SonarQube Docker Compose stack (keeps volumes/data)",
+    "down",
+)
+
+tasks.register("sonarWait") {
+    group = "sonarqube"
+    description = "Waits until SonarQube at http://localhost:9000 responds with status UP"
+    notCompatibleWithConfigurationCache("Polls SonarQube HTTP API at execution time")
+    doLast {
+        val props = Properties()
+        val file = rootProject.file("local.properties")
+        if (file.exists()) {
+            file.inputStream().use { props.load(it) }
+        }
+        val hostUrl = props.getProperty("SONAR_HOST_URL")?.trim()?.takeIf { it.isNotEmpty() }
+            ?: "http://localhost:9000"
+        val statusUrl = URI("$hostUrl/api/system/status").toURL()
+        val deadlineMs = System.currentTimeMillis() + 5 * 60 * 1000
+        while (System.currentTimeMillis() < deadlineMs) {
+            val status =
+                runCatching {
+                    val connection = statusUrl.openConnection() as HttpURLConnection
+                    connection.connectTimeout = 5_000
+                    connection.readTimeout = 5_000
+                    connection.requestMethod = "GET"
+                    try {
+                        if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                            null
+                        } else {
+                            Regex(""""status"\s*:\s*"([^"]+)"""")
+                                .find(connection.inputStream.bufferedReader().readText())
+                                ?.groupValues
+                                ?.get(1)
+                        }
+                    } finally {
+                        connection.disconnect()
+                    }
+                }.getOrNull()
+            if (status == "UP") {
+                logger.lifecycle("SonarQube is UP at $hostUrl")
+                return@doLast
+            }
+            if (status != null) {
+                logger.lifecycle("SonarQube status: $status (waiting for UP)...")
+            } else {
+                logger.lifecycle("SonarQube not reachable yet at $hostUrl...")
+            }
+            Thread.sleep(3_000)
+        }
+        error(
+            """
+            SonarQube did not become ready at $hostUrl within 5 minutes.
+            Check logs: ./gradlew sonarLogs
+            """.trimIndent(),
+        )
+    }
+}
+
+registerDockerComposeTask(
+    "sonarLogs",
+    "Tails SonarQube Docker Compose logs",
+    "logs",
+    "-f",
+    "sonarqube",
+)
+
+val defaultSonarProjectKey = rootProject.name
+
 tasks.register("sonarAnalysis") {
     group = "verification"
     description =
@@ -157,14 +252,32 @@ tasks.register("sonarAnalysis") {
             """
             SONAR_TOKEN is missing in local.properties.
 
-            Add to local.properties (file is gitignored):
+            Add to local.properties (see local.properties.example):
               SONAR_TOKEN=<token-from-local-sonarqube>
-              SONAR_PROJECT_KEY=<project-key>   # optional, defaults to "${project.name}"
+              SONAR_PROJECT_KEY=<project-key>   # optional, defaults to "$defaultSonarProjectKey"
               SONAR_HOST_URL=http://localhost:9000  # optional, default shown
 
-            Create a token: SonarQube at $hostUrl → My Account → Security → Generate Tokens.
-            Ensure the Docker container is running before ./gradlew sonarAnalysis.
+            First-time setup:
+              1. ./gradlew sonarUp
+              2. Open $hostUrl (default login admin / admin — change password when prompted)
+              3. My Account → Security → Generate Tokens → paste into SONAR_TOKEN
+              4. ./gradlew sonarAnalysis
+            Or run everything: ./gradlew sonarLocalAnalysis
             """.trimIndent()
         }
     }
+}
+
+tasks.register("sonarLocalAnalysis") {
+    group = "verification"
+    description = "Starts SonarQube (Docker), waits until ready, then runs sonarAnalysis"
+    dependsOn("sonarUp", "sonarWait", "sonarAnalysis")
+}
+
+tasks.named("sonarWait") {
+    mustRunAfter("sonarUp")
+}
+
+tasks.named("sonarAnalysis") {
+    mustRunAfter("sonarWait")
 }

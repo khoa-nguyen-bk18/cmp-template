@@ -1,0 +1,13 @@
+# Copy to local.properties (gitignored) and fill in values.
+
+# Android SDK (required for Android builds)
+sdk.dir=/path/to/Android/sdk
+
+# SonarQube (required for ./gradlew sonarAnalysis)
+# Start server: ./gradlew sonarUp  (or ./gradlew sonarLocalAnalysis for full flow)
+SONAR_HOST_URL=http://localhost:9000
+SONAR_PROJECT_KEY=CMPTemplate
+# Create at http://localhost:9000 → My Account → Security → Generate Tokens
+SONAR_TOKEN=
+
+#SonarQube PWD: mG_4{q2=@oA6

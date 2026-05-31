@@ -31,3 +31,14 @@ Dependency injection is wired at the app layer: `androidApp` and iOS `doInitKoin
 Architecture rules: `./gradlew :architecture:test`
 
 Feature implementation guide: [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) (Clean Architecture + KMP native APIs).
+
+### SonarQube (local)
+
+Requires Docker. Copy `local.properties.example` → `local.properties` and set `SONAR_TOKEN` after first login.
+
+```bash
+./gradlew sonarUp              # start SonarQube + PostgreSQL (http://localhost:9000)
+./gradlew sonarAnalysis        # tests + Kover report + upload (server must be running)
+./gradlew sonarLocalAnalysis   # sonarUp → wait → sonarAnalysis
+./gradlew sonarDown            # stop containers (data kept in Docker volumes)
+```
