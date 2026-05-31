@@ -41,7 +41,7 @@ class BrowseViewModel(
             .distinctUntilChanged()
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.Eagerly,
                 initialValue = "",
             )
 
@@ -99,7 +99,7 @@ class BrowseViewModel(
             }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.Eagerly,
             initialValue = BrowseScreenUiState(),
         )
 

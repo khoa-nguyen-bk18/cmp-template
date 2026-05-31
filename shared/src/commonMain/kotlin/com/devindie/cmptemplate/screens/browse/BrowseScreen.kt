@@ -106,7 +106,10 @@ private fun BrowseScreenContent(
     ) {
         OutlinedTextField(
             value = searchText,
-            onValueChange = { searchText = it; onSearchQueryChange(it) },
+            onValueChange = {
+                searchText = it
+                onSearchQueryChange(it)
+            },
             modifier = Modifier.fillMaxWidth()
                 .semantics { contentDescription = "Search inventory" },
             placeholder = { Text("Search cards…") },

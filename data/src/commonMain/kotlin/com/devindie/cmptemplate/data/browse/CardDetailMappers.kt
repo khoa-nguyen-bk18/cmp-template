@@ -40,29 +40,28 @@ internal fun BrowseCardEntity.toCardDetail(): CardDetail {
         abilitiesText = abilitiesText,
         flavorText = flavorText,
         conditionPricing =
-            CardCondition.selectorOrder.map { tier ->
-                val cents =
-                    when (tier) {
-                        CardCondition.NearMint -> nmCents
-                        CardCondition.LightlyPlayed -> lpCents
-                        CardCondition.ModeratelyPlayed -> mpCents
-                        CardCondition.HeavilyPlayed -> hpCents
-                        CardCondition.Damaged -> dCents
-                    }
-                ConditionPricing(
-                    condition = tier,
-                    priceDisplay = formatPriceCents(cents),
-                )
-            },
+        CardCondition.selectorOrder.map { tier ->
+            val cents =
+                when (tier) {
+                    CardCondition.NearMint -> nmCents
+                    CardCondition.LightlyPlayed -> lpCents
+                    CardCondition.ModeratelyPlayed -> mpCents
+                    CardCondition.HeavilyPlayed -> hpCents
+                    CardCondition.Damaged -> dCents
+                }
+            ConditionPricing(
+                condition = tier,
+                priceDisplay = formatPriceCents(cents),
+            )
+        },
         marketPriceDisplay = formatPriceCents(marketCents),
         buylistPriceDisplay = formatPriceCents(buylistCents),
     )
 }
 
-private fun BrowseCategory.toGameName(): String =
-    when (this) {
-        BrowseCategory.Pokemon -> "Pokémon"
-        BrowseCategory.Magic -> "Magic: The Gathering"
-        BrowseCategory.Sports -> "Sports Cards"
-        BrowseCategory.All -> "Collectibles"
-    }
+private fun BrowseCategory.toGameName(): String = when (this) {
+    BrowseCategory.Pokemon -> "Pokémon"
+    BrowseCategory.Magic -> "Magic: The Gathering"
+    BrowseCategory.Sports -> "Sports Cards"
+    BrowseCategory.All -> "Collectibles"
+}

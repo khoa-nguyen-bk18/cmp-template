@@ -12,10 +12,8 @@ class BrowseCardRepositoryImpl(
     private val localDataSource: BrowseCardLocalDataSource,
     private val dispatchers: DispatcherProvider,
 ) : BrowseCardRepository {
-    override fun observeCards(
-        query: String,
-        category: BrowseCategory,
-    ): Flow<List<CollectibleCard>> = localDataSource.observeCards(query, category)
+    override fun observeCards(query: String, category: BrowseCategory): Flow<List<CollectibleCard>> =
+        localDataSource.observeCards(query, category)
 
     override suspend fun ensureCatalogSeeded(): Result<Unit> = withContext(dispatchers.io) {
         runIoResult {

@@ -86,9 +86,8 @@ internal fun CardDetailTopBar(
     }
 }
 
-private fun storeInitials(storeName: String): String =
-    storeName
-        .split(' ')
-        .filter { it.isNotBlank() }
-        .take(2)
-        .joinToString("") { it.first().uppercaseChar().toString() }
+private fun storeInitials(storeName: String): String = storeName
+    .split(' ')
+    .filter { it.isNotBlank() }
+    .take(2)
+    .joinToString("") { it.first().uppercaseChar().toString() }

@@ -26,10 +26,7 @@ interface BrowseCardDao {
         ORDER BY name ASC
         """,
     )
-    fun observeFiltered(
-        query: String,
-        category: String,
-    ): Flow<List<BrowseCardEntity>>
+    fun observeFiltered(query: String, category: String): Flow<List<BrowseCardEntity>>
 
     @Query("SELECT * FROM browse_card WHERE id = :cardId LIMIT 1")
     suspend fun getById(cardId: Long): BrowseCardEntity?

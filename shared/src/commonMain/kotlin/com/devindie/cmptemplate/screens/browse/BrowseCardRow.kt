@@ -26,11 +26,7 @@ import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
 import com.devindie.cmptemplate.ui.theme.PillShape
 
 @Composable
-internal fun BrowseCardRow(
-    card: CollectibleCard,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+internal fun BrowseCardRow(card: CollectibleCard, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
 
@@ -102,10 +98,7 @@ internal fun BrowseCardRow(
 }
 
 @Composable
-private fun ConditionChip(
-    label: String,
-    modifier: Modifier = Modifier,
-) {
+private fun ConditionChip(label: String, modifier: Modifier = Modifier) {
     val colorScheme = MaterialTheme.colorScheme
     Surface(
         modifier = modifier,

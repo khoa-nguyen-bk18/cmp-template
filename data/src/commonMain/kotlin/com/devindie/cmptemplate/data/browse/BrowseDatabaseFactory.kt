@@ -9,8 +9,7 @@ const val BROWSE_DATABASE_NAME = "browse_cards.db"
 fun getBrowseDatabase(
     builder: RoomDatabase.Builder<BrowseDatabase>,
     ioDispatcher: CoroutineDispatcher,
-): BrowseDatabase =
-    builder
-        .setDriver(BundledSQLiteDriver())
-        .setQueryCoroutineContext(ioDispatcher)
-        .build()
+): BrowseDatabase = builder
+    .setDriver(BundledSQLiteDriver())
+    .setQueryCoroutineContext(ioDispatcher)
+    .build()

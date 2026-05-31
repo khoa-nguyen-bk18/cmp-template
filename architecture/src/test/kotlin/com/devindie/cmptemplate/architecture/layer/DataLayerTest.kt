@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class DataLayerTest {
 
     @Test
-    fun `vaultdata commonMain has no Android imports`() {
+    fun `data commonMain has no Android imports`() {
         val allowedAndroidxPrefixes =
             listOf(
                 "androidx.datastore.",
@@ -32,7 +32,7 @@ class DataLayerTest {
     }
 
     @Test
-    fun `vaultdata commonMain has no Compose imports`() {
+    fun `data commonMain has no Compose imports`() {
         Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
             .files
             .filter { it.path.contains("commonMain") }
@@ -45,13 +45,26 @@ class DataLayerTest {
     }
 
     @Test
-    fun `VaultFolderRepositoryImpl implements VaultFolderRepository`() {
+    fun `BrowseCardRepositoryImpl implements BrowseCardRepository`() {
         Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
             .classes()
-            .filter { it.name == "VaultFolderRepositoryImpl" }
+            .filter { it.name == "BrowseCardRepositoryImpl" }
             .assertTrue {
                 it.hasParentWithName(
-                    "VaultFolderRepository",
+                    "BrowseCardRepository",
+                    indirectParents = true,
+                )
+            }
+    }
+
+    @Test
+    fun `CardDetailRepositoryImpl implements CardDetailRepository`() {
+        Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
+            .classes()
+            .filter { it.name == "CardDetailRepositoryImpl" }
+            .assertTrue {
+                it.hasParentWithName(
+                    "CardDetailRepository",
                     indirectParents = true,
                 )
             }

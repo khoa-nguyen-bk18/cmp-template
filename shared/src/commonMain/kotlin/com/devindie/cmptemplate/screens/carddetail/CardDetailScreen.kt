@@ -264,10 +264,7 @@ private fun CardDetailContent(
 }
 
 @Composable
-private fun CardHeroSection(
-    card: CardDetail,
-    modifier: Modifier = Modifier,
-) {
+private fun CardHeroSection(card: CardDetail, modifier: Modifier = Modifier) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
 
@@ -318,10 +315,7 @@ private fun CardHeroSection(
 }
 
 @Composable
-private fun CardIdentitySection(
-    card: CardDetail,
-    modifier: Modifier = Modifier,
-) {
+private fun CardIdentitySection(card: CardDetail, modifier: Modifier = Modifier) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
 
@@ -449,11 +443,7 @@ private fun ConditionSelectorSection(
 }
 
 @Composable
-private fun ConditionButtonContent(
-    code: String,
-    priceDisplay: String,
-    selected: Boolean,
-) {
+private fun ConditionButtonContent(code: String, priceDisplay: String, selected: Boolean) {
     val colorScheme = MaterialTheme.colorScheme
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -465,11 +455,11 @@ private fun ConditionButtonContent(
             text = priceDisplay,
             style = MaterialTheme.typography.labelSmall,
             color =
-                if (selected) {
-                    colorScheme.onPrimary.copy(alpha = 0.85f)
-                } else {
-                    colorScheme.onSurfaceVariant
-                },
+            if (selected) {
+                colorScheme.onPrimary.copy(alpha = 0.85f)
+            } else {
+                colorScheme.onSurfaceVariant
+            },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -477,11 +467,7 @@ private fun ConditionButtonContent(
 }
 
 @Composable
-private fun CardAbilitiesSection(
-    abilitiesText: String,
-    flavorText: String,
-    modifier: Modifier = Modifier,
-) {
+private fun CardAbilitiesSection(abilitiesText: String, flavorText: String, modifier: Modifier = Modifier) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
 
@@ -702,30 +688,29 @@ private fun CardDetailScreenPreview() {
     }
 }
 
-private fun previewCardDetail(): CardDetail =
-    CardDetail(
-        id = 1,
-        name = "Gaeas Touch",
-        gameName = "Magic: The Gathering",
-        setName = "The Dark",
-        rarityLabel = "Uncommon #77/119",
-        editionLabel = "Normal Edition",
-        imageUrl = null,
-        listingCondition = CardCondition.NearMint,
-        conditionBadgeLabel = "Near Mint",
-        abilitiesText =
-            "You may put one additional land in play during each of your turns, " +
-                "but that land must be a basic forest.",
-        flavorText =
-            "\"The forest provides for those who cherish its roots as much as its leaves.\"",
-        conditionPricing =
-            listOf(
-                ConditionPricing(CardCondition.NearMint, "$5.62"),
-                ConditionPricing(CardCondition.LightlyPlayed, "$4.85"),
-                ConditionPricing(CardCondition.ModeratelyPlayed, "$3.90"),
-                ConditionPricing(CardCondition.HeavilyPlayed, "$2.15"),
-                ConditionPricing(CardCondition.Damaged, "$1.05"),
-            ),
-        marketPriceDisplay = "$5.40",
-        buylistPriceDisplay = "$3.25",
-    )
+private fun previewCardDetail(): CardDetail = CardDetail(
+    id = 1,
+    name = "Gaeas Touch",
+    gameName = "Magic: The Gathering",
+    setName = "The Dark",
+    rarityLabel = "Uncommon #77/119",
+    editionLabel = "Normal Edition",
+    imageUrl = null,
+    listingCondition = CardCondition.NearMint,
+    conditionBadgeLabel = "Near Mint",
+    abilitiesText =
+    "You may put one additional land in play during each of your turns, " +
+        "but that land must be a basic forest.",
+    flavorText =
+    "\"The forest provides for those who cherish its roots as much as its leaves.\"",
+    conditionPricing =
+    listOf(
+        ConditionPricing(CardCondition.NearMint, "$5.62"),
+        ConditionPricing(CardCondition.LightlyPlayed, "$4.85"),
+        ConditionPricing(CardCondition.ModeratelyPlayed, "$3.90"),
+        ConditionPricing(CardCondition.HeavilyPlayed, "$2.15"),
+        ConditionPricing(CardCondition.Damaged, "$1.05"),
+    ),
+    marketPriceDisplay = "$5.40",
+    buylistPriceDisplay = "$3.25",
+)

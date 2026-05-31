@@ -23,11 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
 
 @Composable
-internal fun MainTopBar(
-    storeName: String,
-    onCartClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+internal fun MainTopBar(storeName: String, onCartClick: () -> Unit, modifier: Modifier = Modifier) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
 

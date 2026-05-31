@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CardDetailViewModel(
-    private val getCardDetail: GetCardDetailUseCase,
-    private val cardId: Long,
-) : ViewModel() {
+class CardDetailViewModel(private val getCardDetail: GetCardDetailUseCase, private val cardId: Long) : ViewModel() {
     private val _uiState = MutableStateFlow(CardDetailScreenUiState())
     val uiState: StateFlow<CardDetailScreenUiState> = _uiState.asStateFlow()
 

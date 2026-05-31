@@ -25,9 +25,10 @@ We follow the official Android Architecture Guidelines:
 - **Navigation:** Jetpack Navigation Compose.
 
 ## 5. Testing Philosophy
-- **Unit Tests:** JUnit4/JUnit5, MockK for mocking, Turbine for Flow testing. 
+- **Unit Tests:** kotlin-test in KMP `commonTest`, JUnit 5 in `:architecture`, Turbine for multi-emission Flow/StateFlow tests. Manual fakes over MockK for repositories and use cases.
 - **UI Tests:** Compose Test Rule for UI components, Espresso for legacy XML.
 - Prefer testing ViewModel state emission over testing implementation details.
+- **Full strategy:** [docs/testing.md](docs/testing.md) — module map, helpers (`runDataTest`, `runViewModelTest`), and `./gradlew qualityCheck`.
 
 ### Architecture tests (Konsist)
 

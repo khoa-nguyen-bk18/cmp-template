@@ -34,10 +34,7 @@ import org.koin.compose.viewmodel.koinViewModel
  * Collects [MainViewModel] state/events and delegates layout to the previewable UI overload.
  */
 @Composable
-fun MainScreen(
-    modifier: Modifier = Modifier,
-    viewModel: MainViewModel = koinViewModel(),
-) {
+fun MainScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = koinViewModel()) {
     val navController = rememberNavController()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -68,10 +65,7 @@ fun MainScreen(
 }
 
 @Composable
-private fun MainScreenEffects(
-    viewModel: MainViewModel,
-    navController: NavHostController,
-) {
+private fun MainScreenEffects(viewModel: MainViewModel, navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val routeDestination = MainDestination.fromRoute(navBackStackEntry?.destination?.route)
 
@@ -127,11 +121,7 @@ private fun MainTabNavHost(
 }
 
 @Composable
-private fun MainCardDetailOverlay(
-    cardId: Long?,
-    storeName: String,
-    onDismiss: () -> Unit,
-) {
+private fun MainCardDetailOverlay(cardId: Long?, storeName: String, onDismiss: () -> Unit) {
     if (cardId == null) return
 
     CardDetailBottomSheet(

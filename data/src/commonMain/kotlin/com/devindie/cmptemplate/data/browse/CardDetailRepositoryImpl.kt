@@ -10,11 +10,10 @@ class CardDetailRepositoryImpl(
     private val localDataSource: BrowseCardLocalDataSource,
     private val dispatchers: DispatcherProvider,
 ) : CardDetailRepository {
-    override suspend fun getCardDetail(cardId: Long): Result<CardDetail> =
-        withContext(dispatchers.io) {
-            runIoResult {
-                localDataSource.getCardDetail(cardId)
-                    ?: error("Card not found")
-            }
+    override suspend fun getCardDetail(cardId: Long): Result<CardDetail> = withContext(dispatchers.io) {
+        runIoResult {
+            localDataSource.getCardDetail(cardId)
+                ?: error("Card not found")
         }
+    }
 }

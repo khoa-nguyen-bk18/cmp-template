@@ -7,10 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 interface BrowseCardLocalDataSource {
-    fun observeCards(
-        query: String,
-        category: BrowseCategory,
-    ): Flow<List<CollectibleCard>>
+    fun observeCards(query: String, category: BrowseCategory): Flow<List<CollectibleCard>>
 
     suspend fun count(): Int
 
@@ -19,13 +16,8 @@ interface BrowseCardLocalDataSource {
     suspend fun getCardDetail(cardId: Long): CardDetail?
 }
 
-class BrowseCardLocalDataSourceImpl(
-    private val dao: BrowseCardDao,
-) : BrowseCardLocalDataSource {
-    override fun observeCards(
-        query: String,
-        category: BrowseCategory,
-    ): Flow<List<CollectibleCard>> =
+class BrowseCardLocalDataSourceImpl(private val dao: BrowseCardDao) : BrowseCardLocalDataSource {
+    override fun observeCards(query: String, category: BrowseCategory): Flow<List<CollectibleCard>> =
         dao.observeFiltered(
             query = query.trim(),
             category = category.name,
@@ -37,6 +29,5 @@ class BrowseCardLocalDataSourceImpl(
         dao.insertAll(cards)
     }
 
-    override suspend fun getCardDetail(cardId: Long): CardDetail? =
-        dao.getById(cardId)?.toCardDetail()
+    override suspend fun getCardDetail(cardId: Long): CardDetail? = dao.getById(cardId)?.toCardDetail()
 }

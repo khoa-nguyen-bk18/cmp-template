@@ -47,7 +47,6 @@ enum class MainDestination(
     companion object {
         val Start = Browse
 
-        fun fromRoute(route: String?): MainDestination =
-            entries.find { it.route == route } ?: Start
+        fun fromRoute(route: String?): MainDestination = entries.find { it.route == route } ?: Start
     }
 }
