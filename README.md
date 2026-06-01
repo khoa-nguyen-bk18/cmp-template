@@ -1,40 +1,161 @@
 # CMPTemplate
 
-Kotlin Multiplatform app for Android and iOS that indexes and searches local vault folders (markdown notes, wikilinks, and related metadata).
+Kotlin Multiplatform template for **Android** and **iOS** that demonstrates **Clean Architecture**: a pure `domain` layer, a `data` layer for persistence and networking, and a `shared` Compose Multiplatform presentation layer. Dependency injection is wired at the app entry points, and layer boundaries are enforced with Konsist tests.
+
+The included **reference feature** is a Browse tab that lists collectible cards (category filters, search, card detail). Data flows through use cases into ViewModels with unidirectional UI state. Local catalog data is stored in **Room**; remote fetch uses a **Ktor** client (with a fake remote source for offline development). The main shell follows a Stitch-inspired navigation layout ([`MainScreen`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/main/MainScreen.kt)).
+
+**What you get**
+
+- UDF ViewModels and Compose Multiplatform screens shared across platforms
+- Koin modules split between domain (shared) and platform `data` bindings (app layer only)
+- `./gradlew qualityCheck` — formatting, Detekt, **Android Security Lint**, unit tests, and architecture rules
+- Optional local **SonarQube** + **Kover** coverage upload
+
+## Architecture at a glance
+
+```mermaid
+flowchart TB
+  subgraph apps [App entry]
+    androidApp[androidApp]
+    iosApp[iosApp Swift]
+  end
+  subgraph presentation [Presentation]
+    shared[shared Compose + ViewModels]
+  end
+  subgraph core [Core]
+    domain[domain]
+    data[data]
+  end
+  subgraph quality [Quality]
+    arch[architecture Konsist]
+    bench[benchmark]
+  end
+  androidApp --> shared
+  androidApp --> data
+  iosApp --> shared
+  shared --> domain
+  data --> domain
+  arch -.-> domain
+  arch -.-> data
+  arch -.-> shared
+  bench -.-> androidApp
+```
+
+**Dependency direction:** `domain` ← `data` ← app DI; `shared` → `domain` only. iOS `shared` `iosMain` also links `:data` solely for Koin bootstrap (not for direct data imports in screens).
+
+Feature implementation guide: [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md).
 
 ## Modules
 
-| Module | Role |
-|--------|------|
-| `:domain` | Models, repository contracts, use cases |
-| `:data` | Room index, platform file access, repository implementations |
-| `:shared` | Compose Multiplatform UI, ViewModels, navigation |
-| `:androidApp` | Android application entry point and platform DI |
-| `:architecture` | Konsist boundary tests |
+| Module / path | Role |
+|---------------|------|
+| [`:domain`](domain/) | Models, repository interfaces, use cases (e.g. `ObserveBrowseCardsUseCase`) |
+| [`:data`](data/) | Room (`BrowseDatabase`), Ktor client, repository implementations, platform `expect`/`actual` |
+| [`:shared`](shared/) | Compose Multiplatform UI, ViewModels, navigation, theme |
+| [`:androidApp`](androidApp/) | Android application, `platformDataModule()`, baseline profile consumer |
+| [`iosApp/`](iosApp/) | Xcode project; embeds the `Shared` framework and runs iOS Koin init |
+| [`:architecture`](architecture/) | Konsist JVM tests enforcing layer and package rules |
+| [`:benchmark`](benchmark/) | Baseline profile generator and startup macrobenchmarks for `:androidApp` |
 
-Dependency injection is wired at the app layer: `androidApp` and iOS `doInitKoin` supply `platformDataModule()`; `:shared` depends on `:domain` only (iOS `iosMain` also links `:data` for Koin bootstrap).
+Dependency injection is wired at the app layer: `androidApp` and iOS `doInitKoin` supply `platformDataModule()`; `:shared` depends on `:domain` only (iOS `iosMain` also links `:data` for Koin bootstrap). Presentation code must not import `data` — enforced by Konsist.
 
 ## Technologies
 
-- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) for UI
-- [Compose Navigation](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-navigation-routing.html) with typed routes
-- [Room](https://developer.android.com/kotlin/multiplatform/room) (KMP) for the vault index
-- [Koin](https://insert-koin.io/) for dependency injection
+Pinned versions live in [`gradle/libs.versions.toml`](gradle/libs.versions.toml) (Kotlin **2.3.21**, Compose Multiplatform **1.11.0**, AGP **9.0.1**, `minSdk` **24**, `compileSdk` / `targetSdk` **36**).
 
-## Build & quality
+### Core & build
+
+- [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) with the Compose Compiler plugin
+- [Android Gradle Plugin](https://developer.android.com/build) 9
+
+### UI
+
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) — Material 3, resources, previews
+- [Navigation Compose](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-navigation-routing.html) (typed routes)
+- [Lifecycle](https://developer.android.com/jetpack/androidx/releases/lifecycle) ViewModel + `lifecycle-runtime-compose` (`collectAsStateWithLifecycle` in screens)
+
+### Domain & async
+
+- [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines) — `StateFlow`, structured concurrency in ViewModels and data
+- Pure `domain` module (no Android, Compose, Ktor, or Koin — verified by Konsist)
+
+### Data
+
+- [Room](https://developer.android.com/kotlin/multiplatform/room) (KMP) + KSP + [bundled SQLite](https://developer.android.com/jetpack/androidx/releases/sqlite)
+- [Ktor](https://ktor.io/) client — OkHttp on Android, Darwin on iOS; kotlinx.serialization JSON
+- [ksafe](https://github.com/ioannisa/KSafe) for sensitive field handling in the data layer
+
+### Dependency injection
+
+- [Koin](https://insert-koin.io/) — `koin-core`, `koin-compose-viewmodel`, Android bindings in `androidApp` / `data`
+
+### Testing
+
+- [kotlin-test](https://kotlinlang.org/api/latest/kotlin.test/) in KMP `commonTest`
+- [Turbine](https://github.com/cashapp/turbine) for Flow / `StateFlow` assertions in `:shared`
+- [JUnit 5](https://junit.org/junit5/) + [Konsist](https://docs.konsist.lemonappdev.com/) in `:architecture`
+
+Details: [docs/testing.md](docs/testing.md).
+
+### Android (`:androidApp` only)
+
+- [Android Security Lint](https://developer.android.com/google/play/integrity/security-lint) (`com.android.security.lint:lint` **1.0.4**) — bundled via `lintChecks` in [`androidApp/build.gradle.kts`](androidApp/build.gradle.kts); runs with AGP **Lint** on the app module (TLS, WebView, permissions, and related checks from Google’s security rule set)
+
+### Version catalog only (not wired yet)
+
+Coil and AndroidX **Paging 3** are declared in the catalog but not added to module dependencies yet. See [Roadmap](#roadmap).
+
+## Code analysis & quality
+
+| Tool | Purpose | How to run |
+|------|---------|------------|
+| **Spotless** + ktlint | Format Kotlin and Gradle scripts | `./gradlew spotlessCheck` / `spotlessApply` |
+| **Detekt** | Static analysis ([`detekt.yml`](detekt.yml); Compose rules via `detekt-compose`) | `./gradlew detektAll` (part of `qualityCheck`) |
+| **Android Security Lint** | Google security checks on `:androidApp` (via `lintChecks`) | `./gradlew :androidApp:lint` (part of `qualityCheck`); HTML report under `androidApp/build/reports/` |
+| **Konsist** | Clean Architecture boundaries (layers, imports, repositories) | `./gradlew :architecture:test` |
+| **Kover** | Unit-test coverage XML (feeds Sonar) | `./gradlew koverXmlReport` |
+| **qualityCheck** | Full gate: Spotless + Detekt + `:androidApp:lint` + KMP unit tests + architecture | `./gradlew qualityCheck` |
+| **SonarQube** (Docker) | Dashboard analysis + coverage upload | See [SonarQube (local)](#sonarqube-local) below |
+| **CodeGraph** | Tree-sitter knowledge graph for symbols, callers, and impact | Cursor MCP in [`.cursor/mcp.json`](.cursor/mcp.json); run `codegraph init -i` if `.codegraph/` is missing; see [AGENTS.md](AGENTS.md) |
+| **`:benchmark`** | Baseline profiles and startup macrobenchmarks | Device required; see [Benchmarks](#benchmarks) below |
+
+**When to use what:** formatting → Spotless; Kotlin smells → Detekt; Android security / manifest / API misuse → `:androidApp:lint` (Security Lint rules); layer violations → Konsist; coverage and duplication trends → Sonar; call-graph exploration in the IDE → CodeGraph.
+
+## Build & run
+
+**Prerequisites:** Android SDK path in `local.properties` (see [`local.properties.example`](local.properties.example)). Docker optional (SonarQube only).
 
 ```bash
+# Android debug APK
 ./gradlew :androidApp:assembleDebug
+
+# Full verification gate
 ./gradlew qualityCheck
+
+# Architecture rules only
+./gradlew :architecture:test
+
+# Android Lint + Security Lint checks only (HTML under androidApp/build/reports/)
+./gradlew :androidApp:lint
 ```
 
-Architecture rules: `./gradlew :architecture:test`
+**iOS:** Open [`iosApp/iosApp.xcodeproj`](iosApp/iosApp.xcodeproj) in Xcode. Build the shared KMP framework via Gradle as needed before running on a simulator or device (standard KMP iOS workflow).
 
-Feature implementation guide: [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) (Clean Architecture + KMP native APIs).
+### Benchmarks
+
+Requires a connected device or emulator. Instrumented tests in `:benchmark` target `:androidApp` (baseline profile collection and startup macrobenchmarks):
+
+```bash
+# Baseline profile collection (BaselineProfileGenerator)
+./gradlew :benchmark:connectedNonMinifiedBenchmarkAndroidTest
+
+# Startup / scroll macrobenchmarks (StartupBenchmarks)
+./gradlew :benchmark:connectedBenchmarkBenchmarkAndroidTest
+```
 
 ### SonarQube (local)
 
-Requires Docker. Copy `local.properties.example` → `local.properties` and set `SONAR_TOKEN` after first login.
+Requires Docker. Copy `local.properties.example` → `local.properties` and set `SONAR_TOKEN` after first login. Coverage comes from Kover (`koverXmlReport` runs as part of `sonarAnalysis`).
 
 ```bash
 ./gradlew sonarUp              # start SonarQube + PostgreSQL (http://localhost:9000)
@@ -42,3 +163,24 @@ Requires Docker. Copy `local.properties.example` → `local.properties` and set 
 ./gradlew sonarLocalAnalysis   # sonarUp → wait → sonarAnalysis
 ./gradlew sonarDown            # stop containers (data kept in Docker volumes)
 ```
+
+## Roadmap
+
+Planned work not implemented in the template yet:
+
+| # | Item | Scope |
+|---|------|--------|
+| 1 | **Paging 3 on Browse** | Wire `androidx.paging` from the version catalog through `domain`/`data` (paged repository or `PagingSource`) into [`BrowseViewModel`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/browse/BrowseViewModel.kt) and replace the all-items [`LazyColumn`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/browse/BrowseScreen.kt) with `LazyPagingItems` + `collectAsLazyPagingItems` for large catalogs |
+| 2 | **Project guardrail automation** | Script(s) under `scripts/` to run `qualityCheck` and `sonarAnalysis` locally, aggregate reports (Detekt, Lint HTML, Kover, Sonar), and support an agent loop: run → parse failures → prompt AI fix → re-run until green or max iterations |
+| 3 | **Template generator script** | Parameterized bootstrap (package name, application ID, module prefixes, Konsist package patterns in `:architecture`, optional feature stubs) to fork this repo without manual find-and-replace |
+| 4 | **Native UI via expect/actual** | Add reusable platform UI in `:shared` (`commonMain` `@Composable expect` or wrapper API + `androidMain` / `iosMain` `actual` implementations), following existing patterns such as [`AppWindowInsets`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/ui/insets/AppWindowInsets.kt); use for views Compose Multiplatform does not cover (e.g. `UIKit`/`AndroidView` bridges, platform pickers, maps). Keep `domain`/`data` expect/actual for I/O only — see [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) Step 0 |
+
+Contributions should follow [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) and keep `qualityCheck` green.
+
+## Documentation
+
+- [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) — adding features layer by layer
+- [docs/testing.md](docs/testing.md) — module test map, fakes, Turbine
+- [docs/coroutines-conventions.md](docs/coroutines-conventions.md) — dispatchers and `runTest`
+- [docs/code-documentation.md](docs/code-documentation.md) — KDoc conventions
+- [AGENTS.md](AGENTS.md) — conventions and tooling summary for coding agents
