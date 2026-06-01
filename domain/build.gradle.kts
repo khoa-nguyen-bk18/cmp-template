@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
@@ -10,27 +9,14 @@ plugins {
 detekt {
     source.setFrom(
         "src/commonMain/kotlin",
-        "src/androidMain/kotlin",
-        "src/iosMain/kotlin",
+        "src/commonTest/kotlin",
     )
 }
 
 kotlin {
-    androidLibrary {
-        namespace = "com.devindie.cmptemplate.domain"
-        compileSdk =
-            libs.versions.android.compileSdk
-                .get()
-                .toInt()
-        minSdk =
-            libs.versions.android.minSdk
-                .get()
-                .toInt()
+    jvm {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
-        }
-        withHostTest {
-            isIncludeAndroidResources = true
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 
