@@ -13,7 +13,6 @@ class DataLayerTest {
     fun `data commonMain has no Android imports`() {
         val allowedAndroidxPrefixes =
             listOf(
-                "androidx.datastore.",
                 "androidx.room.",
                 "androidx.sqlite.",
             )
@@ -65,6 +64,19 @@ class DataLayerTest {
             .assertTrue {
                 it.hasParentWithName(
                     "CardDetailRepository",
+                    indirectParents = true,
+                )
+            }
+    }
+
+    @Test
+    fun `UserRepositoryImpl implements UserRepository`() {
+        Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
+            .classes()
+            .filter { it.name == "UserRepositoryImpl" }
+            .assertTrue {
+                it.hasParentWithName(
+                    "UserRepository",
                     indirectParents = true,
                 )
             }

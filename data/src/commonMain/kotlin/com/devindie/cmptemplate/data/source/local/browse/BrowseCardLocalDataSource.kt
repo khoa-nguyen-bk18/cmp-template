@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.data.browse
+package com.devindie.cmptemplate.data.source.local.browse
 
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard
@@ -13,6 +13,8 @@ interface BrowseCardLocalDataSource {
 
     suspend fun insertAll(cards: List<BrowseCardEntity>)
 
+    suspend fun replaceAllCatalog(cards: List<BrowseCardEntity>)
+
     suspend fun getCardDetail(cardId: Long): CardDetail?
 }
 
@@ -26,6 +28,11 @@ class BrowseCardLocalDataSourceImpl(private val dao: BrowseCardDao) : BrowseCard
     override suspend fun count(): Int = dao.count()
 
     override suspend fun insertAll(cards: List<BrowseCardEntity>) {
+        dao.insertAll(cards)
+    }
+
+    override suspend fun replaceAllCatalog(cards: List<BrowseCardEntity>) {
+        dao.deleteAll()
         dao.insertAll(cards)
     }
 

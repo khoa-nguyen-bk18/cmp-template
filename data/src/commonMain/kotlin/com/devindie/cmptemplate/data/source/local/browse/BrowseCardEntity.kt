@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.data.browse
+package com.devindie.cmptemplate.data.source.local.browse
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

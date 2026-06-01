@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.data.browse
+package com.devindie.cmptemplate.data.source.local.browse
 
 import com.devindie.cmptemplate.data.coroutines.DispatcherProvider
 import com.devindie.cmptemplate.data.coroutines.runIoResult

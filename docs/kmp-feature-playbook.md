@@ -175,6 +175,17 @@ Provide `Context` in `androidPlatformModule` in `androidApp`, not in `:shared`.
 ./gradlew qualityCheck
 ```
 
+### Remote API + Room SSOT
+
+When a feature needs network data but the UI should read from local storage:
+
+1. **RemoteDataSource** (`data/remote/<feature>/`) — `suspend fun fetch…(): ApiResult<Dto>` (Ktor or `Fake*` for dev).
+2. **LocalDataSource + Room** (`data/local/<feature>/`) — DAO, entities, `replaceAllCatalog`; UI observes DAO `Flow` (SSOT).
+3. **RepositoryImpl** (`data/local/<feature>/`) — on sync: remote → map DTO → local upsert.
+4. **Shared infra** (`data/auth`, `data/network`, `data/di`, `data/coroutines`) — [KSafe](https://github.com/ioannisa/KSafe) encrypted tokens (`KSafeTokenStore`), HttpClient, Koin.
+
+Browse reference: `remote/browse/BrowseCardRemoteDataSource`, `local/browse/BrowseCardRepositoryImpl`, `networkModule()` in `data/di`.
+
 ---
 
 ## Decision tree: `expect`/`actual` vs interface

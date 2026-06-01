@@ -36,7 +36,7 @@ This project uses **kotlin-test** in KMP `commonTest`, **JUnit 5** in the JVM `:
 ### Fakes over mocks
 
 - **Domain:** `FakeBrowseCardRepository`, `FakeCardDetailRepository` in `domain/src/commonTest/.../fake/`
-- **Data:** `FakeBrowseCardDao` in `data/src/commonTest/.../fake/`
+- **Data:** `FakeBrowseCardDao` in `data/src/commonTest/.../local/browse/fake/`; `FakeBrowseCardRemoteDataSource` in `remote/browse/`; Ktor `MockEngine` for `TokenRefreshDataSource` / `KtorBrowseCardRemoteDataSource` HTTP tests
 - **Shared:** duplicate lightweight repository fakes in `shared/src/commonTest/.../fake/` (shared must not depend on `:data`)
 
 ViewModel tests use **real use cases** wired to fakes so presentation stays aligned with architecture rules.

@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.data.browse
+package com.devindie.cmptemplate.data.source.local.browse
 
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard

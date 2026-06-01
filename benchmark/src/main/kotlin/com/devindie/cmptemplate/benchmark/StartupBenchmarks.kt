@@ -74,5 +74,5 @@ class StartupBenchmarks {
 
 private const val DEFAULT_STORE_NAME = "Good Games Belconnen"
 
-/** First card from [com.devindie.cmptemplate.data.browse.BrowseCatalogSeeder]. */
+/** First card from [com.devindie.cmptemplate.data.local.browse.BrowseCatalogSeeder]. */
 private const val FIRST_BROWSE_CARD_NAME = "Charizard ex"

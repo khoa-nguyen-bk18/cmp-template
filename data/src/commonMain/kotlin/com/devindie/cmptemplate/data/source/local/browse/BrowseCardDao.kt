@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.data.browse
+package com.devindie.cmptemplate.data.source.local.browse
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 interface BrowseCardDao {
     @Query("SELECT COUNT(*) FROM browse_card")
     suspend fun count(): Int
+
+    @Query("DELETE FROM browse_card")
+    suspend fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(cards: List<BrowseCardEntity>)

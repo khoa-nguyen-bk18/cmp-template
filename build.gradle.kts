@@ -141,11 +141,7 @@ tasks.register("qualityCheck") {
 
 val dockerComposeFile = rootProject.layout.projectDirectory.file("docker-compose.yml")
 
-fun registerDockerComposeTask(
-    name: String,
-    description: String,
-    vararg args: String,
-) {
+fun registerDockerComposeTask(name: String, description: String, vararg args: String) {
     tasks.register<Exec>(name) {
         group = "sonarqube"
         this.description = description

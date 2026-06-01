@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.data.browse
+package com.devindie.cmptemplate.data.source.local.browse
 
 internal fun formatPriceCents(priceCents: Long): String {
     val dollars = priceCents / 100
