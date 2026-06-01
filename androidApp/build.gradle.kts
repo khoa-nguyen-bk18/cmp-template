@@ -13,6 +13,8 @@ kotlin {
     }
 }
 dependencies {
+    lintChecks(libs.android.security.lint)
+
     implementation(projects.shared)
     // Platform DI: androidApp supplies platformDataModule() (see README).
     implementation(projects.data)

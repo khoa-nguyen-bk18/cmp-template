@@ -128,10 +128,12 @@ tasks.register("detektAll") {
 
 tasks.register("qualityCheck") {
     group = "verification"
-    description = "Runs formatting, static analysis, unit tests, and architecture tests"
+    description =
+        "Runs formatting, static analysis, Android security lint, unit tests, and architecture tests"
     dependsOn(
         "spotlessCheck",
         "detektAll",
+        ":androidApp:lint",
         ":domain:allTests",
         ":data:allTests",
         ":shared:allTests",

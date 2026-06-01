@@ -1,4 +1,4 @@
-# Vaulty
+# CMPTemplate
 
 Kotlin Multiplatform app for Android and iOS that indexes and searches local vault folders (markdown notes, wikilinks, and related metadata).
 
