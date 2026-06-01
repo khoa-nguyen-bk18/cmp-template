@@ -29,6 +29,7 @@ We follow the official Android Architecture Guidelines:
 - **UI Tests:** Compose Test Rule for UI components, Espresso for legacy XML.
 - Prefer testing ViewModel state emission over testing implementation details.
 - **Full strategy:** [docs/testing.md](docs/testing.md) — module map, helpers (`runDataTest`, `runViewModelTest`), and `./gradlew qualityCheck`.
+- **Pre-commit:** Gitleaks blocks commits on secrets; Snyk Open Source (`snyk test`, high+) warns only and does not block. Do not commit secrets; address Snyk warnings before push/PR; run `./gradlew qualityCheck`. Setup: [README.md](README.md#local-commit-hooks-pre-commit).
 
 ### Architecture tests (Konsist)
 

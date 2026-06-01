@@ -1,3 +1,26 @@
+## For Interviewers
+
+This project demonstrates my experience with:
+
+- Kotlin Multiplatform architecture for Android and iOS
+- Clean Architecture with enforced module boundaries
+- Shared Compose Multiplatform UI and shared ViewModels
+- Ktor networking, Room KMP persistence, and Koin DI
+- Flow-based UDF state management
+- Architecture tests, Detekt, Spotless, Security Lint, Kover, SonarQube
+- Android benchmark and baseline profile setup
+
+Recommended review path:
+1. Start with `domain/` to see the pure business layer.
+2. Review `data/` for Room, Ktor, repository implementations, and platform-specific code.
+3. Review `shared/` for Compose Multiplatform UI and ViewModels.
+4. Run `./gradlew qualityCheck` to verify formatting, lint, tests, and architecture rules.
+
+# Screenshots
+
+![img.png](img.png)
+
+
 # CMPTemplate
 
 Kotlin Multiplatform template for **Android** and **iOS** that demonstrates **Clean Architecture**: a pure `domain` layer, a `data` layer for persistence and networking, and a `shared` Compose Multiplatform presentation layer. Dependency injection is wired at the app entry points, and layer boundaries are enforced with Konsist tests.
@@ -118,8 +141,40 @@ Coil and AndroidX **Paging 3** are declared in the catalog but not added to modu
 | **SonarQube** (Docker) | Dashboard analysis + coverage upload | See [SonarQube (local)](#sonarqube-local) below |
 | **CodeGraph** | Tree-sitter knowledge graph for symbols, callers, and impact | Cursor MCP in [`.cursor/mcp.json`](.cursor/mcp.json); run `codegraph init -i` if `.codegraph/` is missing; see [AGENTS.md](AGENTS.md) |
 | **`:benchmark`** | Baseline profiles and startup macrobenchmarks | Device required; see [Benchmarks](#benchmarks) below |
+| **pre-commit** (Gitleaks + Snyk) | Secret scan (blocks commit) + Snyk dependency warnings (high+, does not block) | See [Local commit hooks](#local-commit-hooks-pre-commit) below |
 
-**When to use what:** formatting → Spotless; Kotlin smells → Detekt; Android security / manifest / API misuse → `:androidApp:lint` (Security Lint rules); layer violations → Konsist; coverage and duplication trends → Sonar; call-graph exploration in the IDE → CodeGraph.
+**When to use what:** formatting → Spotless; Kotlin smells → Detekt; Android security / manifest / API misuse → `:androidApp:lint` (Security Lint rules); layer violations → Konsist; coverage and duplication trends → Sonar; call-graph exploration in the IDE → CodeGraph; secrets and dependency CVEs before commit → pre-commit.
+
+### Local commit hooks (pre-commit)
+
+Runs automatically on `git commit` (complements `./gradlew qualityCheck`, which does not run at commit time).
+
+| Tool | Install | Auth |
+|------|---------|------|
+| **pre-commit** | `brew install pre-commit` or `pip install pre-commit` | Python 3.9+ |
+| **gitleaks** | Bundled by the hook on first run; optional `brew install gitleaks` for manual runs | None |
+| **snyk** | `brew install snyk-cli` or `npm install -g snyk` | `snyk auth` once, or `SNYK_TOKEN` in your shell profile |
+
+**One-time setup (per machine and clone):**
+
+```bash
+# Automated (installs Homebrew deps, hooks, Gitleaks env; optional baseline)
+snyk auth
+./scripts/setup-pre-commit.sh --install-deps --baseline
+
+# Minimal (tools already installed)
+./scripts/setup-pre-commit.sh --baseline
+```
+
+See `./scripts/setup-pre-commit.sh --help` for options (`--install-deps`, `--baseline`, `--skip-snyk-check`).
+
+**Every commit:** Gitleaks scans **staged file contents** and **blocks** the commit on findings (via [`scripts/gitleaks-pre-commit.sh`](scripts/gitleaks-pre-commit.sh); the stock hook misses many staged secrets). Snyk runs `snyk test --all-projects --severity-threshold=high` and prints **warnings only** — vulnerabilities do not block the commit (fix before push/PR).
+
+**Manual runs:** `pre-commit run` · `pre-commit run gitleaks --all-files` · `bash scripts/snyk-pre-commit.sh`
+
+**If Gitleaks fails:** remove or rotate the secret; use env vars / gitignored `local.properties` instead. **If Snyk warns:** upgrade deps in [`gradle/libs.versions.toml`](gradle/libs.versions.toml) per Snyk output. Use `git commit --no-verify` only as an escape hatch for Gitleaks false positives or offline work.
+
+Config: [`.pre-commit-config.yaml`](.pre-commit-config.yaml), [`.gitleaks.toml`](.gitleaks.toml).
 
 ## Build & run
 

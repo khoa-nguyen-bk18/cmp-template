@@ -1,0 +1,7 @@
+# Gitleaks secret scanning — extend allowlist only for confirmed false positives.
+# See https://github.com/gitleaks/gitleaks#configuration
+
+title = "cmp-template gitleaks config"
+
+[extend]
+useDefault = true
