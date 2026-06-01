@@ -38,6 +38,8 @@ import org.koin.compose.viewmodel.koinViewModel
  * State-holder entry for the Stitch "Empty Nav Screen" shell (project 17128375841121903851).
  * Collects [MainViewModel] state/events and delegates layout to the previewable UI overload.
  */
+
+val AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 @Composable
 fun MainScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = koinViewModel()) {
     val navController = rememberNavController()
