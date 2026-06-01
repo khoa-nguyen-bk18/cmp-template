@@ -6,7 +6,6 @@ import com.devindie.cmptemplate.test.runViewModelTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
@@ -36,45 +35,21 @@ class MainViewModelTest {
     }
 
     @Test
-    fun onDestinationSelected_leavingBrowseClearsDetailCardId() = runViewModelTest {
+    fun onRouteChanged_updatesSelectedDestination() = runViewModelTest {
         val viewModel = MainViewModel()
-        viewModel.onCardClick(42L)
 
-        viewModel.onDestinationSelected(MainDestination.Cart)
-        advanceMainUntilIdle()
+        viewModel.onRouteChanged(MainDestination.Cart)
 
-        assertNull(viewModel.uiState.value.detailCardId)
+        assertEquals(MainDestination.Cart, viewModel.uiState.value.selectedDestination)
     }
 
     @Test
-    fun onCardClick_setsDetailCardId() = runViewModelTest {
+    fun onRouteChanged_sameDestinationIsNoOp() = runViewModelTest {
         val viewModel = MainViewModel()
 
-        viewModel.onCardClick(7L)
+        viewModel.onRouteChanged(MainDestination.Browse)
+        viewModel.onRouteChanged(MainDestination.Browse)
 
-        assertEquals(7L, viewModel.uiState.value.detailCardId)
-    }
-
-    @Test
-    fun onCardDetailDismiss_clearsDetailCardId() = runViewModelTest {
-        val viewModel = MainViewModel()
-        viewModel.onCardClick(7L)
-
-        viewModel.onCardDetailDismiss()
-
-        assertNull(viewModel.uiState.value.detailCardId)
-    }
-
-    @Test
-    fun visibleDetailCardId_onlyOnBrowseTab() = runViewModelTest {
-        val viewModel = MainViewModel()
-        viewModel.onCardClick(12L)
-
-        assertEquals(12L, viewModel.uiState.value.visibleDetailCardId)
-
-        viewModel.onDestinationSelected(MainDestination.Profile)
-        advanceMainUntilIdle()
-
-        assertNull(viewModel.uiState.value.visibleDetailCardId)
+        assertEquals(MainDestination.Browse, viewModel.uiState.value.selectedDestination)
     }
 }

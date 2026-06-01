@@ -20,12 +20,7 @@ class MainViewModel : ViewModel() {
     fun onDestinationSelected(destination: MainDestination) {
         if (destination == _uiState.value.selectedDestination) return
 
-        _uiState.update { current ->
-            current.copy(
-                selectedDestination = destination,
-                detailCardId = current.detailCardId.takeIf { destination == MainDestination.Browse },
-            )
-        }
+        _uiState.update { it.copy(selectedDestination = destination) }
         viewModelScope.launch {
             _events.send(MainEvent.NavigateToTab(destination))
         }
@@ -34,24 +29,9 @@ class MainViewModel : ViewModel() {
     /** Syncs shell state when [NavHost] route changes (e.g. restored back stack). */
     fun onRouteChanged(destination: MainDestination) {
         _uiState.update { current ->
-            if (current.selectedDestination == destination &&
-                (destination == MainDestination.Browse || current.detailCardId == null)
-            ) {
-                return@update current
-            }
-            current.copy(
-                selectedDestination = destination,
-                detailCardId = current.detailCardId.takeIf { destination == MainDestination.Browse },
-            )
+            if (current.selectedDestination == destination) return@update current
+            current.copy(selectedDestination = destination)
         }
-    }
-
-    fun onCardClick(cardId: Long) {
-        _uiState.update { it.copy(detailCardId = cardId) }
-    }
-
-    fun onCardDetailDismiss() {
-        _uiState.update { it.copy(detailCardId = null) }
     }
 
     fun onCartClick() = Unit

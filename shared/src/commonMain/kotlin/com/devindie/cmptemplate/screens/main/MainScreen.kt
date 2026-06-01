@@ -17,10 +17,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.devindie.cmptemplate.navigation.MainNavRoutes
+import com.devindie.cmptemplate.navigation.cardIdArg
 import com.devindie.cmptemplate.screens.browse.BrowseScreen
 import com.devindie.cmptemplate.screens.carddetail.CardDetailBottomSheet
 import com.devindie.cmptemplate.ui.insets.appNavigationBarsPadding
@@ -41,6 +46,7 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = koinVie
     MainScreenEffects(
         viewModel = viewModel,
         navController = navController,
+        selectedDestination = state.selectedDestination,
     )
 
     MainScreen(
@@ -52,25 +58,33 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = koinVie
             MainTabNavHost(
                 navController = navController,
                 innerPadding = innerPadding,
-                onCardClick = viewModel::onCardClick,
+                storeName = state.storeName,
             )
         },
-    )
-
-    MainCardDetailOverlay(
-        cardId = state.visibleDetailCardId,
-        storeName = state.storeName,
-        onDismiss = viewModel::onCardDetailDismiss,
     )
 }
 
 @Composable
-private fun MainScreenEffects(viewModel: MainViewModel, navController: NavHostController) {
+private fun MainScreenEffects(
+    viewModel: MainViewModel,
+    navController: NavHostController,
+    selectedDestination: MainDestination,
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val routeDestination = MainDestination.fromRoute(navBackStackEntry?.destination?.route)
+    val currentRoute = navBackStackEntry?.destination?.route
+    val routeDestination = MainDestination.fromRoute(currentRoute)
 
     LaunchedEffect(routeDestination) {
         viewModel.onRouteChanged(routeDestination)
+    }
+
+    LaunchedEffect(selectedDestination) {
+        if (selectedDestination != MainDestination.Browse && MainNavRoutes.isCardDetailRoute(
+                currentRoute
+            )
+        ) {
+            navController.popBackStack()
+        }
     }
 
     LaunchedEffect(viewModel) {
@@ -94,41 +108,42 @@ private fun MainScreenEffects(viewModel: MainViewModel, navController: NavHostCo
 private fun MainTabNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues,
-    onCardClick: (Long) -> Unit,
+    storeName: String,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
         startDestination = MainDestination.Start.route,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .consumeWindowInsets(innerPadding),
+        modifier = modifier.fillMaxSize().padding(innerPadding).consumeWindowInsets(innerPadding),
     ) {
         MainDestination.entries.forEach { destination ->
             composable(destination.route) {
                 when (destination) {
                     MainDestination.Browse -> BrowseScreen(
                         modifier = Modifier.fillMaxSize(),
-                        onCardClick = { onCardClick(it.id) },
+                        onCardClick = { card ->
+                            navController.navigate(MainNavRoutes.cardDetailRoute(card.id))
+                        },
                     )
 
                     else -> EmptyTabContent()
                 }
             }
         }
+
+        dialog(
+            route = MainNavRoutes.CardDetailPattern,
+            arguments = listOf(
+                navArgument(MainNavRoutes.CardIdArg) { type = NavType.LongType },
+            ),
+        ) { backStackEntry ->
+            CardDetailBottomSheet(
+                cardId = backStackEntry.cardIdArg(),
+                storeName = storeName,
+                onDismiss = { navController.popBackStack() },
+            )
+        }
     }
-}
-
-@Composable
-private fun MainCardDetailOverlay(cardId: Long?, storeName: String, onDismiss: () -> Unit) {
-    if (cardId == null) return
-
-    CardDetailBottomSheet(
-        cardId = cardId,
-        storeName = storeName,
-        onDismiss = onDismiss,
-    )
 }
 
 /**
