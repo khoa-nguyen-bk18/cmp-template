@@ -1,20 +1,28 @@
 ## For Interviewers
 
-This project demonstrates my experience with:
+**Primary focus:** a Kotlin Multiplatform template that sets up an environment where **AI coding agents** can generate features that stay within **Clean Architecture**, pass **automated quality gates**, and meet **security expectations** — while keeping **codebase complexity** visible and bounded (Konsist layer rules, Detekt, coverage, SonarQube, CodeGraph).
 
-- Kotlin Multiplatform architecture for Android and iOS
-- Clean Architecture with enforced module boundaries
-- Shared Compose Multiplatform UI and shared ViewModels
-- Ktor networking, Room KMP persistence, and Koin DI
-- Flow-based UDF state management
-- Architecture tests, Detekt, Spotless, Security Lint, Kover, SonarQube
-- Android benchmark and baseline profile setup
+**What is in place today:**
 
-Recommended review path:
-1. Start with `domain/` to see the pure business layer.
-2. Review `data/` for Room, Ktor, repository implementations, and platform-specific code.
-3. Review `shared/` for Compose Multiplatform UI and ViewModels.
-4. Run `./gradlew qualityCheck` to verify formatting, lint, tests, and architecture rules.
+- Kotlin Multiplatform (Android + iOS) with enforced module boundaries (`domain` ← `data` ← app DI; `shared` → `domain` only)
+- Shared Compose Multiplatform UI, ViewModels, and Flow-based UDF
+- Ktor networking, Room KMP persistence, and Koin DI wired at app entry points
+- Quality automation: Spotless, Detekt, Android Security Lint, Konsist architecture tests, Kover, optional SonarQube, baseline profiles / macrobenchmarks
+- **Security on commit:** local [pre-commit](https://pre-commit.com/) hooks — **Gitleaks** scans staged content and **blocks** commits on secrets; **Snyk** warns on high+ dependency issues (non-blocking). Setup: [Local commit hooks](#local-commit-hooks-pre-commit). CI-style verification: `./gradlew qualityCheck`.
+
+**Still in progress** (template is actively evolving; not every roadmap item ships yet):
+
+- Deep links and navigation edge cases
+- Environment configuration for **dev / staging / prod** (build flavors, secrets via env / gitignored local files — not committed)
+- Native UI bridges (`expect`/`actual` or platform views where Compose Multiplatform is not enough)
+- Paging, guardrail scripts for agent loops, and other items in [Roadmap](#roadmap)
+
+**Recommended review path:**
+
+1. Read [AGENTS.md](AGENTS.md) and [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) — how agents and humans are expected to add features.
+2. Start with `domain/` (pure business layer), then `data/` (Room, Ktor, platform code), then `shared/` (Compose + ViewModels).
+3. Run `./gradlew qualityCheck` for formatting, lint, tests, and architecture rules.
+4. Optionally install pre-commit (`./scripts/setup-pre-commit.sh --baseline`) and skim [`.pre-commit-config.yaml`](.pre-commit-config.yaml) for commit-time security.
 
 # Screenshots
 
