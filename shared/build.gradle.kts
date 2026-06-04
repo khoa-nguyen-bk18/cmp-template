@@ -38,6 +38,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
+            implementation(projects.data)
         }
         commonMain.dependencies {
             implementation(projects.domain)
@@ -56,6 +57,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.androidx.paging.common)
+            implementation(libs.androidx.paging.compose)
+            implementation("co.touchlab:kermit:2.1.0")
         }
         iosMain.dependencies {
             // iOS Koin bootstrap links :data at the app layer (see README).
@@ -65,6 +69,7 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.turbine)
+            implementation(libs.androidx.paging.testing)
         }
     }
 }

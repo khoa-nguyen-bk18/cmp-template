@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BrowseCardDto(
+    val id:Long,
     val name: String,
     val setName: String,
     val condition: String,
@@ -25,4 +26,14 @@ data class BrowseCardDto(
 )
 
 @Serializable
-data class BrowseCatalogResponseDto(val cards: List<BrowseCardDto>)
+data class BrowseCatalogPageDto(
+    val cards: List<BrowseCardDto>,
+    val pagination: BrowsePaginationDto,
+)
+
+@Serializable
+data class BrowsePaginationDto(
+    val page: Int,
+    val pageSize: Int,
+    val hasMore: Boolean,
+)

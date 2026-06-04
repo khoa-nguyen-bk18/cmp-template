@@ -4,6 +4,7 @@ import com.devindie.cmptemplate.data.source.local.browse.BrowseCardEntity
 import com.devindie.cmptemplate.data.network.dto.BrowseCardDto
 
 internal fun BrowseCardEntity.toDto(): BrowseCardDto = BrowseCardDto(
+    id = id,
     name = name,
     setName = setName,
     condition = condition,
@@ -25,6 +26,7 @@ internal fun BrowseCardEntity.toDto(): BrowseCardDto = BrowseCardDto(
 )
 
 internal fun BrowseCardDto.toEntity(): BrowseCardEntity = BrowseCardEntity(
+    id = id,
     name = name,
     setName = setName,
     condition = condition,

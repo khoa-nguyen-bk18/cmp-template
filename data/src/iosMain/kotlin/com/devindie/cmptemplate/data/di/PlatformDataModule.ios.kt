@@ -6,11 +6,10 @@ import com.devindie.cmptemplate.data.coroutines.IosDispatcherProvider
 import com.devindie.cmptemplate.data.local.browse.getBrowseDatabaseBuilder
 import com.devindie.cmptemplate.data.source.local.browse.BrowseCardLocalDataSource
 import com.devindie.cmptemplate.data.source.local.browse.BrowseCardLocalDataSourceImpl
-import com.devindie.cmptemplate.data.source.local.browse.BrowseCardRepositoryImpl
+import com.devindie.cmptemplate.data.source.local.browse.BrowseCardPagerFactoryImpl
 import com.devindie.cmptemplate.data.source.local.browse.BrowseDatabase
 import com.devindie.cmptemplate.data.source.local.browse.CardDetailRepositoryImpl
 import com.devindie.cmptemplate.data.source.local.browse.getBrowseDatabase
-import com.devindie.cmptemplate.domain.repository.BrowseCardRepository
 import com.devindie.cmptemplate.domain.repository.CardDetailRepository
 import com.devindie.cmptemplate.domain.repository.UserRepository
 import eu.anifantakis.lib.ksafe.KSafe
@@ -28,14 +27,14 @@ actual fun platformDataModule(): Module = module {
         )
     }
     single { get<BrowseDatabase>().browseCardDao() }
+    single { get<BrowseDatabase>().browseRemoteKeyDao() }
     single<BrowseCardLocalDataSource> {
         BrowseCardLocalDataSourceImpl(dao = get())
     }
-    single<BrowseCardRepository> {
-        BrowseCardRepositoryImpl(
-            localDataSource = get(),
+    single {
+        BrowseCardPagerFactoryImpl(
+            database = get(),
             remoteDataSource = get(),
-            dispatchers = get(),
         )
     }
     single<CardDetailRepository> {

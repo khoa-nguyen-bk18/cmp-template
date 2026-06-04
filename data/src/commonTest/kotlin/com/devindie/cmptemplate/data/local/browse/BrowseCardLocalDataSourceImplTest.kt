@@ -1,6 +1,7 @@
 package com.devindie.cmptemplate.data.local.browse
 
 import com.devindie.cmptemplate.data.local.browse.fake.FakeBrowseCardDao
+import com.devindie.cmptemplate.data.source.local.browse.BrowseCardLocalDataSourceImpl
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -11,7 +12,7 @@ import kotlin.test.assertNull
 class BrowseCardLocalDataSourceImplTest {
     private val dao = FakeBrowseCardDao()
     private val dataSource =
-        _root_ide_package_.com.devindie.cmptemplate.data.source.local.browse.BrowseCardLocalDataSourceImpl(
+        BrowseCardLocalDataSourceImpl(
             dao
         )
 

@@ -1,7 +1,5 @@
 package com.devindie.cmptemplate.di
 
-import com.devindie.cmptemplate.domain.usecase.browse.EnsureBrowseCatalogSeededUseCase
-import com.devindie.cmptemplate.domain.usecase.browse.ObserveBrowseCardsUseCase
 import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase
 import com.devindie.cmptemplate.domain.usecase.user.ClearUserSessionUseCase
 import com.devindie.cmptemplate.domain.usecase.user.GetUserSessionUseCase
@@ -16,8 +14,6 @@ import org.koin.dsl.module
 
 val appDomainModule =
     module {
-        factoryOf(::ObserveBrowseCardsUseCase)
-        factoryOf(::EnsureBrowseCatalogSeededUseCase)
         factoryOf(::GetCardDetailUseCase)
         factoryOf(::GetUserSessionUseCase)
         factoryOf(::SaveUserSessionUseCase)

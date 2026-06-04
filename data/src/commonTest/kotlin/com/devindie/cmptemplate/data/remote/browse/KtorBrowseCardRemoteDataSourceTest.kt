@@ -3,6 +3,7 @@ package com.devindie.cmptemplate.data.remote.browse
 import com.devindie.cmptemplate.data.network.ApiPaths
 import com.devindie.cmptemplate.data.network.ApiResult
 import com.devindie.cmptemplate.data.network.NetworkConfig
+import com.devindie.cmptemplate.data.source.remote.browse.KtorBrowseCardRemoteDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -19,13 +20,15 @@ import kotlin.test.assertTrue
 
 class KtorBrowseCardRemoteDataSourceTest {
     @Test
-    fun fetchCatalog_parsesBrowseResponse() = runTest {
+    fun fetchCatalogPage_parsesPaginatedResponse() = runTest {
         val engine =
             MockEngine { request ->
                 assertTrue(request.url.encodedPath.endsWith(ApiPaths.BROWSE_CARDS))
+                assertEquals("1", request.url.parameters["page"])
+                assertEquals("20", request.url.parameters["page_size"])
                 respond(
                     content =
-                    """
+                        """
                         {
                           "cards": [
                             {
@@ -36,9 +39,14 @@ class KtorBrowseCardRemoteDataSourceTest {
                               "quantity": 1,
                               "category": "Pokemon"
                             }
-                          ]
+                          ],
+                          "pagination": {
+                            "page": 1,
+                            "pageSize": 20,
+                            "hasMore": false
+                          }
                         }
-                    """.trimIndent(),
+                        """.trimIndent(),
                     status = HttpStatusCode.OK,
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
@@ -50,15 +58,16 @@ class KtorBrowseCardRemoteDataSourceTest {
                 }
             }
         val dataSource =
-            _root_ide_package_.com.devindie.cmptemplate.data.source.remote.browse.KtorBrowseCardRemoteDataSource(
+            KtorBrowseCardRemoteDataSource(
                 httpClient = client,
                 networkConfig = NetworkConfig(baseUrl = "https://api.test"),
             )
 
-        val result = dataSource.fetchCatalog()
+        val result = dataSource.fetchCatalogPage(page = 1, pageSize = 20)
 
         assertTrue(result is ApiResult.Success)
-        assertEquals(1, (result as ApiResult.Success).data.size)
-        assertEquals("Pikachu", result.data.first().name)
+        assertEquals(1, result.data.cards.size)
+        assertEquals("Pikachu", result.data.cards.first().name)
+        assertEquals(false, result.data.pagination.hasMore)
     }
 }

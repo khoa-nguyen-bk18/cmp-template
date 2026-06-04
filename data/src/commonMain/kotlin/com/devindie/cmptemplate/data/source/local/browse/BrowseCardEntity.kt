@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "browse_card")
 data class BrowseCardEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey val id: Long = 0,
     val name: String,
-    val setName: String,
+    val setName: String,    
     val condition: String,
     val priceCents: Long,
     val quantity: Int,

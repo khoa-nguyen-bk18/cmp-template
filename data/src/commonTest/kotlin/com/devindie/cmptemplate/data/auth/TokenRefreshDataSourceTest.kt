@@ -44,7 +44,7 @@ class TokenRefreshDataSourceTest {
         val result = dataSource.refresh("old-refresh")
 
         assertTrue(result is ApiResult.Success)
-        assertEquals("new-access", (result as ApiResult.Success).data.accessToken)
+        assertEquals("new-access", result.data.accessToken)
         assertEquals("new-refresh", result.data.refreshToken)
     }
 }

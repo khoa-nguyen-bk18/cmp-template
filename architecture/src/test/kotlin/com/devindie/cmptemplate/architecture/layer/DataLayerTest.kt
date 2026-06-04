@@ -15,6 +15,7 @@ class DataLayerTest {
             listOf(
                 "androidx.room.",
                 "androidx.sqlite.",
+                "androidx.paging.",
             )
         Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
             .files
@@ -44,16 +45,11 @@ class DataLayerTest {
     }
 
     @Test
-    fun `BrowseCardRepositoryImpl implements BrowseCardRepository`() {
+    fun `BrowseCardPagerFactoryImpl lives in data layer`() {
         Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
             .classes()
-            .filter { it.name == "BrowseCardRepositoryImpl" }
-            .assertTrue {
-                it.hasParentWithName(
-                    "BrowseCardRepository",
-                    indirectParents = true,
-                )
-            }
+            .filter { it.name == "BrowseCardPagerFactoryImpl" }
+            .assertTrue { it.resideInPackage("com.devindie.cmptemplate.data..") }
     }
 
     @Test

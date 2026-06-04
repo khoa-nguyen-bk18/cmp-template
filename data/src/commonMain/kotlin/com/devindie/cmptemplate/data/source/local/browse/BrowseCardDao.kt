@@ -1,5 +1,6 @@
 package com.devindie.cmptemplate.data.source.local.browse
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -26,10 +27,22 @@ interface BrowseCardDao {
             OR LOWER(name) LIKE '%' || LOWER(:query) || '%'
             OR LOWER(setName) LIKE '%' || LOWER(:query) || '%'
         )
-        ORDER BY name ASC
         """,
     )
     fun observeFiltered(query: String, category: String): Flow<List<BrowseCardEntity>>
+
+    @Query(
+        """
+        SELECT * FROM browse_card
+        WHERE (:category = 'All' OR category = :category)
+        AND (
+            :query = ''
+            OR LOWER(name) LIKE '%' || LOWER(:query) || '%'
+            OR LOWER(setName) LIKE '%' || LOWER(:query) || '%'
+        )
+        """,
+    )
+    fun pagingSource(query: String, category: String): PagingSource<Int, BrowseCardEntity>
 
     @Query("SELECT * FROM browse_card WHERE id = :cardId LIMIT 1")
     suspend fun getById(cardId: Long): BrowseCardEntity?

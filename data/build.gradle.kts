@@ -51,12 +51,15 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
             implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.room.paging)
+            implementation(libs.androidx.paging.common)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.ksafe)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.auth)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation("co.touchlab:kermit:2.1.0")
         }
         androidMain.dependencies {
             implementation(libs.androidx.documentfile)
@@ -71,6 +74,7 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.ktor.client.mock)
+            implementation(libs.androidx.paging.testing)
         }
     }
 }

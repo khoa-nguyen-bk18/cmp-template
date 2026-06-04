@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -23,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,10 +36,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard
 import com.devindie.cmptemplate.ui.theme.AppTheme
 import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
+import kotlinx.coroutines.flow.flowOf
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -49,9 +58,11 @@ fun BrowseScreen(
     viewModel: BrowseViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val pagedCards = viewModel.pagedCards.collectAsLazyPagingItems()
 
     BrowseScreen(
         state = state,
+        pagedCards = pagedCards,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onCategorySelected = viewModel::onCategorySelected,
         onCardClick = onCardClick,
@@ -65,6 +76,7 @@ fun BrowseScreen(
 @Composable
 fun BrowseScreen(
     state: BrowseScreenUiState,
+    pagedCards: LazyPagingItems<CollectibleCard>,
     onSearchQueryChange: (String) -> Unit,
     onCategorySelected: (BrowseCategory) -> Unit,
     onCardClick: (CollectibleCard) -> Unit,
@@ -74,6 +86,7 @@ fun BrowseScreen(
 
     BrowseScreenContent(
         state = state,
+        pagedCards = pagedCards,
         onSearchQueryChange = onSearchQueryChange,
         onCategorySelected = onCategorySelected,
         onCardClick = onCardClick,
@@ -90,6 +103,7 @@ fun BrowseScreen(
 @Composable
 private fun BrowseScreenContent(
     state: BrowseScreenUiState,
+    pagedCards: LazyPagingItems<CollectibleCard>,
     onSearchQueryChange: (String) -> Unit,
     onCategorySelected: (BrowseCategory) -> Unit,
     onCardClick: (CollectibleCard) -> Unit,
@@ -146,56 +160,118 @@ private fun BrowseScreenContent(
                 )
             }
         }
-        when {
-            state.errorMessage != null -> {
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = state.errorMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = colorScheme.error,
-                        textAlign = TextAlign.Center,
+        when (val refreshState = pagedCards.loadState.refresh) {
+            is LoadState.Loading -> {
+                if (pagedCards.itemCount == 0) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(color = colorScheme.primary)
+                    }
+                } else {
+                    BrowseCardList(
+                        pagedCards = pagedCards,
+                        onCardClick = onCardClick,
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
-
-            state.isLoading -> {
+            is LoadState.Error -> {
                 Box(
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     contentAlignment = Alignment.Center,
                 ) {
-                    CircularProgressIndicator(color = colorScheme.primary)
-                }
-            }
-
-            state.cards.isEmpty() -> {
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "No cards match your search",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(spacing.componentGap),
-                ) {
-                    items(state.cards, key = { it.id }) { card ->
-                        BrowseCardRow(
-                            card = card,
-                            onClick = { onCardClick(card) },
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(spacing.spaceSm),
+                    ) {
+                        Text(
+                            text = refreshState.error.message ?: "Unable to load catalog",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = colorScheme.error,
+                            textAlign = TextAlign.Center,
                         )
+                        Button(onClick = { pagedCards.refresh() }) {
+                            Text("Retry")
+                        }
                     }
                 }
             }
+            is LoadState.NotLoading -> {
+                if (pagedCards.itemCount == 0) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "No cards match your search",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = colorScheme.onSurfaceVariant,
+                        )
+                    }
+                } else {
+                    BrowseCardList(
+                        pagedCards = pagedCards,
+                        onCardClick = onCardClick,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BrowseCardList(
+    pagedCards: LazyPagingItems<CollectibleCard>,
+    onCardClick: (CollectibleCard) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val spacing = LocalAppSpacing.current
+    val colorScheme = MaterialTheme.colorScheme
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(spacing.componentGap),
+    ) {
+        item(key = "Total count"){
+            Text("Total count: ${pagedCards.itemCount}")
+        }
+        items(
+            count = pagedCards.itemCount,
+            key = pagedCards.itemKey { it.id },
+        ) { index ->
+            pagedCards[index]?.let { card ->
+                BrowseCardRow(
+                    card = card,
+                    onClick = { onCardClick(card) },
+                )
+            }
+        }
+        when (pagedCards.loadState.append) {
+            is LoadState.Loading -> {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(spacing.spaceSm),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(color = colorScheme.primary)
+                    }
+                }
+            }
+            is LoadState.Error -> {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(spacing.spaceSm),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Button(onClick = { pagedCards.retry() }) {
+                            Text("Retry")
+                        }
+                    }
+                }
+            }
+            else -> Unit
         }
     }
 }
@@ -203,23 +279,25 @@ private fun BrowseScreenContent(
 @Preview
 @Composable
 private fun BrowseScreenPreview() {
+    val previewCards =
+        listOf(
+            CollectibleCard(
+                id = 1,
+                name = "Charizard ex",
+                setName = "Obsidian Flames",
+                condition = "NM",
+                priceDisplay = "$189.99",
+                quantity = 2,
+                category = BrowseCategory.Pokemon,
+            ),
+        )
+    val lazyPagingItems =
+        flowOf(PagingData.from(previewCards)).collectAsLazyPagingItems()
+
     AppTheme {
         BrowseScreen(
-            state = BrowseScreenUiState(
-                searchQuery = "",
-                cards = listOf(
-                    CollectibleCard(
-                        id = 1,
-                        name = "Charizard ex",
-                        setName = "Obsidian Flames",
-                        condition = "NM",
-                        priceDisplay = "$189.99",
-                        quantity = 2,
-                        category = BrowseCategory.Pokemon,
-                    ),
-                ),
-                isLoading = false,
-            ),
+            state = BrowseScreenUiState(),
+            pagedCards = lazyPagingItems,
             onSearchQueryChange = {},
             onCategorySelected = {},
             onCardClick = {},

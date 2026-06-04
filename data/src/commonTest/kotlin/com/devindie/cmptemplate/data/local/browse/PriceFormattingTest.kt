@@ -1,5 +1,7 @@
 package com.devindie.cmptemplate.data.local.browse
 
+import com.devindie.cmptemplate.data.source.local.browse.formatPriceCents
+import com.devindie.cmptemplate.data.source.local.browse.scaledPriceCents
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -8,7 +10,7 @@ class PriceFormattingTest {
     @Test
     fun formatPriceCents_wholeDollars_omitsCents() {
         assertEquals("$5",
-            _root_ide_package_.com.devindie.cmptemplate.data.source.local.browse.formatPriceCents(
+            formatPriceCents(
                 500
             )
         )
@@ -17,12 +19,12 @@ class PriceFormattingTest {
     @Test
     fun formatPriceCents_withCents_padsToTwoDigits() {
         assertEquals("$5.62",
-            _root_ide_package_.com.devindie.cmptemplate.data.source.local.browse.formatPriceCents(
+            formatPriceCents(
                 562
             )
         )
         assertEquals("$5.05",
-            _root_ide_package_.com.devindie.cmptemplate.data.source.local.browse.formatPriceCents(
+            formatPriceCents(
                 505
             )
         )
@@ -31,13 +33,13 @@ class PriceFormattingTest {
     @Test
     fun scaledPriceCents_appliesRatio() {
         assertEquals(480L,
-            _root_ide_package_.com.devindie.cmptemplate.data.source.local.browse.scaledPriceCents(
+            scaledPriceCents(
                 baseCents = 500,
                 numerator = 96
             )
         )
         assertEquals(250L,
-            _root_ide_package_.com.devindie.cmptemplate.data.source.local.browse.scaledPriceCents(
+            scaledPriceCents(
                 baseCents = 500,
                 numerator = 50
             )
