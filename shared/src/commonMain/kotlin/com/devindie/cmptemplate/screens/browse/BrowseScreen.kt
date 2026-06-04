@@ -10,22 +10,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -160,11 +161,38 @@ private fun BrowseScreenContent(
                 )
             }
         }
+        BrowsePagedContent(
+            pagedCards = pagedCards,
+            onCardClick = onCardClick,
+            modifier = Modifier.fillMaxWidth().weight(1f),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BrowsePagedContent(
+    pagedCards: LazyPagingItems<CollectibleCard>,
+    onCardClick: (CollectibleCard) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val spacing = LocalAppSpacing.current
+    val colorScheme = MaterialTheme.colorScheme
+    val pullState = rememberPullToRefreshState()
+    val isRefreshing =
+        pagedCards.loadState.refresh is LoadState.Loading && pagedCards.itemCount > 0
+
+    PullToRefreshBox(
+        modifier = modifier.testTag("browse_pull_refresh"),
+        state = pullState,
+        isRefreshing = isRefreshing,
+        onRefresh = { pagedCards.refresh() },
+    ) {
         when (val refreshState = pagedCards.loadState.refresh) {
             is LoadState.Loading -> {
                 if (pagedCards.itemCount == 0) {
                     Box(
-                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator(color = colorScheme.primary)
@@ -173,13 +201,13 @@ private fun BrowseScreenContent(
                     BrowseCardList(
                         pagedCards = pagedCards,
                         onCardClick = onCardClick,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
             }
             is LoadState.Error -> {
                 Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
                     Column(
@@ -201,7 +229,7 @@ private fun BrowseScreenContent(
             is LoadState.NotLoading -> {
                 if (pagedCards.itemCount == 0) {
                     Box(
-                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -214,7 +242,7 @@ private fun BrowseScreenContent(
                     BrowseCardList(
                         pagedCards = pagedCards,
                         onCardClick = onCardClick,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
             }

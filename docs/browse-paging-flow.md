@@ -67,13 +67,33 @@ sequenceDiagram
     Med->>DB: upsert + update remote_keys
 ```
 
+## Pull-to-refresh (manual sync)
+
+```mermaid
+sequenceDiagram
+    participant UI as BrowseScreen
+    participant LPI as LazyPagingItems
+    participant Pager as Pager
+    participant Med as BrowseCardRemoteMediator
+    participant API as BrowseCardRemoteDataSource
+
+    UI->>LPI: pull gesture / onRefresh
+    LPI->>Pager: refresh()
+    Pager->>Med: load REFRESH
+    Med->>API: fetchCatalogPage page=1
+    Med->>Med: clear remote_keys, upsert Room
+    Pager-->>UI: loadState.refresh Loading then NotLoading
+```
+
+The list region uses Material3 `PullToRefreshBox` in [`BrowseScreen.kt`](../shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/browse/BrowseScreen.kt). Search and category chips stay fixed above the list. `isRefreshing` is true only when `loadState.refresh` is loading **and** `itemCount > 0`, so the first open still shows a centered spinner instead of the pull indicator. No ViewModel API — refresh stays at the `LazyPagingItems` boundary per Paging 3 conventions.
+
 ## Layer responsibilities
 
 | Layer | Symbol | Role |
 |-------|--------|------|
 | **shared** | `BrowseCardPagerFactory` | Presentation port (`Flow<PagingData<CollectibleCard>>`); no `:data` imports in ViewModels |
 | **shared** | `BrowseViewModel` | Debounced query + category → `flatMapLatest` pager; `cachedIn(viewModelScope)` |
-| **shared** | `BrowseScreen` | `collectAsLazyPagingItems()`; refresh/append load states |
+| **shared** | `BrowseScreen` | `collectAsLazyPagingItems()`; refresh/append load states; pull-to-refresh calls `refresh()` → mediator REFRESH |
 | **data** | `BrowseCardPagerFactoryImpl` | Builds `Pager` with config, mediator, filtered Room source |
 | **data** | `BrowseCardRemoteMediator` | REFRESH/APPEND sync; offline seed when REFRESH fails on empty DB |
 | **data** | `BrowseCardDao.pagingSource` | SQL filter for search/category (local-only filtering) |
