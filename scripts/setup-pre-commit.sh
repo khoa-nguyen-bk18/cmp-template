@@ -19,7 +19,7 @@ Installs git pre-commit hooks (Gitleaks secret scan + Snyk Gradle dependency sca
 Options:
   --install-deps       Install pre-commit and snyk via Homebrew when missing (macOS)
   --baseline           Run `pre-commit run --all-files` after setup (may take minutes)
-  --skip-snyk-check    Skip Snyk authentication check (hooks will still fail until authed)
+  --skip-snyk-check    Skip Snyk authentication check (hook skips with a warning until authed)
   -h, --help           Show this help
 
 Examples:

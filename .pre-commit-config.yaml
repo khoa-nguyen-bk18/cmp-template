@@ -11,9 +11,11 @@ repos:
 
   - repo: local
     hooks:
+      # Must use snyk-pre-commit.sh (always exit 0). Do not call `snyk test` directly here. This is a workaround to avoid blocking the commit.
       - id: snyk-test
         name: Snyk Open Source (Gradle, warn only)
         entry: bash scripts/snyk-pre-commit.sh
         language: system
         pass_filenames: false
         always_run: true
+        verbose: true
