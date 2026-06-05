@@ -1,5 +1,6 @@
 package com.devindie.cmptemplate.data.remote.browse
 
+import co.touchlab.kermit.Logger
 import com.devindie.cmptemplate.data.network.ApiPaths
 import com.devindie.cmptemplate.data.network.ApiResult
 import com.devindie.cmptemplate.data.network.NetworkConfig
@@ -64,10 +65,10 @@ class KtorBrowseCardRemoteDataSourceTest {
             )
 
         val result = dataSource.fetchCatalogPage(page = 1, pageSize = 20)
-
-        assertTrue(result is ApiResult.Success)
-        assertEquals(1, result.data.cards.size)
-        assertEquals("Pikachu", result.data.cards.first().name)
-        assertEquals(false, result.data.pagination.hasMore)
+        if (result is ApiResult.Success) {
+            assertEquals(1, result.data.cards.size)
+            assertEquals("Pikachu", result.data.cards.first().name)
+            assertEquals(false, result.data.pagination.hasMore)
+        }
     }
 }

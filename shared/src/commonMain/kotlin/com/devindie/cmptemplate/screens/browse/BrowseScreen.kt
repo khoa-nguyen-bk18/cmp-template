@@ -1,5 +1,9 @@
 package com.devindie.cmptemplate.screens.browse
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,16 +27,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -47,7 +58,17 @@ import com.devindie.cmptemplate.domain.model.browse.CollectibleCard
 import com.devindie.cmptemplate.ui.theme.AppTheme
 import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+
+/** Lazy list index 0 is the total-count header; card rows start at 1. */
+private const val BROWSE_LIST_HEADER_ITEM_COUNT = 1
+
+/** Show scroll-to-top after this many card rows have scrolled off (header excluded). */
+private const val SCROLL_TO_TOP_AFTER_CARD_ROWS = 2
+
+private const val SCROLL_TO_TOP_FIRST_VISIBLE_INDEX_THRESHOLD =
+    BROWSE_LIST_HEADER_ITEM_COUNT + SCROLL_TO_TOP_AFTER_CARD_ROWS
 
 /**
  * State-holder entry for the Stitch "Browse" / Product Listing tab (project 17128375841121903851).
@@ -258,48 +279,93 @@ private fun BrowseCardList(
 ) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(spacing.componentGap),
-    ) {
-        item(key = "Total count"){
-            Text("Total count: ${pagedCards.itemCount}")
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val showScrollToTop by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex >= SCROLL_TO_TOP_FIRST_VISIBLE_INDEX_THRESHOLD
         }
-        items(
-            count = pagedCards.itemCount,
-            key = pagedCards.itemKey { it.id },
-        ) { index ->
-            pagedCards[index]?.let { card ->
-                BrowseCardRow(
-                    card = card,
-                    onClick = { onCardClick(card) },
-                )
+    }
+
+    Box(modifier = modifier) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(spacing.componentGap),
+        ) {
+            item(key = "Total count") {
+                Text("Total count: ${pagedCards.itemCount}")
             }
-        }
-        when (pagedCards.loadState.append) {
-            is LoadState.Loading -> {
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(spacing.spaceSm),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator(color = colorScheme.primary)
-                    }
+            items(
+                count = pagedCards.itemCount,
+                key = pagedCards.itemKey { it.id },
+            ) { index ->
+                pagedCards[index]?.let { card ->
+                    BrowseCardRow(
+                        card = card,
+                        onClick = { onCardClick(card) },
+                    )
                 }
             }
-            is LoadState.Error -> {
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(spacing.spaceSm),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Button(onClick = { pagedCards.retry() }) {
-                            Text("Retry")
+            when (pagedCards.loadState.append) {
+                is LoadState.Loading -> {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(spacing.spaceSm),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(color = colorScheme.primary)
                         }
                     }
                 }
+                is LoadState.Error -> {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(spacing.spaceSm),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Button(onClick = { pagedCards.retry() }) {
+                                Text("Retry")
+                            }
+                        }
+                    }
+                }
+                else -> Unit
             }
-            else -> Unit
+        }
+        AnimatedVisibility(
+            visible = showScrollToTop && pagedCards.itemCount > 0,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(spacing.spaceMd),
+            enter = scaleIn(
+                animationSpec = tween(durationMillis = 200),
+                initialScale = 0f,
+                transformOrigin = TransformOrigin(1f, 1f),
+            ),
+            exit = scaleOut(
+                animationSpec = tween(durationMillis = 150),
+                targetScale = 0f,
+                transformOrigin = TransformOrigin(1f, 1f),
+            ),
+        ) {
+            SmallFloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                },
+                modifier = Modifier
+                    .testTag("browse_scroll_to_top")
+                    .semantics { contentDescription = "Scroll to top" },
+                containerColor = colorScheme.primaryContainer,
+                contentColor = colorScheme.onPrimaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowUp,
+                    contentDescription = null,
+                )
+            }
         }
     }
 }

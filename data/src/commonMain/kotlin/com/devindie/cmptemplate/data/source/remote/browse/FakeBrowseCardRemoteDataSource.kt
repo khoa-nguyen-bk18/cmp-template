@@ -1,6 +1,5 @@
 package com.devindie.cmptemplate.data.source.remote.browse
 
-import co.touchlab.kermit.Logger
 import com.devindie.cmptemplate.data.network.ApiResult
 import com.devindie.cmptemplate.data.network.dto.BrowseCatalogPageDto
 import com.devindie.cmptemplate.data.network.dto.BrowsePaginationDto

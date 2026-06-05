@@ -27,7 +27,6 @@ class BrowseCardRemoteMediator(
     private val remoteKeyDao = database.browseRemoteKeyDao()
 
     override suspend fun initialize(): InitializeAction {
-        Logger.e("cardDao.count(): ${cardDao.count()}")
         return if (cardDao.count() > 0) {
             InitializeAction.SKIP_INITIAL_REFRESH
         } else {
@@ -56,7 +55,6 @@ class BrowseCardRemoteMediator(
                     database.useWriterConnection { transactor ->
                         transactor.immediateTransaction {
                             if (loadType == LoadType.REFRESH) {
-                                // cardDao.deleteAll()
                                 remoteKeyDao.deleteAll()
                             }
                             cardDao.insertAll(response.cards.map { dto -> dto.toEntity() })
