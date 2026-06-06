@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.kover)
+    alias(libs.plugins.stability.analyzer)
 }
 
 kotlin {
@@ -83,6 +84,18 @@ kotlin {
             implementation(libs.androidx.test.ext.junit)
             implementation(libs.robolectric)
         }
+    }
+}
+
+composeCompiler {
+    stabilityConfigurationFiles.add(layout.projectDirectory.file("stability_config.conf"))
+}
+
+composeStabilityAnalyzer {
+    stabilityValidation {
+        enabled.set(true)
+        outputDir.set(layout.projectDirectory.dir("stability"))
+        stabilityConfigurationFiles.add(layout.projectDirectory.file("stability_config.conf"))
     }
 }
 

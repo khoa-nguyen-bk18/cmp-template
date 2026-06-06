@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.androidx.room) apply false
+    alias(libs.plugins.stability.analyzer) apply false
 }
 
 dependencies {
