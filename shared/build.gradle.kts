@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.kover)
 }
 
@@ -52,6 +53,7 @@ kotlin {
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodel)
@@ -71,6 +73,15 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.turbine)
             implementation(libs.androidx.paging.testing)
+        }
+        getByName("androidHostTest").dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.navigation.compose)
+            implementation(libs.navigation.testing)
+            implementation(libs.compose.ui.test.junit4)
+            implementation(libs.androidx.test.core)
+            implementation(libs.androidx.test.ext.junit)
+            implementation(libs.robolectric)
         }
     }
 }

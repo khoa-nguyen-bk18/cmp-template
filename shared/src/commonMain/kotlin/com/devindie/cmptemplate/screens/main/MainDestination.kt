@@ -10,34 +10,35 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingBasket
 import androidx.compose.material.icons.outlined.Style
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.devindie.cmptemplate.navigation.MainRoute
 
 /** Bottom-nav destinations from Stitch screen "Empty Nav Screen" (project 17128375841121903851). */
 enum class MainDestination(
-    val route: String,
+    val route: MainRoute,
     val label: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
 ) {
     Browse(
-        route = "browse",
+        route = MainRoute.Browse,
         label = "Browse",
         selectedIcon = Icons.Filled.Search,
         unselectedIcon = Icons.Outlined.Search,
     ),
     Cart(
-        route = "cart",
+        route = MainRoute.Cart,
         label = "Cart",
         selectedIcon = Icons.Filled.ShoppingBasket,
         unselectedIcon = Icons.Outlined.ShoppingBasket,
     ),
     Collection(
-        route = "collection",
+        route = MainRoute.Collection,
         label = "Collection",
         selectedIcon = Icons.Filled.Style,
         unselectedIcon = Icons.Outlined.Style,
     ),
     Profile(
-        route = "profile",
+        route = MainRoute.Profile,
         label = "Profile",
         selectedIcon = Icons.Filled.AccountCircle,
         unselectedIcon = Icons.Outlined.AccountCircle,
@@ -46,7 +47,5 @@ enum class MainDestination(
 
     companion object {
         val Start = Browse
-
-        fun fromRoute(route: String?): MainDestination = entries.find { it.route == route } ?: Start
     }
 }

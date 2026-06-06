@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
 
 @Composable
-fun ProCollectorBottomBar(
+fun BottomNavigationBar(
     selectedDestination: MainDestination,
     onDestinationSelected: (MainDestination) -> Unit,
     modifier: Modifier = Modifier,
