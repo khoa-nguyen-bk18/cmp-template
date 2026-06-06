@@ -14,19 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
-import com.devindie.cmptemplate.navigation.MainRoute
+import com.devindie.cmptemplate.navigation.MainTabNavHost
 import com.devindie.cmptemplate.navigation.navigateToMainTab
 import com.devindie.cmptemplate.navigation.selectedMainDestination
-import com.devindie.cmptemplate.screens.browse.BrowseScreen
-import com.devindie.cmptemplate.screens.carddetail.CardDetailBottomSheet
+import com.devindie.cmptemplate.screens.carddetail.navigateToCardDetail
 import com.devindie.cmptemplate.ui.insets.appNavigationBarsPadding
 import com.devindie.cmptemplate.ui.insets.appStatusBarsPadding
 import com.devindie.cmptemplate.ui.theme.AppTheme
@@ -64,57 +58,15 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = koinVie
                 navController = navController,
                 innerPadding = innerPadding,
                 storeName = state.storeName,
-                onNavigateToCardDetail = { cardId ->
-                    navController.navigate(MainRoute.CardDetail(cardId = cardId))
-                },
+                onNavigateToCardDetail = navController::navigateToCardDetail,
                 onDismissCardDetail = navController::popBackStack,
             )
         },
     )
 }
 
-@Composable
-fun MainTabNavHost(
-    navController: NavHostController,
-    innerPadding: PaddingValues,
-    storeName: String,
-    onNavigateToCardDetail: (Long) -> Unit,
-    onDismissCardDetail: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    NavHost(
-        navController = navController,
-        startDestination = MainRoute.Browse,
-        modifier = modifier.fillMaxSize().padding(innerPadding).consumeWindowInsets(innerPadding),
-    ) {
-        composable<MainRoute.Browse> {
-            BrowseScreen(
-                modifier = Modifier.fillMaxSize(),
-                onCardClick = { card -> onNavigateToCardDetail(card.id) },
-            )
-        }
-        composable<MainRoute.Cart> {
-            EmptyTabContent(modifier = Modifier.fillMaxSize())
-        }
-        composable<MainRoute.Collection> {
-            EmptyTabContent(modifier = Modifier.fillMaxSize())
-        }
-        composable<MainRoute.Profile> {
-            EmptyTabContent(modifier = Modifier.fillMaxSize())
-        }
-        dialog<MainRoute.CardDetail> { backStackEntry ->
-            val route = backStackEntry.toRoute<MainRoute.CardDetail>()
-            CardDetailBottomSheet(
-                cardId = route.cardId,
-                storeName = storeName,
-                onDismiss = onDismissCardDetail,
-            )
-        }
-    }
-}
-
 /**
- * Previewable UI for the empty navigation shell — no [NavHostController], ViewModel, or DI.
+ * Previewable UI for the empty navigation shell — no [androidx.navigation.NavHostController], ViewModel, or DI.
  */
 @Composable
 fun MainScreen(

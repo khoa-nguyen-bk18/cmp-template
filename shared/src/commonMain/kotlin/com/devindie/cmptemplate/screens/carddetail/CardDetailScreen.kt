@@ -65,7 +65,7 @@ import org.koin.core.parameter.parametersOf
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardDetailBottomSheet(
+internal fun CardDetailBottomSheet(
     cardId: Long,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,

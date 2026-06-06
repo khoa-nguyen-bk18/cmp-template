@@ -5,10 +5,10 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.DialogNavigator
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
+import com.devindie.cmptemplate.screens.carddetail.CardDetailRoute
+import com.devindie.cmptemplate.screens.carddetail.navigateToCardDetail
 import com.devindie.cmptemplate.screens.main.MainDestination
 import org.junit.Rule
 import org.junit.Test
@@ -31,22 +31,26 @@ class MainNavigationHostTest {
         return navController
     }
 
-    @Test
-    fun navigateToCart_updatesSelectedDestination() {
-        val navController = createNavController()
-
+    private fun setMainTabNavHost(navController: TestNavHostController) {
         composeRule.setContent {
             NavHost(
                 navController = navController,
                 startDestination = MainRoute.Browse,
             ) {
-                composable<MainRoute.Browse> { }
-                composable<MainRoute.Cart> { }
-                composable<MainRoute.Collection> { }
-                composable<MainRoute.Profile> { }
-                dialog<MainRoute.CardDetail> { }
+                mainTabNavGraph(
+                    storeName = "Test Store",
+                    onNavigateToCardDetail = navController::navigateToCardDetail,
+                    onDismissCardDetail = navController::popBackStack,
+                    stubContent = true,
+                )
             }
         }
+    }
+
+    @Test
+    fun navigateToCart_updatesSelectedDestination() {
+        val navController = createNavController()
+        setMainTabNavHost(navController)
 
         composeRule.runOnUiThread {
             navController.navigateToMainTab(MainDestination.Cart)
@@ -61,22 +65,10 @@ class MainNavigationHostTest {
     @Test
     fun cardDetailOverlay_keepsBrowseSelected() {
         val navController = createNavController()
-
-        composeRule.setContent {
-            NavHost(
-                navController = navController,
-                startDestination = MainRoute.Browse,
-            ) {
-                composable<MainRoute.Browse> { }
-                composable<MainRoute.Cart> { }
-                composable<MainRoute.Collection> { }
-                composable<MainRoute.Profile> { }
-                dialog<MainRoute.CardDetail> { }
-            }
-        }
+        setMainTabNavHost(navController)
 
         composeRule.runOnUiThread {
-            navController.navigate(MainRoute.CardDetail(cardId = 42L))
+            navController.navigateToCardDetail(cardId = 42L)
         }
         composeRule.waitForIdle()
 
@@ -88,29 +80,20 @@ class MainNavigationHostTest {
     @Test
     fun switchingTabFromCardDetail_popsOverlay() {
         val navController = createNavController()
-
-        composeRule.setContent {
-            NavHost(
-                navController = navController,
-                startDestination = MainRoute.Browse,
-            ) {
-                composable<MainRoute.Browse> { }
-                composable<MainRoute.Cart> { }
-                composable<MainRoute.Collection> { }
-                composable<MainRoute.Profile> { }
-                dialog<MainRoute.CardDetail> { }
-            }
-        }
+        setMainTabNavHost(navController)
 
         composeRule.runOnUiThread {
-            navController.navigate(MainRoute.CardDetail(cardId = 7L))
+            navController.navigateToCardDetail(cardId = 7L)
             navController.navigateToMainTab(MainDestination.Cart)
         }
         composeRule.waitForIdle()
 
         composeRule.runOnUiThread {
             assertEquals(MainDestination.Cart, navController.selectedMainDestination())
-            assertFalse(navController.currentBackStackEntry?.destination?.hasRoute(MainRoute.CardDetail::class) == true)
+            assertFalse(
+                navController.currentBackStackEntry?.destination
+                    ?.hasRoute(CardDetailRoute::class) == true,
+            )
         }
     }
 }

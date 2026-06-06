@@ -74,7 +74,7 @@ private const val SCROLL_TO_TOP_FIRST_VISIBLE_INDEX_THRESHOLD =
  * State-holder entry for the Stitch "Browse" / Product Listing tab (project 17128375841121903851).
  */
 @Composable
-fun BrowseScreen(
+internal fun BrowseScreen(
     modifier: Modifier = Modifier,
     onCardClick: (CollectibleCard) -> Unit = {},
     viewModel: BrowseViewModel = koinViewModel(),

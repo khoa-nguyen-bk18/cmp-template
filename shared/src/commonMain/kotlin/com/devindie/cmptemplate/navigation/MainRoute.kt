@@ -16,7 +16,4 @@ sealed interface MainRoute {
 
     @Serializable
     data object Profile : MainRoute
-
-    @Serializable
-    data class CardDetail(val cardId: Long) : MainRoute
 }
