@@ -57,6 +57,8 @@ import com.devindie.cmptemplate.ui.insets.appStatusBarsPadding
 import com.devindie.cmptemplate.ui.theme.AppTheme
 import com.devindie.cmptemplate.ui.theme.AppThemeTypography
 import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -242,7 +244,7 @@ private fun CardDetailContent(
             modifier = Modifier.fillMaxWidth(),
         )
         ConditionSelectorSection(
-            pricing = card.conditionPricing,
+            pricing = card.conditionPricing.toImmutableList(),
             selectedCondition = selectedCondition,
             onConditionSelected = onConditionSelected,
             modifier = Modifier.fillMaxWidth(),
@@ -365,7 +367,7 @@ private fun CardIdentitySection(card: CardDetail, modifier: Modifier = Modifier)
 
 @Composable
 private fun ConditionSelectorSection(
-    pricing: List<ConditionPricing>,
+    pricing: ImmutableList<ConditionPricing>,
     selectedCondition: CardCondition,
     onConditionSelected: (CardCondition) -> Unit,
     modifier: Modifier = Modifier,

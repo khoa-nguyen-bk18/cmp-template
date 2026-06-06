@@ -34,6 +34,7 @@ robolectric = "4.14.1"
 androidx-test = "1.7.0"
 uiautomator = "2.3.0"
 paging = "3.5.0"
+kotlinxCollectionsImmutable = "0.4.0"
 ksafe = "2.1.0"
 
 [libraries]
@@ -72,6 +73,7 @@ konsist = { module = "com.lemonappdev:konsist", version.ref = "konsist" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }

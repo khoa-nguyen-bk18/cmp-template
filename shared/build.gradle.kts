@@ -44,6 +44,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.domain)
+            implementation(libs.kotlinx.collections.immutable)
             implementation(libs.compose.runtime)
             implementation(libs.compose.animation)
             implementation(libs.compose.foundation)
@@ -88,6 +89,7 @@ kotlin {
 }
 
 composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
     stabilityConfigurationFiles.add(layout.projectDirectory.file("stability_config.conf"))
 }
 
