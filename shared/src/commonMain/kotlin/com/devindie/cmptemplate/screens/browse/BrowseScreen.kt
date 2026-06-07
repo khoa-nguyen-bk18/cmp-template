@@ -334,9 +334,6 @@ private fun LazyListScope.browseCardItems(
     spacing: AppSpacing,
     primaryColor: Color,
 ) {
-    item(key = "total_count") {
-        Text("Total count: ${pagedCards.itemCount}")
-    }
     items(
         count = pagedCards.itemCount,
         key = pagedCards.itemKey { it.id },

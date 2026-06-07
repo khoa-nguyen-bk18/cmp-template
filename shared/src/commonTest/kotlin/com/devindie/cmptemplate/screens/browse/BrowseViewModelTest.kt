@@ -17,7 +17,7 @@ class BrowseViewModelTest {
     fun uiState_exposesSearchAndCategory() = runViewModelTest {
         val viewModel =
             BrowseViewModel(
-                pagerFactory = BrowseCardPagerFactory { _ -> flowOf(PagingData.empty()) },
+                pagerFactory = { _ -> flowOf(PagingData.empty()) },
             )
 
         viewModel.onSearchQueryChange("char")
