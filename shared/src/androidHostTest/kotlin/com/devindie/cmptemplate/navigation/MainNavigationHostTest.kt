@@ -41,7 +41,6 @@ class MainNavigationHostTest {
                     storeName = "Test Store",
                     onNavigateToCardDetail = navController::navigateToCardDetail,
                     onDismissCardDetail = navController::popBackStack,
-                    stubContent = true,
                 )
             }
         }

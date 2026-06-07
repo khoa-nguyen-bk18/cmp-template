@@ -178,6 +178,7 @@ private fun BrowseScreenContent(
                             onSearchQueryChange(it)
                         },
                         modifier = Modifier.fillMaxWidth()
+                            .testTag("browse_search_field")
                             .semantics { contentDescription = "Search inventory" },
                         placeholder = { Text("Search cards…") },
                         leadingIcon = {
@@ -209,9 +210,11 @@ private fun BrowseScreenContent(
                                     selectedContainerColor = colorScheme.secondary.copy(alpha = 0.35f),
                                     selectedLabelColor = colorScheme.onSurface,
                                 ),
-                                modifier = Modifier.semantics {
-                                    contentDescription = "${category.label} filter"
-                                },
+                                modifier = Modifier
+                                    .testTag("browse_category_${category.name}")
+                                    .semantics {
+                                        contentDescription = "${category.label} filter"
+                                    },
                             )
                         }
                     }
