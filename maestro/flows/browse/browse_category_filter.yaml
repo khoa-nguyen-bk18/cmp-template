@@ -1,0 +1,14 @@
+appId: com.devindie.cmptemplate
+name: Browse category filter
+tags:
+  - android
+  - regression
+---
+- runFlow:
+    file: ../../subflows/_browse_setup.yaml
+- tapOn: "Magic filter"
+- waitForAnimationToEnd
+- assertVisible: "Good Games Belconnen"
+- tapOn: "All filter"
+- waitForAnimationToEnd
+- assertVisible: "Gaeas Touch"

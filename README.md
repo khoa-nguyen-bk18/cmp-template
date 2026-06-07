@@ -1,6 +1,6 @@
 ## For Interviewers
 
-**Primary focus:** a Kotlin Multiplatform template that sets up an environment where **AI coding agents** can generate features that stay within **Clean Architecture**, pass **automated quality gates**, and meet **security expectations** — while keeping **codebase complexity** visible and bounded (Konsist layer rules, Detekt, coverage, SonarQube, CodeGraph).
+**Primary focus:** a Kotlin Multiplatform template that sets up an environment where **AI coding agents** can generate features that stay within **Clean Architecture**, pass **automated quality gates**, and meet **security expectations** — while keeping **codebase complexity** visible and bounded (Konsist layer rules, Detekt, coverage, SonarQube).
 
 **What is in place today:**
 
@@ -23,6 +23,37 @@
 2. Start with `domain/` (pure business layer), then `data/` (Room, Ktor, platform code), then `shared/` (Compose + ViewModels).
 3. Run `./gradlew qualityCheck` for formatting, lint, tests, and architecture rules.
 4. Optionally install pre-commit (`./scripts/setup-pre-commit.sh --baseline`) and skim [`.pre-commit-config.yaml`](.pre-commit-config.yaml) for commit-time security.
+
+---
+
+## Flow diagram
+
+```mermaid
+sequenceDiagram
+    participant Screen as shared/Screen
+    participant VM as shared/ViewModel
+    participant UC as domain/UseCase
+    participant Repo as domain/Repository
+    participant Impl as data/RepositoryImpl
+    participant DS as data/DataSource
+    participant Native as androidMain/iosMain
+
+    Screen->>VM: user action
+    VM->>UC: invoke()
+    UC->>Repo: suspend/Flow
+    Repo->>Impl: (Koin binding)
+    Impl->>DS: I/O
+    DS->>Native: platform APIs
+    Native-->>DS: result
+    DS-->>Impl: domain models
+    Impl-->>UC: Result/Flow
+    UC-->>VM: Result/Flow
+    VM-->>Screen: UiState
+```
+
+
+
+---
 
 # Screenshots
 

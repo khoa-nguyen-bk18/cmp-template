@@ -1,0 +1,17 @@
+appId: com.devindie.cmptemplate
+name: Browse card detail navigation
+tags:
+  - android
+  - regression
+---
+- runFlow:
+    file: ../../subflows/_browse_setup.yaml
+- tapOn: "Gaeas Touch, $5.62"
+- extendedWaitUntil:
+    visible: "Back"
+    timeout: 10000
+- back
+- extendedWaitUntil:
+    visible: "Good Games Belconnen"
+    timeout: 5000
+- assertVisible: "Gaeas Touch"

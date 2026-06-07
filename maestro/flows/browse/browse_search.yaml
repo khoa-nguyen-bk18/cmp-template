@@ -1,0 +1,21 @@
+appId: com.devindie.cmptemplate
+name: Browse search and empty state
+tags:
+  - android
+  - regression
+---
+- runFlow:
+    file: ../../subflows/_browse_setup.yaml
+- tapOn: "Search inventory"
+- inputText: Lightning
+- extendedWaitUntil:
+    visible: "Lightning Bolt"
+    timeout: 5000
+- hideKeyboard
+- tapOn: "Search inventory"
+- eraseText
+- inputText: zzznomatch
+- extendedWaitUntil:
+    visible: "No cards match your search"
+    timeout: 5000
+- hideKeyboard
