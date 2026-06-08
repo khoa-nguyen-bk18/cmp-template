@@ -32,7 +32,7 @@ Use cases and ViewModels call these suspend functions without choosing a dispatc
 - Start business work with `viewModelScope.launch` (survives configuration changes on Android).
 - Expose `val uiState: StateFlow<...>` backed by `MutableStateFlow` or `stateIn`.
 - Map errors via `Result.onFailure` — avoid `catch (Exception)` that swallows `CancellationException`.
-- When work starts in `init` (e.g. catalog seeding), prefer `SharingStarted.Eagerly` on related `stateIn` flows so UI state updates before the first collector attaches.
+- When work starts in `init` (e.g. catalog seeding), prefer `SharingStarted.WhileSubscribed` on related `stateIn`.
 
 ## Cancellation
 
