@@ -180,9 +180,31 @@ Coil and AndroidX **Paging 3** are declared in the catalog but not added to modu
 | **SonarQube** (Docker) | Dashboard analysis + coverage upload | See [SonarQube (local)](#sonarqube-local) below |
 | **CodeGraph** | Tree-sitter knowledge graph for symbols, callers, and impact | Cursor MCP in [`.cursor/mcp.json`](.cursor/mcp.json); run `codegraph init -i` if `.codegraph/` is missing; see [AGENTS.md](AGENTS.md) |
 | **`:benchmark`** | Baseline profiles and startup macrobenchmarks | Device required; see [Benchmarks](#benchmarks) below |
+| **Compose Compiler Reports** | Per-composable stability diagnostics (`:shared` UI) | `./gradlew composeCompilerReports` — see [Compose Compiler Reports](#compose-compiler-reports) below |
 | **pre-commit** (Gitleaks + Snyk) | Secret scan (blocks commit) + Snyk dependency warnings (high+, does not block) | See [Local commit hooks](#local-commit-hooks-pre-commit) below |
 
-**When to use what:** formatting → Spotless; Kotlin smells → Detekt; Android security / manifest / API misuse → `:androidApp:lint` (Security Lint rules); layer violations → Konsist; coverage and duplication trends → Sonar; call-graph exploration in the IDE → CodeGraph; secrets and dependency CVEs before commit → pre-commit.
+**When to use what:** formatting → Spotless; Kotlin smells → Detekt; Android security / manifest / API misuse → `:androidApp:lint` (Security Lint rules); layer violations → Konsist; coverage and duplication trends → Sonar; call-graph exploration in the IDE → CodeGraph; Compose recomposition / unstable parameters → `composeCompilerReports`; secrets and dependency CVEs before commit → pre-commit.
+
+### Compose Compiler Reports
+
+On-demand diagnostics for Compose Multiplatform UI stability in `:shared`. Compiles the module, emits the Kotlin Compose Compiler report, and writes a filtered summary with **non-skippable** and **unstable-parameter** composables listed first.
+
+```bash
+./gradlew composeCompilerReports
+```
+
+Reports are written under [`shared/build/compose_compiler/`](shared/build/compose_compiler/):
+
+| File | Purpose |
+|------|---------|
+| `shared-composables.txt` | Raw per-composable stability dump from the compiler |
+| `shared-classes.txt` | Per-class stability (why a type is stable or unstable) |
+| `unstable-composables-summary.txt` | Grouped summary: non-skippable → unstable params → unknown stability → fully stable |
+| `unstable-composables-first.txt` | Full composables report reordered with unstable entries at the top |
+
+`:shared` enables report generation via `composeCompiler { reportsDestination = … }` in [`shared/build.gradle.kts`](shared/build.gradle.kts). Third-party types can be opted in through [`shared/stability_config.conf`](shared/stability_config.conf). For CI baseline checks, `:shared` also applies the [Compose Stability Analyzer](https://github.com/skydoves/compose-stability-analyzer) plugin (`stabilityDump` / `stabilityCheck`).
+
+Use this when investigating scroll jank, unexpected recompositions, or whether a composable parameter blocks skipping. It is not part of `qualityCheck`.
 
 ### Local commit hooks (pre-commit)
 

@@ -2,6 +2,8 @@ import java.net.HttpURLConnection
 import java.net.URI
 import java.util.Properties
 
+apply(from = "gradle/composeCompilerReports.gradle.kts")
+
 plugins {
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.kover)
