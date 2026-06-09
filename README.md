@@ -300,3 +300,91 @@ Contributions should follow [docs/kmp-feature-playbook.md](docs/kmp-feature-play
 - [docs/coroutines-conventions.md](docs/coroutines-conventions.md) — dispatchers and `runTest`
 - [docs/code-documentation.md](docs/code-documentation.md) — KDoc conventions
 - [AGENTS.md](AGENTS.md) — conventions and tooling summary for coding agents
+
+
+## External tools reference
+
+Third-party **tools** wired into this repo (not runtime app libraries such as Ktor, Room, or Koin). Each row is scoped to a single concern — avoid duplicating the same check across tools.
+
+### Security
+
+| Tool | What | Why |
+|------|------|-----|
+| **[Gitleaks](https://github.com/gitleaks/gitleaks)** | Scans staged git content for secrets | **Blocks commits** on findings; custom [`scripts/gitleaks-pre-commit.sh`](scripts/gitleaks-pre-commit.sh) catches cases the stock hook misses |
+| **[Snyk Open Source](https://snyk.io/)** | Scans Gradle dependencies for CVEs | Warns on **high+** severity before push; **non-blocking** via [`scripts/snyk-pre-commit.sh`](scripts/snyk-pre-commit.sh) |
+| **[pre-commit](https://pre-commit.com/)** | Runs Gitleaks + Snyk on every `git commit` | One-time setup with [`scripts/setup-pre-commit.sh`](scripts/setup-pre-commit.sh); config in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) |
+| **[Android Security Lint](https://github.com/google/android-security-lints)** | Google security rule set on `:androidApp` | Catches TLS, WebView, permission, and related misuse at lint time (`lintChecks` in `androidApp/build.gradle.kts`) |
+| **[KSafe](https://github.com/ioannisa/KSafe)** | Marks and handles sensitive fields in the data layer | Defense-in-depth alongside secret scanning |
+
+### Code quality & static analysis
+
+| Tool | What | Why |
+|------|------|-----|
+| **[Spotless](https://github.com/diffplug/spotless)** + **ktlint** | Formats Kotlin and Gradle scripts | Consistent style; part of `qualityCheck` |
+| **[Detekt](https://detekt.dev/)** (+ [detekt-compose](https://github.com/mrmans0n/compose-rules)) | Kotlin static analysis and Compose rules | Catches complexity and maintainability issues; config in [`detekt.yml`](detekt.yml) |
+| **[Konsist](https://docs.konsist.lemonappdev.com/)** | JVM tests for package/import/layer rules | **Fails the build** if Clean Architecture boundaries break (`:architecture`) |
+| **AGP Lint** | Standard Android lint on `:androidApp` | Manifest, API, and resource correctness; includes Security Lint above |
+| **[SonarQube Community](https://www.sonarsource.com/open-source-editions/)** (local Docker) | Dashboard for bugs, smells, duplication, coverage trends | Optional deeper analysis at `http://localhost:9000` |
+| **Sonar Gradle plugin** | Uploads analysis + Kover XML to Sonar | `./gradlew sonarAnalysis` / `sonarLocalAnalysis` |
+| **Docker Compose** + **PostgreSQL 16** | Local SonarQube stack | `./gradlew sonarUp` / `sonarDown`; see [`docker-compose.yml`](docker-compose.yml) |
+| **[Kover](https://github.com/Kotlin/kotlinx-kover)** | Unit-test coverage XML | Feeds Sonar; `./gradlew koverXmlReport` |
+| **`qualityCheck`** (Gradle aggregate) | Spotless → Detekt → Lint → all KMP unit tests → Konsist | Single pre-PR gate: `./gradlew qualityCheck` |
+
+### Compose / UI performance diagnostics
+
+| Tool | What | Why |
+|------|------|-----|
+| **Compose Compiler Reports** (custom Gradle task) | Per-composable stability dumps for `:shared` | Find non-skippable composables and unstable parameters; `./gradlew composeCompilerReports` |
+| **[Compose Stability Analyzer](https://github.com/skydoves/compose-stability-analyzer)** (Skydoves) | `stabilityDump` / `stabilityCheck` on `:shared` | Baseline stability regressions; config in [`shared/stability_config.conf`](shared/stability_config.conf) |
+
+Not part of `qualityCheck` — run when investigating scroll jank or recomposition issues.
+
+### Testing
+
+| Tool | What | Why |
+|------|------|-----|
+| **[kotlin-test](https://kotlinlang.org/api/latest/kotlin.test/)** | Assertions in KMP `commonTest` | Shared unit tests on JVM and iOS simulator targets |
+| **[JUnit 5](https://junit.org/junit5/)** | JVM test runner in `:architecture` | Runs Konsist boundary tests |
+| **[Turbine](https://github.com/cashapp/turbine)** | Asserts `Flow` / `StateFlow` emissions | ViewModel tests for debounce, connectivity, pagination |
+| **Ktor MockEngine** | Fake HTTP in data-layer tests | Test repositories without a real server |
+| **[Robolectric](https://robolectric.org/)** | JVM Android environment in `:shared` host tests | Lightweight Android-specific tests without a device |
+| **[Maestro](https://maestro.mobile.dev/)** | YAML E2E flows for Browse (search, filter, pagination, detail) | Real-device journeys; see [`maestro/README.md`](maestro/README.md) |
+| **Maestro MCP** | IDE agent tools (`inspect_screen`, `run`, screenshots) | Agent-driven E2E iteration; configured in [`.cursor/mcp.json`](.cursor/mcp.json) |
+
+Maestro is **not** part of `qualityCheck`. Details: [docs/testing.md](docs/testing.md).
+
+### Performance (Android)
+
+| Tool | What | Why |
+|------|------|-----|
+| **[Baseline Profile](https://developer.android.com/topic/performance/baselineprofiles)** (AndroidX plugin) | Collects hot paths into `baseline.prof` | Faster cold start and first scroll |
+| **[Macrobenchmark](https://developer.android.com/topic/performance/benchmarking/macrobenchmark-overview)** (`:benchmark`) | Instrumented startup/scroll benchmarks | Validates baseline profile impact on a device |
+| **UI Automator** + AndroidX Test | Drives the app during benchmark runs | Required for macrobenchmark instrumentation |
+
+See [Benchmarks](#benchmarks) above.
+
+### AI / agent & developer workflow
+
+| Tool | What | Why |
+|------|------|-----|
+| **CodeGraph** (CLI + MCP) | Tree-sitter knowledge graph: symbols, callers, impact | Fast structural queries for agents and humans; Cursor MCP in [`.cursor/mcp.json`](.cursor/mcp.json); run `codegraph init -i` if `.codegraph/` is missing |
+| **OpenSpec** | Spec-driven propose → implement → archive workflow | Structured AI feature changes; [`openspec/config.yaml`](openspec/config.yaml) |
+| **[AGENTS.md](AGENTS.md)** + Cursor rules/skills | Conventions for layer boundaries, tests, docs | Keeps generated code inside Clean Architecture |
+| **Google Stitch** (design assets) | UI mockups and [`DESIGN.md`](stitch_screenshot_to_app_generator/procollector_ui/DESIGN.md) | Browse/main shell derived from Stitch screens |
+
+### Build & codegen (supporting)
+
+| Tool | What | Why |
+|------|------|-----|
+| **Gradle** (Kotlin DSL) | Multi-module KMP build and custom verification tasks | Orchestrates all gates above |
+| **[KSP](https://github.com/google/ksp)** | Annotation processing (Room compiler, etc.) | Codegen without kapt where possible |
+| **[AGP 9](https://developer.android.com/build)** | Android app packaging, lint, baseline profiles | Platform integration for `:androidApp` and `:benchmark` |
+
+### When tools run
+
+| When | Tools |
+|------|--------|
+| **`git commit`** | pre-commit → Gitleaks (**block**), Snyk (**warn**) |
+| **`./gradlew qualityCheck`** | Spotless, Detekt, `:androidApp:lint`, `:domain` / `:data` / `:shared` tests, Konsist |
+| **Manual / optional** | SonarQube (`sonarLocalAnalysis`), Maestro, `composeCompilerReports`, `stabilityCheck`, `:benchmark` on device |
+| **IDE (Cursor)** | CodeGraph MCP, Maestro MCP |
