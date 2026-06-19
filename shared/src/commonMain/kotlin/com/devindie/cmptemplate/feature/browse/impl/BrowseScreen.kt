@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.browse
+package com.devindie.cmptemplate.feature.browse.impl
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

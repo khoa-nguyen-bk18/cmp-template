@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.carddetail
+package com.devindie.cmptemplate.feature.carddetail.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -4,12 +4,10 @@ import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase
 import com.devindie.cmptemplate.domain.usecase.user.ClearUserSessionUseCase
 import com.devindie.cmptemplate.domain.usecase.user.GetUserSessionUseCase
 import com.devindie.cmptemplate.domain.usecase.user.SaveUserSessionUseCase
-import com.devindie.cmptemplate.feature.browse.BrowseViewModel
-import com.devindie.cmptemplate.feature.carddetail.CardDetailViewModel
-import com.devindie.cmptemplate.feature.main.MainViewModel
+import com.devindie.cmptemplate.feature.browse.api.browseFeatureModule
+import com.devindie.cmptemplate.feature.carddetail.api.cardDetailFeatureModule
+import com.devindie.cmptemplate.feature.main.api.mainFeatureModule
 import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appDomainModule =
@@ -18,12 +16,5 @@ val appDomainModule =
         factoryOf(::GetUserSessionUseCase)
         factoryOf(::SaveUserSessionUseCase)
         factoryOf(::ClearUserSessionUseCase)
-        viewModelOf(::BrowseViewModel)
-        viewModelOf(::MainViewModel)
-        viewModel { (cardId: Long) ->
-            CardDetailViewModel(
-                getCardDetail = get(),
-                cardId = cardId,
-            )
-        }
+        includes(browseFeatureModule, cardDetailFeatureModule, mainFeatureModule)
     }

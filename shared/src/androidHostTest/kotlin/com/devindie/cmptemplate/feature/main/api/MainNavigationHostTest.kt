@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.main
+package com.devindie.cmptemplate.feature.main.api
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import com.devindie.cmptemplate.core.navigation.MainRoute
-import com.devindie.cmptemplate.feature.carddetail.CardDetailRoute
-import com.devindie.cmptemplate.feature.carddetail.navigateToCardDetail
+import com.devindie.cmptemplate.feature.carddetail.api.CardDetailRoute
+import com.devindie.cmptemplate.feature.carddetail.api.navigateToCardDetail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

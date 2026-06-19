@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.main
+package com.devindie.cmptemplate.feature.main.impl
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row

@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.main
+package com.devindie.cmptemplate.feature.main.api
 
 import com.devindie.cmptemplate.core.navigation.MainRoute
 import kotlin.test.Test

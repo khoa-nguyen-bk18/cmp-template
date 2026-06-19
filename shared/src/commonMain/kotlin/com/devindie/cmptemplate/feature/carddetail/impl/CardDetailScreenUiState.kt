@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.carddetail
+package com.devindie.cmptemplate.feature.carddetail.impl
 
 import com.devindie.cmptemplate.domain.model.carddetail.CardCondition
 import com.devindie.cmptemplate.domain.model.carddetail.CardDetail

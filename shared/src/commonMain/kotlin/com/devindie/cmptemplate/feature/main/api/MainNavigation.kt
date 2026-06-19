@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.main
+package com.devindie.cmptemplate.feature.main.api
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -14,8 +14,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.devindie.cmptemplate.core.navigation.MainRoute
-import com.devindie.cmptemplate.feature.browse.browseDestination
-import com.devindie.cmptemplate.feature.carddetail.cardDetailDestination
+import com.devindie.cmptemplate.feature.browse.api.browseDestination
+import com.devindie.cmptemplate.feature.carddetail.api.cardDetailDestination
+import com.devindie.cmptemplate.feature.main.impl.EmptyTabContent
 
 fun NavHostController.navigateToMainTab(destination: MainDestination) {
     navigate(destination.route) {

@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.carddetail
+package com.devindie.cmptemplate.feature.carddetail.impl
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

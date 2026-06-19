@@ -1,9 +1,10 @@
-package com.devindie.cmptemplate.feature.browse
+package com.devindie.cmptemplate.feature.browse.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.devindie.cmptemplate.feature.browse.api.BrowseCardPagerFactory
 import com.devindie.cmptemplate.domain.model.browse.BrowseCardsQuery
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard

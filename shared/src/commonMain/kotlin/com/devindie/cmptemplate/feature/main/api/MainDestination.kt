@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.main
+package com.devindie.cmptemplate.feature.main.api
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle

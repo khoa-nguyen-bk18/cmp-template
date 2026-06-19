@@ -1,6 +1,7 @@
-package com.devindie.cmptemplate.feature.browse
+package com.devindie.cmptemplate.feature.browse.impl
 
 import androidx.paging.PagingData
+import com.devindie.cmptemplate.feature.browse.api.BrowseCardPagerFactory
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.test.advanceMainUntilIdle
 import com.devindie.cmptemplate.test.runViewModelTest

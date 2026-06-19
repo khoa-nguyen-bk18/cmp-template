@@ -13,7 +13,7 @@ class BrowsePagingArchitectureTest {
         Konsist.scopeFromProject()
             .interfaces()
             .filter { it.name == "BrowseCardPagerFactory" }
-            .assertTrue { it.resideInPackage("com.devindie.cmptemplate.feature.browse..") }
+            .assertTrue { it.resideInPackage("com.devindie.cmptemplate.feature.browse.api..") }
     }
 
     @Test

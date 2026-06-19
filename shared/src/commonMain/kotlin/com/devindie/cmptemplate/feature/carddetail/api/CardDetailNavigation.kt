@@ -1,11 +1,11 @@
-package com.devindie.cmptemplate.feature.carddetail
+package com.devindie.cmptemplate.feature.carddetail.api
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.dialog
 import androidx.navigation.toRoute
+import com.devindie.cmptemplate.feature.carddetail.impl.CardDetailBottomSheet
 import kotlinx.serialization.Serializable
-
 @Serializable
 internal data class CardDetailRoute(val cardId: Long)
 

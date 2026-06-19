@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.main
+package com.devindie.cmptemplate.feature.main.impl
 
 import com.devindie.cmptemplate.core.constants.DEFAULT_STORE_NAME
 

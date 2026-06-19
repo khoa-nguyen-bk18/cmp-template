@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.main
+package com.devindie.cmptemplate.feature.main.api
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -21,7 +21,12 @@ import com.devindie.cmptemplate.core.ui.insets.appNavigationBarsPadding
 import com.devindie.cmptemplate.core.ui.insets.appStatusBarsPadding
 import com.devindie.cmptemplate.core.ui.theme.AppTheme
 import com.devindie.cmptemplate.core.ui.theme.LocalAppSpacing
-import com.devindie.cmptemplate.feature.carddetail.navigateToCardDetail
+import com.devindie.cmptemplate.feature.carddetail.api.navigateToCardDetail
+import com.devindie.cmptemplate.feature.main.impl.BottomNavigationBar
+import com.devindie.cmptemplate.feature.main.impl.EmptyTabContent
+import com.devindie.cmptemplate.feature.main.impl.MainScreenUiState
+import com.devindie.cmptemplate.feature.main.impl.MainTopBar
+import com.devindie.cmptemplate.feature.main.impl.MainViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 /**

@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.browse
+package com.devindie.cmptemplate.feature.browse.impl
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement

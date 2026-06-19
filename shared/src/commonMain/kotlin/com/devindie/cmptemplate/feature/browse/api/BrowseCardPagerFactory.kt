@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.feature.browse
+package com.devindie.cmptemplate.feature.browse.api
 
 import androidx.paging.PagingData
 import com.devindie.cmptemplate.domain.model.browse.BrowseCardsQuery
