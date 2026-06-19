@@ -4,7 +4,4 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "remote_keys")
-data class BrowseRemoteKeyEntity(
-    @PrimaryKey val key: String,
-    val nextPage: Int?,
-)
+data class BrowseRemoteKeyEntity(@PrimaryKey val key: String, val nextPage: Int?)

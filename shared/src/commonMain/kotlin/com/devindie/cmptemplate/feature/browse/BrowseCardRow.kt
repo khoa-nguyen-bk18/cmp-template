@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.browse
+package com.devindie.cmptemplate.feature.browse
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -21,17 +21,13 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.devindie.cmptemplate.core.ui.theme.AppThemeTypography
+import com.devindie.cmptemplate.core.ui.theme.LocalAppSpacing
+import com.devindie.cmptemplate.core.ui.theme.PillShape
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard
-import com.devindie.cmptemplate.ui.theme.AppThemeTypography
-import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
-import com.devindie.cmptemplate.ui.theme.PillShape
 
 @Composable
-internal fun BrowseCardRow(
-    card: CollectibleCard,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+internal fun BrowseCardRow(card: CollectibleCard, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val spacing = LocalAppSpacing.current
     val colorScheme = MaterialTheme.colorScheme
 

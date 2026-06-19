@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.carddetail
+package com.devindie.cmptemplate.feature.carddetail
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -9,10 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class CardDetailRoute(val cardId: Long)
 
-fun NavGraphBuilder.cardDetailDestination(
-    storeName: String,
-    onDismiss: () -> Unit,
-) {
+fun NavGraphBuilder.cardDetailDestination(storeName: String, onDismiss: () -> Unit) {
     dialog<CardDetailRoute> { backStackEntry ->
         val route = backStackEntry.toRoute<CardDetailRoute>()
         CardDetailBottomSheet(

@@ -3,11 +3,11 @@ package com.devindie.cmptemplate.data.di
 import com.devindie.cmptemplate.data.auth.KSafeTokenStore
 import com.devindie.cmptemplate.data.auth.TokenRefreshDataSource
 import com.devindie.cmptemplate.data.auth.TokenStore
+import com.devindie.cmptemplate.data.network.NetworkConfig
+import com.devindie.cmptemplate.data.network.client.HttpClientFactory
 import com.devindie.cmptemplate.data.source.remote.browse.BrowseCardRemoteDataSource
 import com.devindie.cmptemplate.data.source.remote.browse.FakeBrowseCardRemoteDataSource
 import com.devindie.cmptemplate.data.source.remote.browse.KtorBrowseCardRemoteDataSource
-import com.devindie.cmptemplate.data.network.NetworkConfig
-import com.devindie.cmptemplate.data.network.client.HttpClientFactory
 import io.ktor.client.HttpClient
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named

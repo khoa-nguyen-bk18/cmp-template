@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.main
+package com.devindie.cmptemplate.feature.main
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
@@ -20,7 +20,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
+import com.devindie.cmptemplate.core.ui.theme.LocalAppSpacing
 
 @Composable
 internal fun MainTopBar(storeName: String, onCartClick: () -> Unit, modifier: Modifier = Modifier) {

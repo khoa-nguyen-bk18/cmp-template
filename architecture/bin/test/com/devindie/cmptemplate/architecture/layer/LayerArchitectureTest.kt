@@ -16,7 +16,7 @@ class LayerArchitectureTest {
             .assertArchitecture {
                 val domain = Layer("Domain", "com.devindie.cmptemplate.domain..")
                 val data = Layer("Data", "com.devindie.cmptemplate.data..")
-                val presentation = Layer("Presentation", "com.devindie.cmptemplate.screens..")
+                val presentation = Layer("Presentation", "com.devindie.cmptemplate.feature..")
 
                 domain.doesNotDependOn(data)
                 domain.doesNotDependOn(presentation)
@@ -28,7 +28,7 @@ class LayerArchitectureTest {
 
     @Test
     fun `shared di does not import data`() {
-        Konsist.scopeFromPackage("com.devindie.cmptemplate.di..")
+        Konsist.scopeFromPackage("com.devindie.cmptemplate.core.di..")
             .files
             .assertFalse { file ->
                 file.imports.any { import ->
@@ -41,10 +41,11 @@ class LayerArchitectureTest {
     fun `presentation does not depend on data packages`() {
         val presentationPackages =
             listOf(
-                "com.devindie.cmptemplate.screens..",
-                "com.devindie.cmptemplate.ui..",
-                "com.devindie.cmptemplate.navigation..",
-                "com.devindie.cmptemplate.di..",
+                "com.devindie.cmptemplate.feature..",
+                "com.devindie.cmptemplate.core.ui..",
+                "com.devindie.cmptemplate.core.navigation..",
+                "com.devindie.cmptemplate.core.constants..",
+                "com.devindie.cmptemplate.core.di..",
             )
         val dataImportPrefix = "com.devindie.cmptemplate.data."
 
@@ -56,6 +57,26 @@ class LayerArchitectureTest {
                         import.name.startsWith(dataImportPrefix)
                     }
                 }
+        }
+    }
+
+    @Test
+    fun `core navigation ui and constants do not import feature packages`() {
+        val featureImportPrefix = "com.devindie.cmptemplate.feature."
+        val productionCoreFiles =
+            Konsist.scopeFromProduction()
+                .files
+                .filter { file ->
+                    val packageName = file.packagee?.name ?: return@filter false
+                    packageName.startsWith("com.devindie.cmptemplate.core.navigation") ||
+                        packageName.startsWith("com.devindie.cmptemplate.core.ui") ||
+                        packageName.startsWith("com.devindie.cmptemplate.core.constants")
+                }
+
+        productionCoreFiles.assertFalse { file ->
+            file.imports.any { import ->
+                import.name.startsWith(featureImportPrefix)
+            }
         }
     }
 }

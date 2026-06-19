@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.main
+package com.devindie.cmptemplate.feature.main
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

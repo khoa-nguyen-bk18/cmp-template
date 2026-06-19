@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.di
+package com.devindie.cmptemplate.core.di
 
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin

@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.navigation
+package com.devindie.cmptemplate.feature.main
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -13,10 +13,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.devindie.cmptemplate.screens.browse.browseDestination
-import com.devindie.cmptemplate.screens.carddetail.cardDetailDestination
-import com.devindie.cmptemplate.screens.main.EmptyTabContent
-import com.devindie.cmptemplate.screens.main.MainDestination
+import com.devindie.cmptemplate.core.navigation.MainRoute
+import com.devindie.cmptemplate.feature.browse.browseDestination
+import com.devindie.cmptemplate.feature.carddetail.cardDetailDestination
 
 fun NavHostController.navigateToMainTab(destination: MainDestination) {
     navigate(destination.route) {
@@ -52,22 +51,19 @@ private fun destinationFor(destination: NavDestination?): MainDestination? =
         destination?.hasRoute(tab.route::class) == true
     }
 
-fun NavGraphBuilder.cartDestination(
-) {
+fun NavGraphBuilder.cartDestination() {
     composable<MainRoute.Cart> {
         EmptyTabContent(modifier = Modifier.fillMaxSize())
     }
 }
 
-fun NavGraphBuilder.collectionDestination(
-) {
+fun NavGraphBuilder.collectionDestination() {
     composable<MainRoute.Collection> {
         EmptyTabContent(modifier = Modifier.fillMaxSize())
     }
 }
 
-fun NavGraphBuilder.profileDestination(
-) {
+fun NavGraphBuilder.profileDestination() {
     composable<MainRoute.Profile> {
         EmptyTabContent(modifier = Modifier.fillMaxSize())
     }

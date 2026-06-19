@@ -1,5 +1,6 @@
-package com.devindie.cmptemplate.screens.main
+package com.devindie.cmptemplate.feature.main
 
+import com.devindie.cmptemplate.core.constants.DEFAULT_STORE_NAME
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

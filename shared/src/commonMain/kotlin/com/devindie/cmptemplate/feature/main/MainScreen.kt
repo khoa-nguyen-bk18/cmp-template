@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.main
+package com.devindie.cmptemplate.feature.main
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -17,14 +17,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
-import com.devindie.cmptemplate.navigation.MainTabNavHost
-import com.devindie.cmptemplate.navigation.navigateToMainTab
-import com.devindie.cmptemplate.navigation.selectedMainDestination
-import com.devindie.cmptemplate.screens.carddetail.navigateToCardDetail
-import com.devindie.cmptemplate.ui.insets.appNavigationBarsPadding
-import com.devindie.cmptemplate.ui.insets.appStatusBarsPadding
-import com.devindie.cmptemplate.ui.theme.AppTheme
-import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
+import com.devindie.cmptemplate.core.ui.insets.appNavigationBarsPadding
+import com.devindie.cmptemplate.core.ui.insets.appStatusBarsPadding
+import com.devindie.cmptemplate.core.ui.theme.AppTheme
+import com.devindie.cmptemplate.core.ui.theme.LocalAppSpacing
+import com.devindie.cmptemplate.feature.carddetail.navigateToCardDetail
 import org.koin.compose.viewmodel.koinViewModel
 
 /**

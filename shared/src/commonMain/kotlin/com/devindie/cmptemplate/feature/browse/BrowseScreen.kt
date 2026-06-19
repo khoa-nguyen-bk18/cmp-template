@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.browse
+package com.devindie.cmptemplate.feature.browse
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -30,9 +30,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -57,11 +57,11 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.devindie.cmptemplate.core.ui.theme.AppSpacing
+import com.devindie.cmptemplate.core.ui.theme.AppTheme
+import com.devindie.cmptemplate.core.ui.theme.LocalAppSpacing
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard
-import com.devindie.cmptemplate.ui.theme.AppSpacing
-import com.devindie.cmptemplate.ui.theme.AppTheme
-import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel

@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.navigation
+package com.devindie.cmptemplate.core.navigation
 
 import kotlinx.serialization.Serializable
 

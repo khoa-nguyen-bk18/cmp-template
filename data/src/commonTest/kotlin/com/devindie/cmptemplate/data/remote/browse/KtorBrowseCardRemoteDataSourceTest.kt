@@ -1,6 +1,5 @@
 package com.devindie.cmptemplate.data.remote.browse
 
-import co.touchlab.kermit.Logger
 import com.devindie.cmptemplate.data.network.ApiPaths
 import com.devindie.cmptemplate.data.network.ApiResult
 import com.devindie.cmptemplate.data.network.NetworkConfig
@@ -29,7 +28,7 @@ class KtorBrowseCardRemoteDataSourceTest {
                 assertEquals("20", request.url.parameters["page_size"])
                 respond(
                     content =
-                        """
+                    """
                         {
                           "cards": [
                             {
@@ -47,7 +46,7 @@ class KtorBrowseCardRemoteDataSourceTest {
                             "hasMore": false
                           }
                         }
-                        """.trimIndent(),
+                    """.trimIndent(),
                     status = HttpStatusCode.OK,
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )

@@ -63,14 +63,13 @@ class FakeBrowseCardDao : BrowseCardDao {
         entities: List<BrowseCardEntity>,
         query: String,
         category: String,
-    ): List<BrowseCardEntity> =
-        entities.filter { entity ->
-            val categoryMatches = category == "All" || entity.category == category
-            val normalizedQuery = query.trim()
-            val queryMatches =
-                normalizedQuery.isEmpty() ||
-                    entity.name.contains(normalizedQuery, ignoreCase = true) ||
-                    entity.setName.contains(normalizedQuery, ignoreCase = true)
-            categoryMatches && queryMatches
-        }.sortedBy { it.name }
+    ): List<BrowseCardEntity> = entities.filter { entity ->
+        val categoryMatches = category == "All" || entity.category == category
+        val normalizedQuery = query.trim()
+        val queryMatches =
+            normalizedQuery.isEmpty() ||
+                entity.name.contains(normalizedQuery, ignoreCase = true) ||
+                entity.setName.contains(normalizedQuery, ignoreCase = true)
+        categoryMatches && queryMatches
+    }.sortedBy { it.name }
 }

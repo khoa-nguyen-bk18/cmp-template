@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.browse
+package com.devindie.cmptemplate.feature.browse
 
 import androidx.paging.PagingData
 import com.devindie.cmptemplate.domain.model.browse.BrowseCardsQuery
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * Implementation lives in `:data` ([com.devindie.cmptemplate.data.source.local.browse.BrowseCardPagerFactoryImpl]);
  * bound at the app composition root (androidApp / iOS Koin bootstrap), not in
- * [com.devindie.cmptemplate.di.appDomainModule].
+ * [com.devindie.cmptemplate.core.di.appDomainModule].
  */
 fun interface BrowseCardPagerFactory {
     fun pages(query: BrowseCardsQuery): Flow<PagingData<CollectibleCard>>

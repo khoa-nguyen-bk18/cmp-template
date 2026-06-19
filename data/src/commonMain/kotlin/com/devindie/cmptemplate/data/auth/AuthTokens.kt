@@ -4,7 +4,4 @@ import kotlinx.serialization.Serializable
 
 /** OAuth tokens persisted as one encrypted JSON blob in [KSafeTokenStore]. */
 @Serializable
-data class AuthTokens(
-    val accessToken: String = "",
-    val refreshToken: String = "",
-)
+data class AuthTokens(val accessToken: String = "", val refreshToken: String = "")

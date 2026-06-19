@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test
 class BrowsePagingArchitectureTest {
 
     @Test
-    fun `BrowseCardPagerFactory interface lives in shared screens package`() {
+    fun `BrowseCardPagerFactory interface lives in shared feature browse package`() {
         Konsist.scopeFromProject()
             .interfaces()
             .filter { it.name == "BrowseCardPagerFactory" }
-            .assertTrue { it.resideInPackage("com.devindie.cmptemplate.screens.browse..") }
+            .assertTrue { it.resideInPackage("com.devindie.cmptemplate.feature.browse..") }
     }
 
     @Test

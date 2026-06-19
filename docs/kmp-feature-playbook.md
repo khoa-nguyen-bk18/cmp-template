@@ -25,9 +25,9 @@ Step-by-step guide for implementing features in cmp templatethat follow Clean Ar
 | DataSource contract | Platform I/O port | `data/.../commonMain/.../*DataSource.kt` | Hides Android/iOS from repository |
 | Platform impl | Native API calls | `data/.../androidMain/`, `data/.../iosMain/` | Only place for `android.*` / `platform.*` |
 | Repository impl | Orchestration + mapping | `data/.../commonMain/.../*RepositoryImpl.kt` | Single coordination point |
-| ViewModel | UI state, calls use cases | `shared/.../screens/<feature>/` | Shared across platforms |
-| Screen | Compose UI | `shared/.../screens/<feature>/` | UDF; state from ViewModel |
-| Domain DI | Use cases | `shared/.../di/VaultDomainModule.kt` | No `data` imports |
+| ViewModel | UI state, calls use cases | `shared/.../feature/<feature>/` | Shared across platforms |
+| Screen | Compose UI | `shared/.../feature/<feature>/` | UDF; state from ViewModel |
+| Domain DI | Use cases + ViewModels | `shared/.../core/di/AppDomainModule.kt` | No `data` imports |
 | Platform DI | Bind platform classes | `data/.../di/PlatformDataModule.{kt,android.kt,ios.kt}` | Wired at app entry only |
 | App entry | `startKoin` + `Context` | `androidApp/`, `shared/.../KoinIos.kt` | Only layer that imports `data.di` |
 
@@ -36,7 +36,7 @@ Step-by-step guide for implementing features in cmp templatethat follow Clean Ar
 ```
 androidApp / iOS entry
     → data.di (platform bindings only)
-shared (screens, ViewModels, domain DI)
+shared (feature packages, core UI/navigation/DI)
     → domain
 data
     → domain
@@ -159,7 +159,7 @@ Provide `Context` in `androidPlatformModule` in `androidApp`, not in `:shared`.
 ### Step 8 — ViewModel + screen
 
 - **What:** `StateFlow` UI state; call use cases in `viewModelScope`.
-- **Where:** `shared/.../screens/<feature>/`
+- **Where:** `shared/.../feature/<feature>/`
 - **Why:** Shared UI logic; no `data` or `*RepositoryImpl` imports.
 
 **Platform-only UI** (folder picker, permission dialog):
@@ -282,9 +282,9 @@ data/src/iosMain/kotlin/.../
   di/PlatformDataModule.ios.kt
 
 shared/src/commonMain/kotlin/.../
-  screens/feature/FeatureViewModel.kt
-  screens/feature/FeatureScreen.kt
-  di/VaultDomainModule.kt
+  feature/<feature>/FeatureViewModel.kt
+  feature/<feature>/FeatureScreen.kt
+  core/di/AppDomainModule.kt
 
 androidApp/.../VaultyApp.kt
 shared/iosMain/.../KoinIos.kt

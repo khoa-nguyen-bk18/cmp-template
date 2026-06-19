@@ -85,7 +85,7 @@ sequenceDiagram
     Pager-->>UI: loadState.refresh Loading then NotLoading
 ```
 
-The list region uses Material3 `PullToRefreshBox` in [`BrowseScreen.kt`](../shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/browse/BrowseScreen.kt). Search and category chips stay fixed above the list. `isRefreshing` is true only when `loadState.refresh` is loading **and** `itemCount > 0`, so the first open still shows a centered spinner instead of the pull indicator. No ViewModel API — refresh stays at the `LazyPagingItems` boundary per Paging 3 conventions.
+The list region uses Material3 `PullToRefreshBox` in [`BrowseScreen.kt`](../shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/browse/BrowseScreen.kt). Search and category chips stay fixed above the list. `isRefreshing` is true only when `loadState.refresh` is loading **and** `itemCount > 0`, so the first open still shows a centered spinner instead of the pull indicator. No ViewModel API — refresh stays at the `LazyPagingItems` boundary per Paging 3 conventions.
 
 ## Layer responsibilities
 

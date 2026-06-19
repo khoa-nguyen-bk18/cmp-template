@@ -26,18 +26,13 @@ class BrowseCardRemoteMediator(
     private val cardDao = database.browseCardDao()
     private val remoteKeyDao = database.browseRemoteKeyDao()
 
-    override suspend fun initialize(): InitializeAction {
-        return if (cardDao.count() > 0) {
-            InitializeAction.SKIP_INITIAL_REFRESH
-        } else {
-            InitializeAction.LAUNCH_INITIAL_REFRESH
-        }
+    override suspend fun initialize(): InitializeAction = if (cardDao.count() > 0) {
+        InitializeAction.SKIP_INITIAL_REFRESH
+    } else {
+        InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
-    override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, BrowseCardEntity>,
-    ): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, BrowseCardEntity>): MediatorResult {
         return try {
             val page = when (loadType) {
                 LoadType.REFRESH -> 1

@@ -1,7 +1,7 @@
 package com.devindie.cmptemplate.data.source.remote.browse
 
-import com.devindie.cmptemplate.data.source.local.browse.BrowseCardEntity
 import com.devindie.cmptemplate.data.network.dto.BrowseCardDto
+import com.devindie.cmptemplate.data.source.local.browse.BrowseCardEntity
 
 internal fun BrowseCardEntity.toDto(): BrowseCardDto = BrowseCardDto(
     id = id,

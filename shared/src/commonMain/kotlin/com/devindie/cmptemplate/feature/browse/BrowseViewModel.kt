@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.browse
+package com.devindie.cmptemplate.feature.browse
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,16 +18,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 private const val SEARCH_QUERY_DEBOUNCE_MS = 300L
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-class BrowseViewModel(
-    private val pagerFactory: BrowseCardPagerFactory,
-) : ViewModel() {
+class BrowseViewModel(private val pagerFactory: BrowseCardPagerFactory) : ViewModel() {
     private val searchQuery = MutableStateFlow("")
     private val selectedCategory = MutableStateFlow(BrowseCategory.All)
 

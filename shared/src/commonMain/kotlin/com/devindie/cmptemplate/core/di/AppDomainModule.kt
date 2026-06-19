@@ -1,12 +1,12 @@
-package com.devindie.cmptemplate.di
+package com.devindie.cmptemplate.core.di
 
 import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase
 import com.devindie.cmptemplate.domain.usecase.user.ClearUserSessionUseCase
 import com.devindie.cmptemplate.domain.usecase.user.GetUserSessionUseCase
 import com.devindie.cmptemplate.domain.usecase.user.SaveUserSessionUseCase
-import com.devindie.cmptemplate.screens.browse.BrowseViewModel
-import com.devindie.cmptemplate.screens.carddetail.CardDetailViewModel
-import com.devindie.cmptemplate.screens.main.MainViewModel
+import com.devindie.cmptemplate.feature.browse.BrowseViewModel
+import com.devindie.cmptemplate.feature.carddetail.CardDetailViewModel
+import com.devindie.cmptemplate.feature.main.MainViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf

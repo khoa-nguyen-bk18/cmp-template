@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.ui.insets
+package com.devindie.cmptemplate.core.ui.insets
 
 import androidx.compose.ui.Modifier
 

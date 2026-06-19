@@ -5,7 +5,4 @@ package com.devindie.cmptemplate.domain.model.user
  *
  * @see com.devindie.cmptemplate.domain.repository.UserRepository
  */
-data class UserSession(
-    val accessToken: String,
-    val refreshToken: String,
-)
+data class UserSession(val accessToken: String, val refreshToken: String)

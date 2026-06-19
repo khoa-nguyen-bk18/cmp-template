@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.carddetail
+package com.devindie.cmptemplate.feature.carddetail
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -48,15 +48,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.devindie.cmptemplate.core.constants.DEFAULT_STORE_NAME
+import com.devindie.cmptemplate.core.ui.insets.appNavigationBarsPadding
+import com.devindie.cmptemplate.core.ui.insets.appStatusBarsPadding
+import com.devindie.cmptemplate.core.ui.theme.AppTheme
+import com.devindie.cmptemplate.core.ui.theme.AppThemeTypography
+import com.devindie.cmptemplate.core.ui.theme.LocalAppSpacing
 import com.devindie.cmptemplate.domain.model.carddetail.CardCondition
 import com.devindie.cmptemplate.domain.model.carddetail.CardDetail
 import com.devindie.cmptemplate.domain.model.carddetail.ConditionPricing
-import com.devindie.cmptemplate.screens.main.DEFAULT_STORE_NAME
-import com.devindie.cmptemplate.ui.insets.appNavigationBarsPadding
-import com.devindie.cmptemplate.ui.insets.appStatusBarsPadding
-import com.devindie.cmptemplate.ui.theme.AppTheme
-import com.devindie.cmptemplate.ui.theme.AppThemeTypography
-import com.devindie.cmptemplate.ui.theme.LocalAppSpacing
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.compose.viewmodel.koinViewModel

@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.ui.theme
+package com.devindie.cmptemplate.core.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

@@ -56,7 +56,7 @@ class HttpClientFactory(
             }
             install(Auth) {
                 bearer {
-                    //using tokenStore as SOT
+                    // using tokenStore as SOT
                     cacheTokens = false
 
                     loadTokens {
@@ -64,13 +64,18 @@ class HttpClientFactory(
                         val refresh = tokenStore.getRefreshToken()
                         if (access == null || refresh == null) {
                             null
-                        } else BearerTokens(
-                            access, refresh
-                        )
+                        } else {
+                            BearerTokens(
+                                access,
+                                refresh,
+                            )
+                        }
                     }
-                    //Send a Bearer token immediately for API calls
+                    // Send a Bearer token immediately for API calls
                     sendWithoutRequest { request ->
-                        request.url.protocol == baseUrl.protocol && request.url.host == baseUrl.host && request.url.port == baseUrl.port
+                        request.url.protocol == baseUrl.protocol &&
+                            request.url.host == baseUrl.host &&
+                            request.url.port == baseUrl.port
                     }
                     refreshTokens {
                         refreshMutex.withLock {
@@ -78,7 +83,11 @@ class HttpClientFactory(
                             val access = tokenStore.getAccessToken()
                             val refresh = tokenStore.getRefreshToken()
 
-                            if (requestTokens != null && access != null && refresh != null && (access != requestTokens.accessToken || refresh != requestTokens.refreshToken)) {
+                            if (requestTokens != null &&
+                                access != null &&
+                                refresh != null &&
+                                (access != requestTokens.accessToken || refresh != requestTokens.refreshToken)
+                            ) {
                                 return@withLock BearerTokens(access, refresh)
                             }
 
@@ -98,7 +107,10 @@ class HttpClientFactory(
                                     }
 
                                     is ApiResult.HttpError -> {
-                                        if (result.statusCode == 400 || result.statusCode == 401 || result.statusCode == 403) {
+                                        if (result.statusCode == 400 ||
+                                            result.statusCode == 401 ||
+                                            result.statusCode == 403
+                                        ) {
                                             tokenStore.clear()
                                         }
                                         null

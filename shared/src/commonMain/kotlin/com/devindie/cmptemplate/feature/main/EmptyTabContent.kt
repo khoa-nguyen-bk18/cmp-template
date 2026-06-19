@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.main
+package com.devindie.cmptemplate.feature.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -2,8 +2,8 @@ package com.devindie.cmptemplate
 
 import android.app.Application
 import com.devindie.cmptemplate.browsePagingModule
+import com.devindie.cmptemplate.core.di.startKoinApp
 import com.devindie.cmptemplate.data.di.platformDataModule
-import com.devindie.cmptemplate.di.startKoinApp
 import org.koin.android.ext.koin.androidContext
 
 class CmpTemplateApplication : Application() {

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 /**
  * Builds [Pager] instances for the Browse screen (RemoteMediator + filtered Room [PagingSource]).
  *
- * Bound as [com.devindie.cmptemplate.screens.browse.BrowseCardPagerFactory] at the app composition root.
+ * Bound as [com.devindie.cmptemplate.feature.browse.BrowseCardPagerFactory] at the app composition root.
  *
  * @see BrowseCardRemoteMediator
  */
@@ -37,10 +37,10 @@ class BrowseCardPagerFactoryImpl(
         return Pager(
             config = pagingConfig,
             remoteMediator =
-                BrowseCardRemoteMediator(
-                    database = database,
-                    remoteDataSource = remoteDataSource,
-                ),
+            BrowseCardRemoteMediator(
+                database = database,
+                remoteDataSource = remoteDataSource,
+            ),
             pagingSourceFactory = {
                 cardDao.pagingSource(
                     query = query.query.trim(),

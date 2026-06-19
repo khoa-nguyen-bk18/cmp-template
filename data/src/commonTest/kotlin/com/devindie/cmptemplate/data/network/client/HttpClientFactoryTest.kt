@@ -168,19 +168,15 @@ class HttpClientFactoryTest {
         )
     }
 
-    private fun failingRefreshEngine(): MockEngine =
-        MockEngine {
-            error("Refresh should not be called")
-        }
+    private fun failingRefreshEngine(): MockEngine = MockEngine {
+        error("Refresh should not be called")
+    }
 
     private fun jsonHeaders() = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
 
     private fun bearerChallengeHeaders() = headersOf(HttpHeaders.WWWAuthenticate, "Bearer")
 
-    private class FakeTokenStore(
-        accessToken: String? = null,
-        refreshToken: String? = null,
-    ) : TokenStore {
+    private class FakeTokenStore(accessToken: String? = null, refreshToken: String? = null) : TokenStore {
         var accessToken: String? = accessToken
             private set
 

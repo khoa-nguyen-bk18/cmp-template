@@ -18,11 +18,11 @@ import com.devindie.cmptemplate.data.source.local.browse.BrowseDatabase
 import com.devindie.cmptemplate.data.source.remote.browse.BrowseCardRemoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import platform.Foundation.NSTemporaryDirectory
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import platform.Foundation.NSTemporaryDirectory
 
 @OptIn(ExperimentalPagingApi::class)
 class BrowseCardRemoteMediatorTest {
@@ -70,13 +70,12 @@ class BrowseCardRemoteMediatorTest {
         assertTrue(database.browseCardDao().count() > 0)
     }
 
-    private fun emptyPagingState(): PagingState<Int, BrowseCardEntity> =
-        PagingState(
-            pages = emptyList(),
-            anchorPosition = null,
-            config = PagingConfig(pageSize = BrowseCatalogPaging.PAGE_SIZE),
-            leadingPlaceholderCount = 0,
-        )
+    private fun emptyPagingState(): PagingState<Int, BrowseCardEntity> = PagingState(
+        pages = emptyList(),
+        anchorPosition = null,
+        config = PagingConfig(pageSize = BrowseCatalogPaging.PAGE_SIZE),
+        leadingPlaceholderCount = 0,
+    )
 
     private fun createTestBrowseDatabase(ioDispatcher: CoroutineDispatcher): BrowseDatabase {
         val dbPath = "${NSTemporaryDirectory()}browse-test-${Random.nextInt()}.db"
@@ -107,11 +106,11 @@ private class FakePagedBrowseCardRemoteDataSource : BrowseCardRemoteDataSource {
             BrowseCatalogPageDto(
                 cards = cards,
                 pagination =
-                    BrowsePaginationDto(
-                        page = page,
-                        pageSize = pageSize,
-                        hasMore = page < 3,
-                    ),
+                BrowsePaginationDto(
+                    page = page,
+                    pageSize = pageSize,
+                    hasMore = page < 3,
+                ),
             ),
         )
     }

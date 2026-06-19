@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.main
+package com.devindie.cmptemplate.feature.main
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -10,7 +10,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingBasket
 import androidx.compose.material.icons.outlined.Style
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.devindie.cmptemplate.navigation.MainRoute
+import com.devindie.cmptemplate.core.navigation.MainRoute
 
 /** Bottom-nav destinations from Stitch screen "Empty Nav Screen" (project 17128375841121903851). */
 enum class MainDestination(

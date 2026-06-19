@@ -67,9 +67,9 @@ class LayerDependencyTest {
     fun `data layer does not import presentation packages`() {
         val presentationImportPrefixes =
             listOf(
-                "com.devindie.cmptemplate.screens.",
-                "com.devindie.cmptemplate.ui.",
-                "com.devindie.cmptemplate.navigation.",
+                "com.devindie.cmptemplate.feature.",
+                "com.devindie.cmptemplate.core.ui.",
+                "com.devindie.cmptemplate.core.navigation.",
             )
         Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
             .files
@@ -91,10 +91,10 @@ class LayerDependencyTest {
     }
 
     @Test
-    fun `androidApp does not import screens`() {
+    fun `androidApp does not import feature packages`() {
         androidAppFiles().assertFalse { file ->
             file.imports.any { import ->
-                import.name.startsWith("com.devindie.cmptemplate.screens.")
+                import.name.startsWith("com.devindie.cmptemplate.feature.")
             }
         }
     }
@@ -138,7 +138,7 @@ class LayerDependencyTest {
         .files
         .filter { it.path.contains("androidApp") }
 
-    private fun screenViewModels() = Konsist.scopeFromPackage("com.devindie.cmptemplate.screens..")
+    private fun screenViewModels() = Konsist.scopeFromPackage("com.devindie.cmptemplate.feature..")
         .classes()
         .filter { it.name.endsWith("ViewModel") }
 }

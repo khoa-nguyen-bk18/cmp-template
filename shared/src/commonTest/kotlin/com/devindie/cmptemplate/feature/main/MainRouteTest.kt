@@ -1,6 +1,6 @@
-package com.devindie.cmptemplate.navigation
+package com.devindie.cmptemplate.feature.main
 
-import com.devindie.cmptemplate.screens.main.MainDestination
+import com.devindie.cmptemplate.core.navigation.MainRoute
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

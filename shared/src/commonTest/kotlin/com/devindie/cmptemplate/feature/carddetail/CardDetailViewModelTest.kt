@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.screens.carddetail
+package com.devindie.cmptemplate.feature.carddetail
 
 import com.devindie.cmptemplate.domain.model.carddetail.CardCondition
 import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase

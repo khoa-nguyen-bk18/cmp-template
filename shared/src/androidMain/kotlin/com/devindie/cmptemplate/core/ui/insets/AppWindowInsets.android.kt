@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.ui.insets
+package com.devindie.cmptemplate.core.ui.insets
 
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding

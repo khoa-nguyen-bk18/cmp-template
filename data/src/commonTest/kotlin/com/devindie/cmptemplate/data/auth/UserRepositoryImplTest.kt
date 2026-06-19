@@ -74,10 +74,7 @@ class UserRepositoryImplTest {
         assertNull(tokenStore.refreshToken)
     }
 
-    private class FakeTokenStore(
-        accessToken: String? = null,
-        refreshToken: String? = null,
-    ) : TokenStore {
+    private class FakeTokenStore(accessToken: String? = null, refreshToken: String? = null) : TokenStore {
         var accessToken: String? = accessToken
             private set
         var refreshToken: String? = refreshToken

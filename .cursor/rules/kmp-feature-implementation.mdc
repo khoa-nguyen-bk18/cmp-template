@@ -16,10 +16,10 @@ Apply the Karpathy guidelines while doing so:
 
 ## Order of work
 
-1. **Domain** — models → `XxxRepository` interface → `XxxUseCase`(s) → register in `VaultDomainModule`
+1. **Domain** — models → `XxxRepository` interface → `XxxUseCase`(s) → register in `AppDomainModule` (`shared/.../core/di/`)
 2. **Data** — `XxxDataSource` interface (`commonMain`) → `Android*` / `Ios*` (`androidMain` / `iosMain`) → `XxxRepositoryImpl` (`commonMain`)
 3. **DI** — bind in `platformDataModule()` actuals; wire from `androidApp` / `doInitKoin()` only (never from `:shared` commonMain)
-4. **Presentation** — `XxxViewModel` + screen in `shared`; ViewModel uses **use cases only** (no `data`, no `*RepositoryImpl`)
+4. **Presentation** — `XxxViewModel` + screen in `shared/.../feature/<feature>/`; ViewModel uses **use cases only** (no `data`, no `*RepositoryImpl`)
 5. **Verify** — `./gradlew :architecture:test`
 
 ## Platform APIs

@@ -5,13 +5,15 @@ import com.lemonappdev.konsist.api.ext.list.imports
 import com.lemonappdev.konsist.api.verify.assertFalse
 import org.junit.jupiter.api.Test
 
-/** Konsist: `androidApp` may import `data.di` only, not screens or other `data` packages. */
+/** Konsist: `androidApp` may import `data.di` only, not feature UI or other `data` packages. */
 class AndroidAppBoundaryTest {
 
     @Test
-    fun `androidApp does not import screens`() {
+    fun `androidApp does not import feature packages`() {
         androidAppFiles().assertFalse { file ->
-            file.imports.any { it.name.startsWith("com.devindie.cmptemplate.screens.") }
+            file.imports.any { import ->
+                import.name.startsWith("com.devindie.cmptemplate.feature.")
+            }
         }
     }
 

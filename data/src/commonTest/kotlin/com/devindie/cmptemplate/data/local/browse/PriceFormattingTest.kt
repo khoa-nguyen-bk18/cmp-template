@@ -9,40 +9,45 @@ import kotlin.test.assertEquals
 class PriceFormattingTest {
     @Test
     fun formatPriceCents_wholeDollars_omitsCents() {
-        assertEquals("$5",
+        assertEquals(
+            "$5",
             formatPriceCents(
-                500
-            )
+                500,
+            ),
         )
     }
 
     @Test
     fun formatPriceCents_withCents_padsToTwoDigits() {
-        assertEquals("$5.62",
+        assertEquals(
+            "$5.62",
             formatPriceCents(
-                562
-            )
+                562,
+            ),
         )
-        assertEquals("$5.05",
+        assertEquals(
+            "$5.05",
             formatPriceCents(
-                505
-            )
+                505,
+            ),
         )
     }
 
     @Test
     fun scaledPriceCents_appliesRatio() {
-        assertEquals(480L,
+        assertEquals(
+            480L,
             scaledPriceCents(
                 baseCents = 500,
-                numerator = 96
-            )
+                numerator = 96,
+            ),
         )
-        assertEquals(250L,
+        assertEquals(
+            250L,
             scaledPriceCents(
                 baseCents = 500,
-                numerator = 50
-            )
+                numerator = 50,
+            ),
         )
     }
 }

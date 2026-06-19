@@ -64,7 +64,7 @@ sequenceDiagram
 
 Kotlin Multiplatform template for **Android** and **iOS** that demonstrates **Clean Architecture**: a pure `domain` layer, a `data` layer for persistence and networking, and a `shared` Compose Multiplatform presentation layer. Dependency injection is wired at the app entry points, and layer boundaries are enforced with Konsist tests.
 
-The included **reference feature** is a Browse tab that lists collectible cards (category filters, search, card detail). Data flows through use cases into ViewModels with unidirectional UI state. Local catalog data is stored in **Room**; remote fetch uses a **Ktor** client (with a fake remote source for offline development). The main shell follows a Stitch-inspired navigation layout ([`MainScreen`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/main/MainScreen.kt)).
+The included **reference feature** is a Browse tab that lists collectible cards (category filters, search, card detail). Data flows through use cases into ViewModels with unidirectional UI state. Local catalog data is stored in **Room**; remote fetch uses a **Ktor** client (with a fake remote source for offline development). The main shell follows a Stitch-inspired navigation layout ([`MainScreen`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/main/MainScreen.kt)).
 
 **What you get**
 
@@ -286,7 +286,7 @@ Planned work not implemented in the template yet:
 
 | # | Item | Scope |
 |---|------|--------|
-| 1 | **Paging 3 on Browse** | Wire `androidx.paging` from the version catalog through `domain`/`data` (paged repository or `PagingSource`) into [`BrowseViewModel`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/browse/BrowseViewModel.kt) and replace the all-items [`LazyColumn`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/screens/browse/BrowseScreen.kt) with `LazyPagingItems` + `collectAsLazyPagingItems` for large catalogs |
+| 1 | **Paging 3 on Browse** | Wire `androidx.paging` from the version catalog through `domain`/`data` (paged repository or `PagingSource`) into [`BrowseViewModel`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/browse/BrowseViewModel.kt) and replace the all-items [`LazyColumn`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/browse/BrowseScreen.kt) with `LazyPagingItems` + `collectAsLazyPagingItems` for large catalogs |
 | 2 | **Project guardrail automation** | Script(s) under `scripts/` to run `qualityCheck` and `sonarAnalysis` locally, aggregate reports (Detekt, Lint HTML, Kover, Sonar), and support an agent loop: run → parse failures → prompt AI fix → re-run until green or max iterations |
 | 3 | **Template generator script** | Parameterized bootstrap (package name, application ID, module prefixes, Konsist package patterns in `:architecture`, optional feature stubs) to fork this repo without manual find-and-replace |
 | 4 | **Native UI via expect/actual** | Add reusable platform UI in `:shared` (`commonMain` `@Composable expect` or wrapper API + `androidMain` / `iosMain` `actual` implementations), following existing patterns such as [`AppWindowInsets`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/ui/insets/AppWindowInsets.kt); use for views Compose Multiplatform does not cover (e.g. `UIKit`/`AndroidView` bridges, platform pickers, maps). Keep `domain`/`data` expect/actual for I/O only — see [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) Step 0 |

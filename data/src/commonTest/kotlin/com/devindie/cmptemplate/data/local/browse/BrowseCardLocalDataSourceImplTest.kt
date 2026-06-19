@@ -13,7 +13,7 @@ class BrowseCardLocalDataSourceImplTest {
     private val dao = FakeBrowseCardDao()
     private val dataSource =
         BrowseCardLocalDataSourceImpl(
-            dao
+            dao,
         )
 
     @Test
