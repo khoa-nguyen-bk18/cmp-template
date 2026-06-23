@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import com.devindie.cmptemplate.core.navigation.MainRoute
 import com.devindie.cmptemplate.feature.browse.api.browseDestination
 import com.devindie.cmptemplate.feature.carddetail.api.cardDetailDestination
+import com.devindie.cmptemplate.feature.collection.api.collectionDestination
 import com.devindie.cmptemplate.feature.main.impl.EmptyTabContent
 
 fun NavHostController.navigateToMainTab(destination: MainDestination) {
@@ -58,11 +59,11 @@ fun NavGraphBuilder.cartDestination() {
     }
 }
 
-fun NavGraphBuilder.collectionDestination() {
-    composable<MainRoute.Collection> {
-        EmptyTabContent(modifier = Modifier.fillMaxSize())
-    }
-}
+//fun NavGraphBuilder.collectionDestination() {
+//    composable<MainRoute.Collection> {
+//        EmptyTabContent(modifier = Modifier.fillMaxSize())
+//    }
+//}
 
 fun NavGraphBuilder.profileDestination() {
     composable<MainRoute.Profile> {
@@ -79,7 +80,9 @@ fun NavGraphBuilder.mainTabNavGraph(
         onNavigateToCardDetail = onNavigateToCardDetail,
     )
     cartDestination()
-    collectionDestination()
+    collectionDestination(
+        onNavigateToCardDetail = onNavigateToCardDetail,
+    )
     profileDestination()
     cardDetailDestination(
         storeName = storeName,
