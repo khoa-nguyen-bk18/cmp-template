@@ -1,4 +1,4 @@
-package com.devindie.cmptemplate.domain.fake
+package com.devindie.cmptemplate.fake
 
 import com.devindie.cmptemplate.domain.repository.AppStartupRepository
 import kotlinx.coroutines.delay
