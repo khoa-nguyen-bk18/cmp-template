@@ -9,6 +9,7 @@ import com.devindie.cmptemplate.feature.browse.api.browseFeatureModule
 import com.devindie.cmptemplate.feature.carddetail.api.cardDetailFeatureModule
 import com.devindie.cmptemplate.feature.collection.api.collectionFeatureModule
 import com.devindie.cmptemplate.feature.main.api.mainFeatureModule
+import com.devindie.cmptemplate.feature.splash.api.splashFeatureModule
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -23,6 +24,7 @@ val appDomainModule =
             browseFeatureModule,
             cardDetailFeatureModule,
             mainFeatureModule,
-            collectionFeatureModule
+            collectionFeatureModule,
+            splashFeatureModule,
         )
     }
