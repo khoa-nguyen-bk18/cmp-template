@@ -4,6 +4,7 @@ android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
 androidx-activity = "1.13.0"
+androidx-core-splashscreen = "1.0.1"
 androidx-documentfile = "1.1.0"
 androidx-lifecycle = "2.10.0"
 coil = "3.4.0"
@@ -39,6 +40,7 @@ ksafe = "2.1.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-core-splashscreen" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "androidx-documentfile" }
