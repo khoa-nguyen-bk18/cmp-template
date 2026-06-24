@@ -2,6 +2,7 @@ package com.devindie.cmptemplate.feature.splash.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devindie.cmptemplate.domain.usecase.onboarding.HasCompletedOnboardingUseCase
 import com.devindie.cmptemplate.domain.usecase.startup.InitializeAppUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class SplashViewModel(
     private val initializeApp: InitializeAppUseCase,
+    private val hasCompletedOnboarding: HasCompletedOnboardingUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SplashScreenUiState())
     val uiState: StateFlow<SplashScreenUiState> = _uiState.asStateFlow()
@@ -32,7 +34,7 @@ class SplashViewModel(
                 it.copy(
                     phase = SplashPhase.Loading,
                     errorMessage = null,
-                    isStartupComplete = false,
+                    postStartupDestination = null,
                 )
             }
             val result =
@@ -44,7 +46,13 @@ class SplashViewModel(
                 }
             result
                 .onSuccess {
-                    _uiState.update { it.copy(isStartupComplete = true) }
+                    val destination =
+                        if (hasCompletedOnboarding()) {
+                            SplashPostStartupDestination.Main
+                        } else {
+                            SplashPostStartupDestination.Onboarding
+                        }
+                    _uiState.update { it.copy(postStartupDestination = destination) }
                 }
                 .onFailure { error ->
                     _uiState.update {

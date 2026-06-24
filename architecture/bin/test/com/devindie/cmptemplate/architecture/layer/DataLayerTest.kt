@@ -16,6 +16,7 @@ class DataLayerTest {
                 "androidx.room.",
                 "androidx.sqlite.",
                 "androidx.paging.",
+                "androidx.datastore.",
             )
         Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
             .files

@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import com.devindie.cmptemplate.core.navigation.MainShellRoute
 import com.devindie.cmptemplate.core.ui.theme.AppTheme
 import com.devindie.cmptemplate.feature.main.api.MainScreen
+import com.devindie.cmptemplate.feature.onboarding.api.OnboardingRoute
+import com.devindie.cmptemplate.feature.onboarding.api.OnboardingScreen
 import com.devindie.cmptemplate.feature.splash.api.SplashRoute
 import com.devindie.cmptemplate.feature.splash.api.SplashScreen
 
@@ -27,6 +29,20 @@ fun App(modifier: Modifier = Modifier) {
                     onNavigateToMain = {
                         navController.navigate(MainShellRoute) {
                             popUpTo<SplashRoute> { inclusive = true }
+                        }
+                    },
+                    onNavigateToOnboarding = {
+                        navController.navigate(OnboardingRoute) {
+                            popUpTo<SplashRoute> { inclusive = true }
+                        }
+                    },
+                )
+            }
+            composable<OnboardingRoute> {
+                OnboardingScreen(
+                    onNavigateToMain = {
+                        navController.navigate(MainShellRoute) {
+                            popUpTo<OnboardingRoute> { inclusive = true }
                         }
                     },
                 )

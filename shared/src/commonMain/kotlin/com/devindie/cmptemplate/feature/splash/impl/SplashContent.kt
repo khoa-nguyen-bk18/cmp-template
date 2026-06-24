@@ -21,17 +21,13 @@ import com.devindie.cmptemplate.core.ui.insets.appNavigationBarsPadding
 import com.devindie.cmptemplate.core.ui.insets.appStatusBarsPadding
 
 @Composable
-internal fun SplashContent(
-    state: SplashScreenUiState,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+internal fun SplashContent(state: SplashScreenUiState, onRetryClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier =
-            modifier
-                .fillMaxSize()
-                .appStatusBarsPadding()
-                .appNavigationBarsPadding(),
+        modifier
+            .fillMaxSize()
+            .appStatusBarsPadding()
+            .appNavigationBarsPadding(),
         contentAlignment = Alignment.Center,
     ) {
         Column(

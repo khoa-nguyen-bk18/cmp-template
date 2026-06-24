@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devindie.cmptemplate.core.ui.theme.AppTheme
 import com.devindie.cmptemplate.feature.splash.impl.SplashContent
 import com.devindie.cmptemplate.feature.splash.impl.SplashPhase
+import com.devindie.cmptemplate.feature.splash.impl.SplashPostStartupDestination
 import com.devindie.cmptemplate.feature.splash.impl.SplashScreenUiState
 import com.devindie.cmptemplate.feature.splash.impl.SplashViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -19,14 +20,17 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SplashScreen(
     onNavigateToMain: () -> Unit,
+    onNavigateToOnboarding: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(state.isStartupComplete) {
-        if (state.isStartupComplete) {
-            onNavigateToMain()
+    LaunchedEffect(state.postStartupDestination) {
+        when (state.postStartupDestination) {
+            SplashPostStartupDestination.Main -> onNavigateToMain()
+            SplashPostStartupDestination.Onboarding -> onNavigateToOnboarding()
+            null -> Unit
         }
     }
 
@@ -38,18 +42,14 @@ fun SplashScreen(
 }
 
 @Composable
-fun SplashScreen(
-    state: SplashScreenUiState,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun SplashScreen(state: SplashScreenUiState, onRetryClick: () -> Unit, modifier: Modifier = Modifier) {
     SplashContent(
         state = state,
         onRetryClick = onRetryClick,
         modifier =
-            modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+        modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
     )
 }
 
@@ -67,10 +67,10 @@ private fun SplashScreenErrorPreview() {
     AppTheme {
         SplashScreen(
             state =
-                SplashScreenUiState(
-                    phase = SplashPhase.Error,
-                    errorMessage = "Unable to start the app",
-                ),
+            SplashScreenUiState(
+                phase = SplashPhase.Error,
+                errorMessage = "Unable to start the app",
+            ),
             onRetryClick = {},
         )
     }

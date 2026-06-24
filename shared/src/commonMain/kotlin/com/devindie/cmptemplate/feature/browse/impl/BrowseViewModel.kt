@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.devindie.cmptemplate.feature.browse.api.BrowseCardPagerFactory
 import com.devindie.cmptemplate.domain.model.browse.BrowseCardsQuery
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.domain.model.browse.CollectibleCard
+import com.devindie.cmptemplate.feature.browse.api.BrowseCardPagerFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

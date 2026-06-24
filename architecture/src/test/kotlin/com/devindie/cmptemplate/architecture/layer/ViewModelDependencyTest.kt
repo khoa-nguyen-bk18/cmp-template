@@ -26,8 +26,7 @@ class ViewModelDependencyTest {
         }
     }
 
-    private fun screenViewModels() =
-        Konsist.scopeFromPackage("com.devindie.cmptemplate.feature..impl..")
+    private fun screenViewModels() = Konsist.scopeFromPackage("com.devindie.cmptemplate.feature..impl..")
         .classes()
         .filter { it.name.endsWith("ViewModel") }
 }

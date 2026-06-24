@@ -54,6 +54,8 @@ kotlin {
             implementation(libs.androidx.room.paging)
             implementation(libs.androidx.paging.common)
             implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
             implementation(libs.ksafe)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

@@ -3,7 +3,6 @@ package com.devindie.cmptemplate.feature.collection.impl
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,8 +31,8 @@ private const val SCROLL_TO_TOP_AFTER_CARD_ROWS = 2
 
 private const val SCROLL_TO_TOP_FIRST_VISIBLE_INDEX_THRESHOLD =
     BROWSE_SCROLLABLE_HEADER_ITEM_COUNT +
-            BROWSE_LIST_HEADER_ITEM_COUNT +
-            SCROLL_TO_TOP_AFTER_CARD_ROWS
+        BROWSE_LIST_HEADER_ITEM_COUNT +
+        SCROLL_TO_TOP_AFTER_CARD_ROWS
 
 /**
  * State-holder entry for the Stitch "Browse" / Product Listing tab (project 17128375841121903851).
@@ -52,13 +51,9 @@ internal fun CollectionScreen(
     )
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CollectionScreenContent(
-    state: CollectionScreenUiState,
-    modifier: Modifier = Modifier,
-) {
+private fun CollectionScreenContent(state: CollectionScreenUiState, modifier: Modifier = Modifier) {
     val pullState = rememberPullToRefreshState()
     val isRefreshing by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
@@ -72,7 +67,7 @@ private fun CollectionScreenContent(
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 item(key = "search") {
                     Text(text = "Search")

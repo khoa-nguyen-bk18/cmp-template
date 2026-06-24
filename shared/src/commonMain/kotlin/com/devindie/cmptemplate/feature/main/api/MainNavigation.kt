@@ -59,11 +59,11 @@ fun NavGraphBuilder.cartDestination() {
     }
 }
 
-//fun NavGraphBuilder.collectionDestination() {
+// fun NavGraphBuilder.collectionDestination() {
 //    composable<MainRoute.Collection> {
 //        EmptyTabContent(modifier = Modifier.fillMaxSize())
 //    }
-//}
+// }
 
 fun NavGraphBuilder.profileDestination() {
     composable<MainRoute.Profile> {

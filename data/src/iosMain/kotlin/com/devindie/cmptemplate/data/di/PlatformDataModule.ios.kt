@@ -4,6 +4,8 @@ import com.devindie.cmptemplate.data.auth.UserRepositoryImpl
 import com.devindie.cmptemplate.data.coroutines.DispatcherProvider
 import com.devindie.cmptemplate.data.coroutines.IosDispatcherProvider
 import com.devindie.cmptemplate.data.local.browse.getBrowseDatabaseBuilder
+import com.devindie.cmptemplate.data.onboarding.OnboardingRepositoryImpl
+import com.devindie.cmptemplate.data.onboarding.createOnboardingDataStore
 import com.devindie.cmptemplate.data.source.local.browse.BrowseCardLocalDataSource
 import com.devindie.cmptemplate.data.source.local.browse.BrowseCardLocalDataSourceImpl
 import com.devindie.cmptemplate.data.source.local.browse.BrowseCardPagerFactoryImpl
@@ -13,6 +15,7 @@ import com.devindie.cmptemplate.data.source.local.browse.getBrowseDatabase
 import com.devindie.cmptemplate.data.source.startup.AppStartupRepositoryImpl
 import com.devindie.cmptemplate.domain.repository.AppStartupRepository
 import com.devindie.cmptemplate.domain.repository.CardDetailRepository
+import com.devindie.cmptemplate.domain.repository.OnboardingRepository
 import com.devindie.cmptemplate.domain.repository.UserRepository
 import eu.anifantakis.lib.ksafe.KSafe
 import org.koin.core.module.Module
@@ -51,4 +54,6 @@ actual fun platformDataModule(): Module = module {
     single<AppStartupRepository> {
         AppStartupRepositoryImpl(browseCardDao = get())
     }
+    single { createOnboardingDataStore() }
+    single<OnboardingRepository> { OnboardingRepositoryImpl(dataStore = get()) }
 }
