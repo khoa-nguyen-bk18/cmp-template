@@ -12,11 +12,16 @@ import kotlinx.coroutines.flow.update
 class FakeBrowseCardDao : BrowseCardDao {
     private val cards = MutableStateFlow<List<BrowseCardEntity>>(emptyList())
 
+    var countThrows: Throwable? = null
+
     fun setCards(value: List<BrowseCardEntity>) {
         cards.value = value
     }
 
-    override suspend fun count(): Int = cards.value.size
+    override suspend fun count(): Int {
+        countThrows?.let { throw it }
+        return cards.value.size
+    }
 
     override suspend fun deleteAll() {
         cards.value = emptyList()

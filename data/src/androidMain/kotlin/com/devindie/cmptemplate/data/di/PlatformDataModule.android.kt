@@ -11,6 +11,8 @@ import com.devindie.cmptemplate.data.source.local.browse.BrowseCardPagerFactoryI
 import com.devindie.cmptemplate.data.source.local.browse.BrowseDatabase
 import com.devindie.cmptemplate.data.source.local.browse.CardDetailRepositoryImpl
 import com.devindie.cmptemplate.data.source.local.browse.getBrowseDatabase
+import com.devindie.cmptemplate.data.source.startup.AppStartupRepositoryImpl
+import com.devindie.cmptemplate.domain.repository.AppStartupRepository
 import com.devindie.cmptemplate.domain.repository.CardDetailRepository
 import com.devindie.cmptemplate.domain.repository.UserRepository
 import eu.anifantakis.lib.ksafe.KSafe
@@ -46,5 +48,8 @@ actual fun platformDataModule(): Module = module {
     }
     single<UserRepository> {
         UserRepositoryImpl(tokenStore = get())
+    }
+    single<AppStartupRepository> {
+        AppStartupRepositoryImpl(browseCardDao = get())
     }
 }
