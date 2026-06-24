@@ -1,6 +1,7 @@
 package com.devindie.cmptemplate.core.di
 
 import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase
+import com.devindie.cmptemplate.domain.usecase.startup.InitializeAppUseCase
 import com.devindie.cmptemplate.domain.usecase.user.ClearUserSessionUseCase
 import com.devindie.cmptemplate.domain.usecase.user.GetUserSessionUseCase
 import com.devindie.cmptemplate.domain.usecase.user.SaveUserSessionUseCase
@@ -14,6 +15,7 @@ import org.koin.dsl.module
 val appDomainModule =
     module {
         factoryOf(::GetCardDetailUseCase)
+        factoryOf(::InitializeAppUseCase)
         factoryOf(::GetUserSessionUseCase)
         factoryOf(::SaveUserSessionUseCase)
         factoryOf(::ClearUserSessionUseCase)
