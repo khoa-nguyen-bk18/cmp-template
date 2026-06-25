@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.devindie.cmptemplate.core.navigation.MainRoute
 import com.devindie.cmptemplate.feature.browse.impl.BrowseScreen
 import com.devindie.cmptemplate.feature.legal.api.LegalDocumentBottomSheetHost
@@ -16,20 +16,20 @@ import com.devindie.cmptemplate.feature.legal.api.LegalDocumentType
 private const val LEGAL_TEST_PRIVACY_POLICY_URL = "https://example.com/privacy"
 private const val LEGAL_TEST_TERMS_OF_SERVICE_URL = "https://example.com/terms"
 
-fun NavGraphBuilder.browseDestination(onNavigateToCardDetail: (Long) -> Unit) {
-    browseDestination(
+fun EntryProviderScope<NavKey>.browseEntry(onNavigateToCardDetail: (Long) -> Unit) {
+    browseEntry(
         onNavigateToCardDetail = onNavigateToCardDetail,
         privacyPolicyUrl = LEGAL_TEST_PRIVACY_POLICY_URL,
         termsOfServiceUrl = LEGAL_TEST_TERMS_OF_SERVICE_URL,
     )
 }
 
-fun NavGraphBuilder.browseDestination(
+fun EntryProviderScope<NavKey>.browseEntry(
     onNavigateToCardDetail: (Long) -> Unit,
     privacyPolicyUrl: String,
     termsOfServiceUrl: String,
 ) {
-    composable<MainRoute.Browse> {
+    entry<MainRoute.Browse> {
         var visibleLegalDocument by remember { mutableStateOf<LegalDocumentType?>(null) }
 
         BrowseScreen(

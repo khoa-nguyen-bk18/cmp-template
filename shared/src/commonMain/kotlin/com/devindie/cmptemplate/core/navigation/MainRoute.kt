@@ -1,10 +1,11 @@
 package com.devindie.cmptemplate.core.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-/** Type-safe routes for the main bottom-nav [NavHost][androidx.navigation.compose.NavHost]. */
+/** Type-safe routes for the main bottom-nav shell. */
 @Serializable
-sealed interface MainRoute {
+sealed interface MainRoute : NavKey {
     @Serializable
     data object Browse : MainRoute
 

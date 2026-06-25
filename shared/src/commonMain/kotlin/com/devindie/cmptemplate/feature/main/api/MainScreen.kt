@@ -14,14 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import com.devindie.cmptemplate.core.ui.insets.appNavigationBarsPadding
 import com.devindie.cmptemplate.core.ui.insets.appStatusBarsPadding
 import com.devindie.cmptemplate.core.ui.theme.AppTheme
 import com.devindie.cmptemplate.core.ui.theme.LocalAppSpacing
-import com.devindie.cmptemplate.feature.carddetail.api.navigateToCardDetail
 import com.devindie.cmptemplate.feature.main.impl.BottomNavigationBar
 import com.devindie.cmptemplate.feature.main.impl.EmptyTabContent
 import com.devindie.cmptemplate.feature.main.impl.MainScreenUiState
@@ -35,20 +32,16 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun MainScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = koinViewModel()) {
-    val navController = rememberNavController()
+    val (navigationState, navigator) = rememberMainTabNavigation()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination = selectedMainDestination(
-        currentDestination = navBackStackEntry?.destination,
-        previousDestination = navController.previousBackStackEntry?.destination,
-    )
+    val selectedDestination = navigationState.selectedMainDestination()
 
     MainScreen(
         state = state,
         selectedDestination = selectedDestination,
         onDestinationSelected = { destination ->
             if (destination != selectedDestination) {
-                navController.navigateToMainTab(destination)
+                navigator.navigateToMainTab(destination)
             }
         },
         onCartClick = {
@@ -56,19 +49,18 @@ fun MainScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = koinVie
         },
         modifier = modifier,
         tabContent = { innerPadding ->
-            MainTabNavHost(
-                navController = navController,
+            MainTabNavDisplay(
+                navigationState = navigationState,
+                navigator = navigator,
                 innerPadding = innerPadding,
                 storeName = state.storeName,
-                onNavigateToCardDetail = navController::navigateToCardDetail,
-                onDismissCardDetail = navController::popBackStack,
             )
         },
     )
 }
 
 /**
- * Previewable UI for the empty navigation shell — no [androidx.navigation.NavHostController], ViewModel, or DI.
+ * Previewable UI for the empty navigation shell — no navigation state holder, ViewModel, or DI.
  */
 @Composable
 fun MainScreen(
@@ -79,8 +71,11 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     tabContent: @Composable (PaddingValues) -> Unit = { innerPadding ->
         EmptyTabContent(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
-                .consumeWindowInsets(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding),
         )
     },
 ) {
@@ -96,10 +91,13 @@ fun MainScreen(
                 MainTopBar(
                     storeName = state.storeName,
                     onCartClick = onCartClick,
-                    modifier = Modifier.appStatusBarsPadding().padding(
-                        horizontal = spacing.screenMargin,
-                        vertical = spacing.spaceSm,
-                    ),
+                    modifier =
+                        Modifier
+                            .appStatusBarsPadding()
+                            .padding(
+                                horizontal = spacing.screenMargin,
+                                vertical = spacing.spaceSm,
+                            ),
                 )
             }
         },

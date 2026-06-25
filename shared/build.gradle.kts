@@ -55,7 +55,7 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
-            implementation(libs.navigation.compose)
+            implementation(libs.navigation3.ui)
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.androidx.lifecycle.runtimeCompose)
@@ -79,8 +79,7 @@ kotlin {
         }
         getByName("androidHostTest").dependencies {
             implementation(libs.kotlin.test)
-            implementation(libs.navigation.compose)
-            implementation(libs.navigation.testing)
+            implementation(libs.navigation3.ui)
             implementation(libs.compose.ui.test.junit4)
             implementation(libs.androidx.test.core)
             implementation(libs.androidx.test.ext.junit)

@@ -5,109 +5,84 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.scene.DialogSceneStrategy
+import androidx.navigation3.ui.NavDisplay
 import com.devindie.cmptemplate.core.navigation.MainRoute
-import com.devindie.cmptemplate.feature.browse.api.browseDestination
-import com.devindie.cmptemplate.feature.carddetail.api.cardDetailDestination
-import com.devindie.cmptemplate.feature.collection.api.collectionDestination
+import com.devindie.cmptemplate.feature.browse.api.browseEntry
+import com.devindie.cmptemplate.feature.carddetail.api.CardDetailRoute
+import com.devindie.cmptemplate.feature.carddetail.api.cardDetailEntry
+import com.devindie.cmptemplate.feature.collection.api.collectionEntry
 import com.devindie.cmptemplate.feature.main.impl.EmptyTabContent
+import com.devindie.cmptemplate.navigation.navKeysSavedStateConfiguration
 
-fun NavHostController.navigateToMainTab(destination: MainDestination) {
-    navigate(destination.route) {
-        popUpTo(graph.findStartDestination().id) {
-            saveState = true
-        }
-        launchSingleTop = true
-        restoreState = true
-    }
+fun MainTabNavigator.navigateToMainTab(destination: MainDestination) {
+    navigate(destination.route)
 }
 
-fun NavHostController.selectedMainDestination(): MainDestination {
-    val currentDestination = currentBackStackEntry?.destination
-    val previousDestination = previousBackStackEntry?.destination
-
-    return selectedMainDestination(
-        currentDestination = currentDestination,
-        previousDestination = previousDestination,
-    )
+fun MainTabNavigator.navigateToCardDetail(cardId: Long) {
+    navigate(CardDetailRoute(cardId = cardId))
 }
 
-internal fun selectedMainDestination(
-    currentDestination: NavDestination?,
-    previousDestination: NavDestination?,
-): MainDestination {
-    destinationFor(currentDestination)?.let { return it }
-    destinationFor(previousDestination)?.let { return it }
-    return MainDestination.Start
-}
+fun MainTabNavigationState.selectedMainDestination(): MainDestination =
+    MainDestination.entries.firstOrNull { it.route == topLevelRoute } ?: MainDestination.Start
 
-private fun destinationFor(destination: NavDestination?): MainDestination? =
-    MainDestination.entries.firstOrNull { tab ->
-        destination?.hasRoute(tab.route::class) == true
-    }
-
-fun NavGraphBuilder.cartDestination() {
-    composable<MainRoute.Cart> {
-        EmptyTabContent(modifier = Modifier.fillMaxSize())
-    }
-}
-
-// fun NavGraphBuilder.collectionDestination() {
-//    composable<MainRoute.Collection> {
-//        EmptyTabContent(modifier = Modifier.fillMaxSize())
-//    }
-// }
-
-fun NavGraphBuilder.profileDestination() {
-    composable<MainRoute.Profile> {
-        EmptyTabContent(modifier = Modifier.fillMaxSize())
-    }
-}
-
-fun NavGraphBuilder.mainTabNavGraph(
+fun mainTabEntryProvider(
     storeName: String,
-    onNavigateToCardDetail: (Long) -> Unit,
-    onDismissCardDetail: () -> Unit,
+    navigator: MainTabNavigator,
+): (NavKey) -> NavEntry<NavKey> {
+    val provider =
+        entryProvider {
+            browseEntry(onNavigateToCardDetail = navigator::navigateToCardDetail)
+            entry<MainRoute.Cart> {
+                EmptyTabContent(modifier = Modifier.fillMaxSize())
+            }
+            collectionEntry(onNavigateToCardDetail = navigator::navigateToCardDetail)
+            entry<MainRoute.Profile> {
+                EmptyTabContent(modifier = Modifier.fillMaxSize())
+            }
+            cardDetailEntry(
+                storeName = storeName,
+                onDismiss = navigator::goBack,
+            )
+        }
+    return { key -> provider(key) }
+}
+
+@Composable
+fun MainTabNavDisplay(
+    navigationState: MainTabNavigationState,
+    navigator: MainTabNavigator,
+    innerPadding: PaddingValues,
+    storeName: String,
+    modifier: Modifier = Modifier,
 ) {
-    browseDestination(
-        onNavigateToCardDetail = onNavigateToCardDetail,
-    )
-    cartDestination()
-    collectionDestination(
-        onNavigateToCardDetail = onNavigateToCardDetail,
-    )
-    profileDestination()
-    cardDetailDestination(
-        storeName = storeName,
-        onDismiss = onDismissCardDetail,
+    val entryProvider = remember(storeName, navigator) { mainTabEntryProvider(storeName, navigator) }
+
+    NavDisplay(
+        entries = navigationState.toDecoratedEntries(entryProvider),
+        onBack = navigator::goBack,
+        sceneStrategies = remember { listOf(DialogSceneStrategy()) },
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding),
     )
 }
 
 @Composable
-fun MainTabNavHost(
-    navController: NavHostController,
-    innerPadding: PaddingValues,
-    storeName: String,
-    onNavigateToCardDetail: (Long) -> Unit,
-    onDismissCardDetail: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    NavHost(
-        navController = navController,
-        startDestination = MainRoute.Browse,
-        modifier = modifier.fillMaxSize().padding(innerPadding).consumeWindowInsets(innerPadding),
-    ) {
-        mainTabNavGraph(
-            storeName = storeName,
-            onNavigateToCardDetail = onNavigateToCardDetail,
-            onDismissCardDetail = onDismissCardDetail,
+fun rememberMainTabNavigation(
+    storeName: String = "",
+): Pair<MainTabNavigationState, MainTabNavigator> {
+    val navigationState =
+        rememberMainTabNavigationState(
+            savedStateConfiguration = navKeysSavedStateConfiguration,
         )
-    }
+    val navigator = remember(navigationState) { MainTabNavigator(navigationState) }
+    return navigationState to navigator
 }

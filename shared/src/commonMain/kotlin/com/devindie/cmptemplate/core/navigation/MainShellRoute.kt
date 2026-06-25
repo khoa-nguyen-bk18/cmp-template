@@ -1,6 +1,7 @@
 package com.devindie.cmptemplate.core.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object MainShellRoute
+data object MainShellRoute : NavKey

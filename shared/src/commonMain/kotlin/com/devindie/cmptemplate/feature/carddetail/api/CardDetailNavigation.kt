@@ -1,25 +1,25 @@
 package com.devindie.cmptemplate.feature.carddetail.api
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.dialog
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.scene.DialogSceneStrategy
 import com.devindie.cmptemplate.feature.carddetail.impl.CardDetailBottomSheet
 import kotlinx.serialization.Serializable
-@Serializable
-internal data class CardDetailRoute(val cardId: Long)
 
-fun NavGraphBuilder.cardDetailDestination(storeName: String, onDismiss: () -> Unit) {
-    dialog<CardDetailRoute> { backStackEntry ->
-        val route = backStackEntry.toRoute<CardDetailRoute>()
+@Serializable
+internal data class CardDetailRoute(
+    val cardId: Long,
+) : NavKey
+
+fun EntryProviderScope<NavKey>.cardDetailEntry(
+    storeName: String,
+    onDismiss: () -> Unit,
+) {
+    entry<CardDetailRoute>(metadata = DialogSceneStrategy.dialog()) { key ->
         CardDetailBottomSheet(
-            cardId = route.cardId,
+            cardId = key.cardId,
             storeName = storeName,
             onDismiss = onDismiss,
         )
     }
-}
-
-fun NavHostController.navigateToCardDetail(cardId: Long) {
-    navigate(CardDetailRoute(cardId = cardId))
 }
