@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidx.baselineprofile)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 kotlin {
@@ -18,6 +20,7 @@ dependencies {
     implementation(projects.shared)
     // Platform DI: androidApp supplies platformDataModule() (see README).
     implementation(projects.data)
+    implementation(projects.analytics)
 
     baselineProfile(projects.benchmark)
 
@@ -33,6 +36,9 @@ android {
     namespace = "com.devindie.cmptemplate"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "com.devindie.cmptemplate"
         minSdk = libs.versions.android.minSdk.get().toInt()

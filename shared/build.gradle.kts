@@ -44,6 +44,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.domain)
+            implementation(projects.analytics)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.compose.runtime)
             implementation(libs.compose.animation)

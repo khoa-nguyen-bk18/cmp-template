@@ -22,6 +22,8 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.androidx.room) apply false
     alias(libs.plugins.stability.analyzer) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 }
 
 dependencies {
@@ -139,6 +141,7 @@ tasks.register("qualityCheck") {
         ":androidApp:lint",
         ":domain:allTests",
         ":data:allTests",
+        ":analytics:allTests",
         ":shared:allTests",
         ":architecture:test",
     )
