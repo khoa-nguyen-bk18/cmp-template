@@ -12,6 +12,7 @@ import com.devindie.cmptemplate.feature.carddetail.api.cardDetailFeatureModule
 import com.devindie.cmptemplate.feature.collection.api.collectionFeatureModule
 import com.devindie.cmptemplate.feature.main.api.mainFeatureModule
 import com.devindie.cmptemplate.feature.onboarding.api.onboardingFeatureModule
+import com.devindie.cmptemplate.feature.legal.api.legalFeatureModule
 import com.devindie.cmptemplate.feature.splash.api.splashFeatureModule
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -32,5 +33,6 @@ val appDomainModule =
             collectionFeatureModule,
             splashFeatureModule,
             onboardingFeatureModule,
+            legalFeatureModule,
         )
     }

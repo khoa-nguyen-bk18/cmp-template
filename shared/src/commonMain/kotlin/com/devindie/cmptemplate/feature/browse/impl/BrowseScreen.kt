@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -87,6 +88,8 @@ private const val SCROLL_TO_TOP_FIRST_VISIBLE_INDEX_THRESHOLD =
 internal fun BrowseScreen(
     modifier: Modifier = Modifier,
     onCardClick: (CollectibleCard) -> Unit = {},
+    onPrivacyPolicyClick: () -> Unit = {},
+    onTermsOfServiceClick: () -> Unit = {},
     viewModel: BrowseViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -98,6 +101,8 @@ internal fun BrowseScreen(
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onCategorySelected = viewModel::onCategorySelected,
         onCardClick = onCardClick,
+        onPrivacyPolicyClick = onPrivacyPolicyClick,
+        onTermsOfServiceClick = onTermsOfServiceClick,
         modifier = modifier,
     )
 }
@@ -112,6 +117,8 @@ fun BrowseScreen(
     onSearchQueryChange: (String) -> Unit,
     onCategorySelected: (BrowseCategory) -> Unit,
     onCardClick: (CollectibleCard) -> Unit,
+    onPrivacyPolicyClick: () -> Unit = {},
+    onTermsOfServiceClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val spacing = LocalAppSpacing.current
@@ -122,6 +129,8 @@ fun BrowseScreen(
         onSearchQueryChange = onSearchQueryChange,
         onCategorySelected = onCategorySelected,
         onCardClick = onCardClick,
+        onPrivacyPolicyClick = onPrivacyPolicyClick,
+        onTermsOfServiceClick = onTermsOfServiceClick,
         modifier = modifier.fillMaxSize().testTag("browse_screen"),
         contentPadding = PaddingValues(
             start = spacing.screenMargin,
@@ -140,6 +149,8 @@ private fun BrowseScreenContent(
     onSearchQueryChange: (String) -> Unit,
     onCategorySelected: (BrowseCategory) -> Unit,
     onCardClick: (CollectibleCard) -> Unit,
+    onPrivacyPolicyClick: () -> Unit,
+    onTermsOfServiceClick: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -216,6 +227,29 @@ private fun BrowseScreenContent(
                                         contentDescription = "${category.label} filter"
                                     },
                             )
+                        }
+                    }
+                }
+                item(key = "legal_test") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(spacing.spaceSm),
+                    ) {
+                        Button(
+                            onClick = onPrivacyPolicyClick,
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("browse_privacy_policy"),
+                        ) {
+                            Text("Privacy Policy")
+                        }
+                        Button(
+                            onClick = onTermsOfServiceClick,
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("browse_terms_of_service"),
+                        ) {
+                            Text("Terms")
                         }
                     }
                 }
