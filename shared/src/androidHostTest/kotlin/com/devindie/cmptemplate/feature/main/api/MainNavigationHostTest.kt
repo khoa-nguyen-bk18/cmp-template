@@ -10,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.devindie.cmptemplate.core.navigation.MainRoute
 import com.devindie.cmptemplate.feature.carddetail.api.CardDetailRoute
 import com.devindie.cmptemplate.feature.carddetail.api.navigateToCardDetail
+import com.devindie.cmptemplate.feature.settings.api.SettingsRoute
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,6 +42,8 @@ class MainNavigationHostTest {
                     storeName = "Test Store",
                     onNavigateToCardDetail = navController::navigateToCardDetail,
                     onDismissCardDetail = navController::popBackStack,
+                    onNavigateToSettings = { navController.navigate(SettingsRoute) },
+                    onDismissSettings = navController::popBackStack,
                 )
             }
         }

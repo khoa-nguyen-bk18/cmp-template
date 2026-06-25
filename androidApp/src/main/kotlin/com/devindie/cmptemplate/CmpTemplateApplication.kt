@@ -6,6 +6,7 @@ import com.devindie.cmptemplate.analytics.api.analyticsFeatureModule
 import com.devindie.cmptemplate.browsePagingModule
 import com.devindie.cmptemplate.core.di.startKoinApp
 import com.devindie.cmptemplate.data.di.platformDataModule
+import com.devindie.cmptemplate.settings.settingsCatalogModule
 import org.koin.android.ext.koin.androidContext
 
 class CmpTemplateApplication : Application() {
@@ -15,6 +16,7 @@ class CmpTemplateApplication : Application() {
             appModules =
                 listOf(
                     platformDataModule(),
+                    settingsCatalogModule(),
                     browsePagingModule,
                     analyticsFeatureModule(
                         AnalyticsConfig(

@@ -18,6 +18,9 @@ import com.devindie.cmptemplate.feature.browse.api.browseDestination
 import com.devindie.cmptemplate.feature.carddetail.api.cardDetailDestination
 import com.devindie.cmptemplate.feature.collection.api.collectionDestination
 import com.devindie.cmptemplate.feature.main.impl.EmptyTabContent
+import com.devindie.cmptemplate.feature.main.impl.ProfileScreen
+import com.devindie.cmptemplate.feature.settings.api.SettingsRoute
+import com.devindie.cmptemplate.feature.settings.api.settingsDestination
 
 fun NavHostController.navigateToMainTab(destination: MainDestination) {
     navigate(destination.route) {
@@ -65,9 +68,9 @@ fun NavGraphBuilder.cartDestination() {
 //    }
 // }
 
-fun NavGraphBuilder.profileDestination() {
+fun NavGraphBuilder.profileDestination(onNavigateToSettings: () -> Unit) {
     composable<MainRoute.Profile> {
-        EmptyTabContent(modifier = Modifier.fillMaxSize())
+        ProfileScreen(onNavigateToSettings = onNavigateToSettings)
     }
 }
 
@@ -75,6 +78,8 @@ fun NavGraphBuilder.mainTabNavGraph(
     storeName: String,
     onNavigateToCardDetail: (Long) -> Unit,
     onDismissCardDetail: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onDismissSettings: () -> Unit,
 ) {
     browseDestination(
         onNavigateToCardDetail = onNavigateToCardDetail,
@@ -83,7 +88,8 @@ fun NavGraphBuilder.mainTabNavGraph(
     collectionDestination(
         onNavigateToCardDetail = onNavigateToCardDetail,
     )
-    profileDestination()
+    profileDestination(onNavigateToSettings = onNavigateToSettings)
+    settingsDestination(onBack = onDismissSettings)
     cardDetailDestination(
         storeName = storeName,
         onDismiss = onDismissCardDetail,
@@ -108,6 +114,8 @@ fun MainTabNavHost(
             storeName = storeName,
             onNavigateToCardDetail = onNavigateToCardDetail,
             onDismissCardDetail = onDismissCardDetail,
+            onNavigateToSettings = { navController.navigate(SettingsRoute) },
+            onDismissSettings = { navController.popBackStack() },
         )
     }
 }
