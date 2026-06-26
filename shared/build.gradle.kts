@@ -41,10 +41,12 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(projects.data)
+            implementation(libs.purchases.kmp.core)
         }
         commonMain.dependencies {
             implementation(projects.domain)
             implementation(projects.analytics)
+            implementation(projects.billing)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.compose.runtime)
             implementation(libs.compose.animation)
@@ -70,6 +72,7 @@ kotlin {
         iosMain.dependencies {
             // iOS Koin bootstrap links :data at the app layer (see README).
             implementation(projects.data)
+            implementation(libs.purchases.kmp.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

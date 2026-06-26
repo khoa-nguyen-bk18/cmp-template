@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -45,6 +46,17 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { localProperties.load(it) }
+        }
+        val revenueCatAndroidKey = localProperties.getProperty("REVENUECAT_API_KEY_ANDROID", "")
+        val billingEnabled = localProperties.getProperty("BILLING_ENABLED", "false").toBoolean()
+
+        buildConfigField("String", "REVENUECAT_API_KEY_ANDROID", "\"$revenueCatAndroidKey\"")
+        buildConfigField("Boolean", "BILLING_ENABLED", "$billingEnabled")
     }
     packaging {
         resources {

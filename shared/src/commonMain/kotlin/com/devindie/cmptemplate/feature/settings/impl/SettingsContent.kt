@@ -76,6 +76,9 @@ internal fun SettingsContent(
                     )
                 }
             }
+            item(key = "billing-smoke") {
+                com.devindie.cmptemplate.billing.BillingSmokePanel()
+            }
         }
     }
 }

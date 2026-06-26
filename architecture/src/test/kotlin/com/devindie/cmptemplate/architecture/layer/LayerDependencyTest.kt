@@ -64,6 +64,28 @@ class LayerDependencyTest {
     }
 
     @Test
+    fun `domain layer does not import billing`() {
+        Konsist.scopeFromPackage("com.devindie.cmptemplate.domain..")
+            .files
+            .assertFalse { file ->
+                file.imports.any { import ->
+                    import.name.startsWith("com.devindie.cmptemplate.billing.")
+                }
+            }
+    }
+
+    @Test
+    fun `data layer does not import billing`() {
+        Konsist.scopeFromPackage("com.devindie.cmptemplate.data..")
+            .files
+            .assertFalse { file ->
+                file.imports.any { import ->
+                    import.name.startsWith("com.devindie.cmptemplate.billing.")
+                }
+            }
+    }
+
+    @Test
     fun `data layer does not import presentation packages`() {
         val presentationImportPrefixes =
             listOf(

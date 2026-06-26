@@ -142,6 +142,7 @@ tasks.register("qualityCheck") {
         ":domain:allTests",
         ":data:allTests",
         ":analytics:allTests",
+        ":billing:allTests",
         ":shared:allTests",
         ":architecture:test",
     )
