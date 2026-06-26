@@ -1,0 +1,17 @@
+canvas:
+  android:
+    width: 1080
+    height: 1920
+  ios:
+    width: 1290
+    height: 2796
+
+layout:
+  caption_band_ratio: 0.14
+  screenshot_padding_ratio: 0.04
+
+font:
+  above_size: 52
+  below_size: 36
+  caption_color: "#FFFFFF"
+  band_color: "#6750A4"

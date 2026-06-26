@@ -1,0 +1,7 @@
+CMPTemplate is a Kotlin Multiplatform starter for Android and iOS with Clean Architecture, shared Compose UI, and automated quality gates.
+
+• Enforced module boundaries (domain, data, shared)
+• Browse reference feature with Room and Ktor
+• qualityCheck for formatting, lint, tests, and architecture rules
+
+Ideal as an App Factory base for new mobile apps.

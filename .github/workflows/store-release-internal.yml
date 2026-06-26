@@ -1,0 +1,150 @@
+name: Store release (internal)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type true to upload to Play internal + TestFlight"
+        required: true
+        default: "false"
+      locale:
+        description: "Metadata locale"
+        required: true
+        default: "en-US"
+      skip_capture:
+        description: "Skip Maestro capture (use existing store/output)"
+        required: true
+        default: "true"
+      platform:
+        description: "android | ios | both"
+        required: true
+        default: "both"
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm release
+        if: inputs.confirm != 'true'
+        run: |
+          echo "Set confirm=true to run internal upload."
+          exit 1
+
+  validate:
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/store/requirements.txt
+      - run: ./scripts/store/validate_store.sh --locale ${{ inputs.locale }} --skip-gplay
+
+  android-internal:
+    needs: validate
+    if: inputs.platform == 'android' || inputs.platform == 'both'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/store/requirements.txt
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Maestro
+        run: curl -Ls "https://get.maestro.mobile.dev" | bash
+
+      - name: Capture screenshots
+        if: inputs.skip_capture != 'true'
+        run: |
+          echo "y" | sdkmanager "platform-tools" "emulator" "platforms;android-34" "system-images;android-34;google_apis;x86_64"
+          echo "no" | avdmanager create avd -n store_capture -k "system-images;android-34;google_apis;x86_64" --device "pixel_7"
+          $ANDROID_HOME/emulator -avd store_capture -no-window -gpu swiftshader_indirect &
+          adb wait-for-device
+          ./gradlew :androidApp:installDebug
+          ./scripts/store/capture.sh --platform android
+          python3 scripts/store/frame_assets.py --locale ${{ inputs.locale }}
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Decode keystore
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "${RUNNER_TEMP}/release.keystore"
+          echo "ANDROID_KEYSTORE_PATH=${RUNNER_TEMP}/release.keystore" >> "$GITHUB_ENV"
+
+      - name: Upload to Play internal
+        env:
+          GPLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GPLAY_SERVICE_ACCOUNT_JSON }}
+          ANDROID_PACKAGE_NAME: com.devindie.cmptemplate
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [[ -z "${GPLAY_SERVICE_ACCOUNT_JSON}" ]]; then
+            echo "GPLAY_SERVICE_ACCOUNT_JSON secret not configured — skipping upload."
+            exit 0
+          fi
+          PLAY_JSON="${RUNNER_TEMP}/play-service-account.json"
+          printf '%s' "$GPLAY_SERVICE_ACCOUNT_JSON" > "$PLAY_JSON"
+          export GPLAY_SERVICE_ACCOUNT="$PLAY_JSON"
+          export SUPPLY_JSON_KEY="$PLAY_JSON"
+          cd androidApp
+          bundle exec fastlane android beta_internal
+
+  ios-testflight:
+    needs: validate
+    if: inputs.platform == 'ios' || inputs.platform == 'both'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/store/requirements.txt
+
+      - name: Install Maestro
+        run: curl -Ls "https://get.maestro.mobile.dev" | bash
+
+      - name: Capture screenshots
+        if: inputs.skip_capture != 'true'
+        run: |
+          echo "Manual iOS capture in CI requires a booted simulator and built app."
+          echo "Build iosApp in Xcode locally or extend this workflow with xcodebuild + capture.sh --platform ios"
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          IOS_BUNDLE_ID: com.devindie.cmptemplate.CMPTemplate
+        run: |
+          if [[ -z "${{ secrets.ASC_KEY_ID }}" ]]; then
+            echo "ASC_KEY_ID secret not configured — skipping TestFlight upload."
+            exit 0
+          fi
+          cd iosApp
+          bundle exec fastlane ios beta_testflight

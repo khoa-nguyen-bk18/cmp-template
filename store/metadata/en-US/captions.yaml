@@ -1,0 +1,10 @@
+slots:
+  - id: browse
+    above: "Browse your catalog"
+    below: "Search and filter with ease"
+  - id: detail
+    above: "Rich card details"
+    below: "Everything in one screen"
+  - id: settings
+    above: "Settings that scale"
+    below: "Wire features the same way every time"

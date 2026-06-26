@@ -1,0 +1,2 @@
+json_key_file(ENV["GPLAY_SERVICE_ACCOUNT"] || ENV["SUPPLY_JSON_KEY"])
+package_name(ENV.fetch("ANDROID_PACKAGE_NAME", "com.devindie.cmptemplate"))

@@ -1,0 +1,30 @@
+app:
+  displayName: "CMPTemplate"
+  androidPackage: "com.devindie.cmptemplate"
+  iosBundleId: "com.devindie.cmptemplate.CMPTemplate"
+
+branding:
+  primaryColor: "#6750A4"
+  frameTemplate: "templates/phone_frame.png"
+
+locales:
+  default: en-US
+  supported: [en-US]
+
+capture:
+  android:
+    emulator: "Pixel_7_API_34"
+    flow: "capture/flows/android.yaml"
+  ios:
+    simulator: "iPhone 16 Pro"
+    flow: "capture/flows/ios.yaml"
+
+screenshots:
+  slots: 5
+  devices:
+    android: phone
+    ios: "6.9-inch"
+
+release:
+  androidTrack: internal
+  iosDestination: testflight

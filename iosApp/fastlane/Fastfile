@@ -1,0 +1,56 @@
+default_platform(:ios)
+
+def repo_root
+  File.expand_path("../..", __dir__)
+end
+
+def sync_store_metadata
+  sh("cd #{repo_root} && ./scripts/store/sync_to_fastlane.sh en-US")
+end
+
+platform :ios do
+  desc "Validate store metadata (no upload)"
+  lane :validate_store do
+    sh("cd #{repo_root} && ./scripts/store/validate_store.sh --locale en-US --metadata-only --skip-gplay")
+  end
+
+  desc "Sync code signing via match (optional)"
+  lane :sync_signing do
+    match(
+      type: "appstore",
+      app_identifier: ENV.fetch("IOS_BUNDLE_ID", "com.devindie.cmptemplate.CMPTemplate"),
+      readonly: is_ci,
+    )
+  end
+
+  desc "Build App Store IPA"
+  lane :build_release do
+    sync_signing if ENV["MATCH_GIT_URL"]
+    build_app(
+      workspace: nil,
+      project: File.join(repo_root, "iosApp/iosApp.xcodeproj"),
+      scheme: "iosApp",
+      export_method: "app-store",
+      output_directory: File.join(repo_root, "iosApp/build"),
+      output_name: "CMPTemplate.ipa",
+    )
+  end
+
+  desc "Upload build + metadata to TestFlight"
+  lane :beta_testflight do
+    sync_store_metadata
+    sh("cd #{repo_root} && ./scripts/store/validate_store.sh --locale en-US --skip-gplay")
+    build_release
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      distribute_external: false,
+    )
+    deliver(
+      force: true,
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      submit_for_review: false,
+      automatic_release: false,
+    )
+  end
+end

@@ -118,6 +118,7 @@ Feature implementation guide: [docs/kmp-feature-playbook.md](docs/kmp-feature-pl
 | [`iosApp/`](iosApp/) | Xcode project; embeds the `Shared` framework and runs iOS Koin init |
 | [`:architecture`](architecture/) | Konsist JVM tests enforcing layer and package rules |
 | [`:benchmark`](benchmark/) | Baseline profile generator and startup macrobenchmarks for `:androidApp` |
+| [`store/`](store/) | App Factory store listing pipeline — metadata, screenshots, validate, internal release; see [store/README.md](store/README.md) |
 
 Dependency injection is wired at the app layer: `androidApp` and iOS `doInitKoin` supply `platformDataModule()`; `:shared` depends on `:domain` only (iOS `iosMain` also links `:data` for Koin bootstrap). Presentation code must not import `data` — enforced by Konsist.
 
@@ -290,6 +291,7 @@ Planned work not implemented in the template yet:
 | 2 | **Project guardrail automation** | Script(s) under `scripts/` to run `qualityCheck` and `sonarAnalysis` locally, aggregate reports (Detekt, Lint HTML, Kover, Sonar), and support an agent loop: run → parse failures → prompt AI fix → re-run until green or max iterations |
 | 3 | **Template generator script** | Parameterized bootstrap (package name, application ID, module prefixes, Konsist package patterns in `:architecture`, optional feature stubs) to fork this repo without manual find-and-replace |
 | 4 | **Native UI via expect/actual** | Add reusable platform UI in `:shared` (`commonMain` `@Composable expect` or wrapper API + `androidMain` / `iosMain` `actual` implementations), following existing patterns such as [`AppWindowInsets`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/ui/insets/AppWindowInsets.kt); use for views Compose Multiplatform does not cover (e.g. `UIKit`/`AndroidView` bridges, platform pickers, maps). Keep `domain`/`data` expect/actual for I/O only — see [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) Step 0 |
+| 5 | **Store publishing pipeline** | Metadata, Maestro screenshot capture, validation, Fastlane upload to Play internal + TestFlight — [store/README.md](store/README.md), design [docs/superpowers/specs/2026-06-26-store-publishing-pipeline-design.md](docs/superpowers/specs/2026-06-26-store-publishing-pipeline-design.md) |
 
 Contributions should follow [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) and keep `qualityCheck` green.
 

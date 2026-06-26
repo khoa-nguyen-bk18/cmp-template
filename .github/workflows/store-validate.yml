@@ -1,0 +1,30 @@
+name: Store validate
+
+on:
+  pull_request:
+    paths:
+      - "store/**"
+      - "scripts/store/**"
+      - ".github/workflows/store-validate.yml"
+  workflow_dispatch:
+
+jobs:
+  validate-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/store/requirements.txt
+
+      - name: Install gplay CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/tamtom/play-console-cli/main/install.sh | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Validate store metadata
+        run: ./scripts/store/validate_store.sh --locale en-US --metadata-only

@@ -1,0 +1,40 @@
+default_platform(:android)
+
+def repo_root
+  File.expand_path("../..", __dir__)
+end
+
+def sync_store_metadata
+  sh("cd #{repo_root} && ./scripts/store/sync_to_fastlane.sh en-US")
+end
+
+platform :android do
+  desc "Validate store metadata (no upload)"
+  lane :validate_store do
+    sh("cd #{repo_root} && ./scripts/store/validate_store.sh --locale en-US --metadata-only --skip-gplay")
+  end
+
+  desc "Build release AAB"
+  lane :build_release do
+    gradle(
+      project_dir: repo_root,
+      task: "androidApp:bundleRelease",
+    )
+  end
+
+  desc "Upload AAB + listing to Play internal testing"
+  lane :beta_internal do
+    sync_store_metadata
+    sh("cd #{repo_root} && ./scripts/store/validate_store.sh --locale en-US --skip-gplay")
+    build_release
+    upload_to_play_store(
+      track: "internal",
+      aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      skip_upload_changelogs: false,
+    )
+  end
+end

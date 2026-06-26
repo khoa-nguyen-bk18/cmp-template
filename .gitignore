@@ -59,3 +59,10 @@ iosApp/*.xcworkspace/xcuserdata/
 
 # Compose Multiplatform
 composeApp/build/
+
+# Store pipeline generated artifacts (see store/README.md)
+store/.raw/*
+!store/.raw/.gitkeep
+store/output/*
+!store/output/.gitkeep
+scripts/store/.venv/

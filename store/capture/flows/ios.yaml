@@ -1,0 +1,28 @@
+appId: com.devindie.cmptemplate.CMPTemplate
+name: Store capture — iOS
+tags:
+  - store
+  - ios
+  - capture
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Good Games Belconnen"
+    timeout: 15000
+- takeScreenshot: 01_browse
+- tapOn: "Gaeas Touch, $5.62"
+- extendedWaitUntil:
+    visible: "Back"
+    timeout: 10000
+- takeScreenshot: 02_detail
+- back
+- extendedWaitUntil:
+    visible: "Good Games Belconnen"
+    timeout: 5000
+- tapOn: "Profile"
+- tapOn: "Settings"
+- extendedWaitUntil:
+    visible: "Settings"
+    timeout: 10000
+- takeScreenshot: 03_settings

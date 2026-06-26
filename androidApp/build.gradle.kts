@@ -58,6 +58,17 @@ android {
         buildConfigField("String", "REVENUECAT_API_KEY_ANDROID", "\"$revenueCatAndroidKey\"")
         buildConfigField("Boolean", "BILLING_ENABLED", "$billingEnabled")
     }
+    signingConfigs {
+        val keystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+        if (!keystorePath.isNullOrBlank()) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -66,6 +77,7 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
         create("benchmark") {
             initWith(getByName("release"))

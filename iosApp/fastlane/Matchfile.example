@@ -1,0 +1,5 @@
+# Copy to Matchfile and set MATCH_GIT_URL + credentials.
+# git_url("https://github.com/your-org/certificates.git")
+# storage_mode("git")
+# type("appstore")
+# app_identifier(["com.devindie.cmptemplate.CMPTemplate"])
