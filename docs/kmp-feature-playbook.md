@@ -25,9 +25,10 @@ Step-by-step guide for implementing features in cmp templatethat follow Clean Ar
 | DataSource contract | Platform I/O port | `data/.../commonMain/.../*DataSource.kt` | Hides Android/iOS from repository |
 | Platform impl | Native API calls | `data/.../androidMain/`, `data/.../iosMain/` | Only place for `android.*` / `platform.*` |
 | Repository impl | Orchestration + mapping | `data/.../commonMain/.../*RepositoryImpl.kt` | Single coordination point |
-| ViewModel | UI state, calls use cases | `shared/.../screens/<feature>/` | Shared across platforms |
-| Screen | Compose UI | `shared/.../screens/<feature>/` | UDF; state from ViewModel |
-| Domain DI | Use cases | `shared/.../di/VaultDomainModule.kt` | No `data` imports |
+| ViewModel | UI state, calls use cases | `shared/.../feature/<feature>/impl/` | Internal; wired via `<feature>/api/*FeatureModule` |
+| Screen entry + navigation | Public Compose / NavGraph API | `shared/.../feature/<feature>/api/` | Imported by app shell and other features |
+| Feature DI | ViewModel bindings | `shared/.../feature/<feature>/api/*FeatureModule.kt` | `core.di` includes api modules only |
+| Domain DI | Use cases | `shared/.../core/di/AppDomainModule.kt` | No `data` imports; includes `*FeatureModule` from api |
 | Platform DI | Bind platform classes | `data/.../di/PlatformDataModule.{kt,android.kt,ios.kt}` | Wired at app entry only |
 | App entry | `startKoin` + `Context` | `androidApp/`, `shared/.../KoinIos.kt` | Only layer that imports `data.di` |
 
@@ -36,7 +37,7 @@ Step-by-step guide for implementing features in cmp templatethat follow Clean Ar
 ```
 androidApp / iOS entry
     → data.di (platform bindings only)
-shared (screens, ViewModels, domain DI)
+shared (feature packages, core UI/navigation/DI)
     → domain
 data
     → domain
@@ -159,7 +160,7 @@ Provide `Context` in `androidPlatformModule` in `androidApp`, not in `:shared`.
 ### Step 8 — ViewModel + screen
 
 - **What:** `StateFlow` UI state; call use cases in `viewModelScope`.
-- **Where:** `shared/.../screens/<feature>/`
+- **Where:** `shared/.../feature/<feature>/impl/` (ViewModel), `shared/.../feature/<feature>/api/` (screen entry + navigation)
 - **Why:** Shared UI logic; no `data` or `*RepositoryImpl` imports.
 
 **Platform-only UI** (folder picker, permission dialog):
@@ -174,6 +175,17 @@ Provide `Context` in `androidPlatformModule` in `androidApp`, not in `:shared`.
 # and
 ./gradlew qualityCheck
 ```
+
+### Remote API + Room SSOT
+
+When a feature needs network data but the UI should read from local storage:
+
+1. **RemoteDataSource** (`data/remote/<feature>/`) — `suspend fun fetch…(): ApiResult<Dto>` (Ktor or `Fake*` for dev).
+2. **LocalDataSource + Room** (`data/local/<feature>/`) — DAO, entities, `replaceAllCatalog`; UI observes DAO `Flow` (SSOT).
+3. **RepositoryImpl** (`data/local/<feature>/`) — on sync: remote → map DTO → local upsert.
+4. **Shared infra** (`data/auth`, `data/network`, `data/di`, `data/coroutines`) — [KSafe](https://github.com/ioannisa/KSafe) encrypted tokens (`KSafeTokenStore`), HttpClient, Koin.
+
+Browse reference: `remote/browse/BrowseCardRemoteDataSource`, `local/browse/BrowseCardRepositoryImpl`, `networkModule()` in `data/di`.
 
 ---
 
@@ -271,9 +283,11 @@ data/src/iosMain/kotlin/.../
   di/PlatformDataModule.ios.kt
 
 shared/src/commonMain/kotlin/.../
-  screens/feature/FeatureViewModel.kt
-  screens/feature/FeatureScreen.kt
-  di/VaultDomainModule.kt
+  feature/<feature>/api/FeatureNavigation.kt
+  feature/<feature>/api/FeatureScreen.kt
+  feature/<feature>/api/FeatureFeatureModule.kt
+  feature/<feature>/impl/FeatureViewModel.kt
+  core/di/AppDomainModule.kt
 
 androidApp/.../VaultyApp.kt
 shared/iosMain/.../KoinIos.kt

@@ -11,6 +11,9 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Allow local runs while Android Studio "Running Devices" mirroring is active.
+        // Remove for CI/release perf gates where mirrored frames skew FrameTimingMetric.
+        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "DEVICE-MIRRORING"
     }
 
     compileOptions {

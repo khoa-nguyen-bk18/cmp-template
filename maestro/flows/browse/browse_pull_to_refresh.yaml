@@ -1,0 +1,18 @@
+appId: com.devindie.cmptemplate
+name: Browse pull to refresh
+tags:
+  - android
+  - regression
+---
+- runFlow:
+    file: ../../subflows/_browse_setup.yaml
+- swipe:
+    start: "50%, 25%"
+    end: "50%, 75%"
+    duration: 500
+- waitForAnimationToEnd:
+    timeout: 5000
+- extendedWaitUntil:
+    visible: "Gaeas Touch"
+    timeout: 15000
+- assertVisible: "Good Games Belconnen"

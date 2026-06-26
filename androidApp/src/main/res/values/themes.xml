@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_background">#FFF9F9FF</color>
+
+    <style name="Theme.CmpTemplate" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.CmpTemplate.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.CmpTemplate</item>
+    </style>
+</resources>

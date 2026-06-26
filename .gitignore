@@ -52,5 +52,10 @@ DerivedData/
 iosApp/Pods/
 iosApp/*.xcworkspace/xcuserdata/
 
+# Swift Package Manager (KMP lock cache + local package state)
+.swiftpm-locks/
+.swiftpm/
+.build/
+
 # Compose Multiplatform
 composeApp/build/

@@ -1,0 +1,21 @@
+default_install_hook_types: [pre-commit]
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      # Upstream entry (`gitleaks git --pre-commit --staged`) misses many staged secrets.
+      - id: gitleaks
+        entry: bash scripts/gitleaks-pre-commit.sh
+        language: system
+
+  - repo: local
+    hooks:
+      # Must use snyk-pre-commit.sh (always exit 0). Do not call `snyk test` directly here. This is a workaround to avoid blocking the commit.
+      - id: snyk-test
+        name: Snyk Open Source (Gradle, warn only)
+        entry: bash scripts/snyk-pre-commit.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        verbose: true

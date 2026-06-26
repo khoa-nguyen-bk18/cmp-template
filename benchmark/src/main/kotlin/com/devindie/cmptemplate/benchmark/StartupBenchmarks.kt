@@ -55,15 +55,24 @@ class StartupBenchmarks {
             packageName = "com.devindie.cmptemplate",
             metrics = listOf(FrameTimingMetric()),
             iterations = 5,
+            startupMode = StartupMode.WARM,
             compilationMode = CompilationMode.Partial(BaselineProfileMode.Require),
         ) {
             startActivityAndWait()
-            device.wait(Until.hasObject(By.text("Click me!")), 5_000)
-            val feed = device.findObject(By.scrollable(true))
-                ?: error("Scrollable feed not found")
-            feed.setGestureMargin(device.displayWidth / 5)
-            feed.fling(Direction.DOWN)
-            feed.fling(Direction.DOWN)
+            device.wait(Until.hasObject(By.text(DEFAULT_STORE_NAME)), 5_000)
+            device.wait(Until.hasObject(By.text(FIRST_BROWSE_CARD_NAME)), 10_000)
+            val browseList =
+                device.findObject(
+                    By.scrollable(true).hasDescendant(By.text(FIRST_BROWSE_CARD_NAME)),
+                ) ?: error("Browse LazyColumn not found")
+            browseList.setGestureMargin(device.displayWidth / 5)
+            browseList.fling(Direction.DOWN)
+            browseList.fling(Direction.DOWN)
         }
     }
 }
+
+private const val DEFAULT_STORE_NAME = "Good Games Belconnen"
+
+/** First card from [com.devindie.cmptemplate.data.local.browse.BrowseCatalogSeeder]. */
+private const val FIRST_BROWSE_CARD_NAME = "Charizard ex"

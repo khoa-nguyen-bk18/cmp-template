@@ -28,6 +28,8 @@ dependencyResolutionManagement {
     }
 }
 
+include(":analytics")
+include(":billing")
 include(":androidApp")
 include(":benchmark")
 include(":architecture")

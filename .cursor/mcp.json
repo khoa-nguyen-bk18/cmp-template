@@ -1,9 +1,13 @@
 {
-    "mcpServers": {
-        "codegraph": {
-            "type": "stdio",
-            "command": "codegraph",
-            "args": ["serve", "--mcp", "--path", "/Users/khoa/PROJECTS/cmp-template"]
-        }
+  "mcpServers": {
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": ["serve", "--mcp", "--path", "/Users/khoa/PROJECTS/cmp-template"]
+    },
+    "maestro": {
+      "command": "maestro",
+      "args": ["mcp"]
     }
+  }
 }

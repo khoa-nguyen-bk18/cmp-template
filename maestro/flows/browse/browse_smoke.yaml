@@ -1,0 +1,10 @@
+appId: com.devindie.cmptemplate
+name: Browse smoke test
+tags:
+  - android
+  - smoke
+---
+- runFlow:
+    file: ../../subflows/_browse_setup.yaml
+- assertVisible: "Good Games Belconnen"
+- assertVisible: "Gaeas Touch"

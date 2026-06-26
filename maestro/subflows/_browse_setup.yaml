@@ -1,0 +1,10 @@
+appId: com.devindie.cmptemplate
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Good Games Belconnen"
+    timeout: 10000
+- extendedWaitUntil:
+    visible: "Gaeas Touch"
+    timeout: 15000

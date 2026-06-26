@@ -1,70 +1,54 @@
 package com.devindie.cmptemplate
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
-import cmptemplate.shared.generated.resources.Res
-import cmptemplate.shared.generated.resources.compose_multiplatform
-import org.jetbrains.compose.resources.painterResource
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.devindie.cmptemplate.core.navigation.MainShellRoute
+import com.devindie.cmptemplate.feature.apppromotion.api.AppPromotionPlatformBinding
+import com.devindie.cmptemplate.core.ui.theme.AppTheme
+import com.devindie.cmptemplate.feature.main.api.MainScreen
+import com.devindie.cmptemplate.feature.onboarding.api.OnboardingRoute
+import com.devindie.cmptemplate.feature.onboarding.api.OnboardingScreen
+import com.devindie.cmptemplate.feature.splash.api.SplashRoute
+import com.devindie.cmptemplate.feature.splash.api.SplashScreen
 
 @Composable
-@Preview
-fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        LazyColumn(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .testTag("feed")
-                .fillMaxSize(),
+fun App(modifier: Modifier = Modifier) {
+    AppTheme {
+        AppPromotionPlatformBinding()
+        val navController = rememberNavController()
+        NavHost(
+            navController = navController,
+            startDestination = SplashRoute,
+            modifier = modifier,
         ) {
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Button(
-                        onClick = { showContent = !showContent },
-                        modifier = Modifier.testTag("show_content_button"),
-                    ) {
-                        Text("Click me!")
-                    }
-                    AnimatedVisibility(showContent) {
-                        val greeting = remember { Greeting().greet() }
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Image(painterResource(Res.drawable.compose_multiplatform), null)
-                            Text("Compose: $greeting")
+            composable<SplashRoute> {
+                SplashScreen(
+                    onNavigateToMain = {
+                        navController.navigate(MainShellRoute) {
+                            popUpTo<SplashRoute> { inclusive = true }
                         }
-                    }
-                }
-            }
-            items(List(50) { index -> index }) { index ->
-                Text(
-                    text = "Item $index",
-                    modifier = Modifier.fillMaxWidth(),
+                    },
+                    onNavigateToOnboarding = {
+                        navController.navigate(OnboardingRoute) {
+                            popUpTo<SplashRoute> { inclusive = true }
+                        }
+                    },
                 )
+            }
+            composable<OnboardingRoute> {
+                OnboardingScreen(
+                    onNavigateToMain = {
+                        navController.navigate(MainShellRoute) {
+                            popUpTo<OnboardingRoute> { inclusive = true }
+                        }
+                    },
+                )
+            }
+            composable<MainShellRoute> {
+                MainScreen()
             }
         }
     }

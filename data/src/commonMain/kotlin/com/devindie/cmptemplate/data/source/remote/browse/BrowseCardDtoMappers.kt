@@ -1,0 +1,48 @@
+package com.devindie.cmptemplate.data.source.remote.browse
+
+import com.devindie.cmptemplate.data.network.dto.BrowseCardDto
+import com.devindie.cmptemplate.data.source.local.browse.BrowseCardEntity
+
+internal fun BrowseCardEntity.toDto(): BrowseCardDto = BrowseCardDto(
+    id = id,
+    name = name,
+    setName = setName,
+    condition = condition,
+    priceCents = priceCents,
+    quantity = quantity,
+    category = category,
+    gameName = gameName,
+    rarityLabel = rarityLabel,
+    editionLabel = editionLabel,
+    imageUrl = imageUrl,
+    abilitiesText = abilitiesText,
+    flavorText = flavorText,
+    marketPriceCents = marketPriceCents,
+    buylistPriceCents = buylistPriceCents,
+    lpPriceCents = lpPriceCents,
+    mpPriceCents = mpPriceCents,
+    hpPriceCents = hpPriceCents,
+    dPriceCents = dPriceCents,
+)
+
+internal fun BrowseCardDto.toEntity(): BrowseCardEntity = BrowseCardEntity(
+    id = id,
+    name = name,
+    setName = setName,
+    condition = condition,
+    priceCents = priceCents,
+    quantity = quantity,
+    category = category,
+    gameName = gameName,
+    rarityLabel = rarityLabel,
+    editionLabel = editionLabel,
+    imageUrl = imageUrl,
+    abilitiesText = abilitiesText,
+    flavorText = flavorText,
+    marketPriceCents = marketPriceCents,
+    buylistPriceCents = buylistPriceCents,
+    lpPriceCents = lpPriceCents,
+    mpPriceCents = mpPriceCents,
+    hpPriceCents = hpPriceCents,
+    dPriceCents = dPriceCents,
+)
