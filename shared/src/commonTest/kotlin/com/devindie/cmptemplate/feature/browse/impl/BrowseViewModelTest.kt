@@ -1,6 +1,7 @@
 package com.devindie.cmptemplate.feature.browse.impl
 
 import androidx.paging.PagingData
+import app.cash.turbine.test
 import com.devindie.cmptemplate.domain.model.browse.BrowseCategory
 import com.devindie.cmptemplate.feature.browse.api.BrowseCardPagerFactory
 import com.devindie.cmptemplate.test.advanceMainUntilIdle
@@ -19,12 +20,20 @@ class BrowseViewModelTest {
                 pagerFactory = { _ -> flowOf(PagingData.empty()) },
             )
 
-        viewModel.onSearchQueryChange("char")
-        viewModel.onCategorySelected(BrowseCategory.Pokemon)
-        advanceMainUntilIdle()
+        viewModel.uiState.test {
+            awaitItem()
 
-        assertEquals("char", viewModel.uiState.value.searchQuery)
-        assertEquals(BrowseCategory.Pokemon, viewModel.uiState.value.selectedCategory)
+            viewModel.onSearchQueryChange("char")
+            advanceMainUntilIdle()
+            assertEquals("char", awaitItem().searchQuery)
+
+            viewModel.onCategorySelected(BrowseCategory.Pokemon)
+            advanceMainUntilIdle()
+            val state = awaitItem()
+            assertEquals("char", state.searchQuery)
+            assertEquals(BrowseCategory.Pokemon, state.selectedCategory)
+        }
+        advanceMainUntilIdle()
     }
 
     @Test
@@ -34,10 +43,15 @@ class BrowseViewModelTest {
                 pagerFactory = BrowseCardPagerFactory { _ -> flowOf(PagingData.empty()) },
             )
 
-        viewModel.onSearchQueryChange("char")
-        advanceMainUntilIdle()
+        viewModel.uiState.test {
+            awaitItem()
 
-        assertEquals("char", viewModel.uiState.value.searchQuery)
+            viewModel.onSearchQueryChange("char")
+            advanceMainUntilIdle()
+
+            assertEquals("char", awaitItem().searchQuery)
+        }
+        advanceMainUntilIdle()
     }
 
     @Test
@@ -47,9 +61,14 @@ class BrowseViewModelTest {
                 pagerFactory = BrowseCardPagerFactory { _ -> flowOf(PagingData.empty()) },
             )
 
-        viewModel.onCategorySelected(BrowseCategory.Pokemon)
-        advanceMainUntilIdle()
+        viewModel.uiState.test {
+            awaitItem()
 
-        assertEquals(BrowseCategory.Pokemon, viewModel.uiState.value.selectedCategory)
+            viewModel.onCategorySelected(BrowseCategory.Pokemon)
+            advanceMainUntilIdle()
+
+            assertEquals(BrowseCategory.Pokemon, awaitItem().selectedCategory)
+        }
+        advanceMainUntilIdle()
     }
 }

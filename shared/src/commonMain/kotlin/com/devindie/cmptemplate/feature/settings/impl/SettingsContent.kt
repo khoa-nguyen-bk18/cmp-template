@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.devindie.cmptemplate.feature.apppromotion.api.AppPromotionSettingsSection
 import com.devindie.cmptemplate.domain.model.settings.SettingKey
 import com.devindie.cmptemplate.domain.model.settings.SettingValue
 import com.devindie.cmptemplate.domain.model.settings.SettingsItemModel
@@ -75,6 +76,9 @@ internal fun SettingsContent(
                         onValueChange = onSettingChanged,
                     )
                 }
+            }
+            item(key = "app-promotion") {
+                AppPromotionSettingsSection()
             }
             item(key = "billing-smoke") {
                 com.devindie.cmptemplate.billing.BillingSmokePanel()

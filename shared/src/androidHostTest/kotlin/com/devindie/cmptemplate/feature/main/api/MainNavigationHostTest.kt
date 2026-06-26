@@ -1,16 +1,26 @@
 package com.devindie.cmptemplate.feature.main.api
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.DialogNavigator
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.testing.TestNavHostController
+import androidx.paging.PagingData
 import androidx.test.core.app.ApplicationProvider
 import com.devindie.cmptemplate.core.navigation.MainRoute
+import com.devindie.cmptemplate.feature.browse.impl.BrowseScreen
+import com.devindie.cmptemplate.feature.browse.impl.BrowseViewModel
 import com.devindie.cmptemplate.feature.carddetail.api.CardDetailRoute
 import com.devindie.cmptemplate.feature.carddetail.api.navigateToCardDetail
-import com.devindie.cmptemplate.feature.settings.api.SettingsRoute
+import com.devindie.cmptemplate.feature.main.impl.EmptyTabContent
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,19 +42,36 @@ class MainNavigationHostTest {
         return navController
     }
 
+    private fun createStubBrowseViewModel(): BrowseViewModel =
+        BrowseViewModel(pagerFactory = { _ -> flowOf(PagingData.empty()) })
+
+    private fun NavGraphBuilder.mainTabNavGraphForTest(browseViewModel: BrowseViewModel) {
+        composable<MainRoute.Browse> {
+            BrowseScreen(
+                modifier = Modifier.fillMaxSize(),
+                viewModel = browseViewModel,
+            )
+        }
+        cartDestination()
+        composable<MainRoute.Collection> {
+            EmptyTabContent(modifier = Modifier.fillMaxSize())
+        }
+        composable<MainRoute.Profile> {
+            EmptyTabContent(modifier = Modifier.fillMaxSize())
+        }
+        dialog<CardDetailRoute> {
+            Box(modifier = Modifier.fillMaxSize())
+        }
+    }
+
     private fun setMainTabNavHost(navController: TestNavHostController) {
+        val browseViewModel = createStubBrowseViewModel()
         composeRule.setContent {
             NavHost(
                 navController = navController,
                 startDestination = MainRoute.Browse,
             ) {
-                mainTabNavGraph(
-                    storeName = "Test Store",
-                    onNavigateToCardDetail = navController::navigateToCardDetail,
-                    onDismissCardDetail = navController::popBackStack,
-                    onNavigateToSettings = { navController.navigate(SettingsRoute) },
-                    onDismissSettings = navController::popBackStack,
-                )
+                mainTabNavGraphForTest(browseViewModel = browseViewModel)
             }
         }
     }

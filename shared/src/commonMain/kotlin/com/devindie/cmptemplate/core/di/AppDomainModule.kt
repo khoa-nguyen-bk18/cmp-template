@@ -1,5 +1,6 @@
 package com.devindie.cmptemplate.core.di
 
+import com.devindie.cmptemplate.apppromotion.appPromotionConfigForTemplate
 import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase
 import com.devindie.cmptemplate.domain.usecase.onboarding.CompleteOnboardingUseCase
 import com.devindie.cmptemplate.domain.usecase.onboarding.HasCompletedOnboardingUseCase
@@ -11,6 +12,7 @@ import com.devindie.cmptemplate.domain.usecase.settings.GetSettingUseCase
 import com.devindie.cmptemplate.domain.usecase.settings.ObserveSettingUseCase
 import com.devindie.cmptemplate.domain.usecase.settings.ObserveSettingsScreenUseCase
 import com.devindie.cmptemplate.domain.usecase.settings.UpdateSettingUseCase
+import com.devindie.cmptemplate.feature.apppromotion.api.appPromotionFeatureModule
 import com.devindie.cmptemplate.feature.browse.api.browseFeatureModule
 import com.devindie.cmptemplate.feature.carddetail.api.cardDetailFeatureModule
 import com.devindie.cmptemplate.feature.collection.api.collectionFeatureModule
@@ -44,5 +46,6 @@ val appDomainModule =
             onboardingFeatureModule,
             legalFeatureModule,
             settingsFeatureModule,
+            appPromotionFeatureModule(appPromotionConfigForTemplate()),
         )
     }

@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.devindie.cmptemplate.core.navigation.MainShellRoute
+import com.devindie.cmptemplate.feature.apppromotion.api.AppPromotionPlatformBinding
 import com.devindie.cmptemplate.core.ui.theme.AppTheme
 import com.devindie.cmptemplate.feature.main.api.MainScreen
 import com.devindie.cmptemplate.feature.onboarding.api.OnboardingRoute
@@ -16,6 +17,7 @@ import com.devindie.cmptemplate.feature.splash.api.SplashScreen
 @Composable
 fun App(modifier: Modifier = Modifier) {
     AppTheme {
+        AppPromotionPlatformBinding()
         val navController = rememberNavController()
         NavHost(
             navController = navController,

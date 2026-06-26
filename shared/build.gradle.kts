@@ -42,6 +42,10 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(projects.data)
             implementation(libs.purchases.kmp.core)
+            implementation(libs.play.review)
+            implementation(libs.play.review.ktx)
+            implementation(libs.koin.android)
+            implementation(libs.kotlinx.coroutines.play.services)
         }
         commonMain.dependencies {
             implementation(projects.domain)
