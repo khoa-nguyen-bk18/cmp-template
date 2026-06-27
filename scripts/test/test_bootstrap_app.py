@@ -17,6 +17,7 @@ from bootstrap_app import (  # noqa: E402
     rename_package_directories,
     replace_in_file,
     transform_tree,
+    update_settings_gradle_root_name,
     validate_package,
 )
 
@@ -72,6 +73,20 @@ def test_validate_package_rejects_invalid() -> None:
         validate_package("Com.Acme.App")
     with pytest.raises(ValueError):
         validate_package("not-a-package")
+
+
+def test_update_settings_gradle_root_name(tmp_path: Path) -> None:
+    settings = tmp_path / "settings.gradle.kts"
+    settings.write_text(
+        'rootProject.name = "CMPTemplate"\ninclude(":androidApp")\n',
+        encoding="utf-8",
+    )
+    identity = AppIdentity(package="com.acme.myvault", display_name="My Vault")
+
+    assert update_settings_gradle_root_name(tmp_path, identity, dry_run=False)
+    assert settings.read_text(encoding="utf-8") == (
+        'rootProject.name = "MyVault"\ninclude(":androidApp")\n'
+    )
 
 
 def test_replace_in_file(tmp_path: Path) -> None:

@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 PACKAGE_RE = re.compile(r"^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$")
+ROOT_PROJECT_NAME_RE = re.compile(r'^rootProject\.name\s*=\s*".*"', re.MULTILINE)
 
 TEMPLATE_PACKAGE = "com.devindie.cmptemplate"
 TEMPLATE_PACKAGE_PATH = "com/devindie/cmptemplate"
@@ -102,6 +103,10 @@ class AppIdentity:
     @property
     def firebase_project_slug(self) -> str:
         return f"{self.slug}-template"
+
+    @property
+    def gradle_root_name(self) -> str:
+        return self.pascal_name
 
     @property
     def escaped_package(self) -> str:
@@ -217,6 +222,25 @@ def _prune_empty_parents(path: Path, stop_at: Path) -> None:
         current = parent
 
 
+def update_settings_gradle_root_name(
+    root: Path, identity: AppIdentity, dry_run: bool
+) -> bool:
+    settings = root / "settings.gradle.kts"
+    if not settings.is_file():
+        return False
+    try:
+        original = settings.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return False
+    replacement = f'rootProject.name = "{identity.gradle_root_name}"'
+    updated = ROOT_PROJECT_NAME_RE.sub(replacement, original, count=1)
+    if updated == original:
+        return False
+    if not dry_run:
+        settings.write_text(updated, encoding="utf-8")
+    return True
+
+
 def rename_template_files(root: Path, identity: AppIdentity, dry_run: bool) -> int:
     renamed = 0
     replacements = identity.filename_replacements()
@@ -256,6 +280,12 @@ def transform_tree(root: Path, identity: AppIdentity, dry_run: bool) -> None:
     print("Renaming template-specific files...")
     renamed = rename_template_files(root, identity, dry_run)
     print(f"  renamed {renamed} file(s)")
+
+    print("Updating Gradle root project name...")
+    if update_settings_gradle_root_name(root, identity, dry_run):
+        print(f'  settings.gradle.kts -> rootProject.name = "{identity.gradle_root_name}"')
+    else:
+        print("  settings.gradle.kts unchanged (not found or already set)")
 
 
 def rsync_template(template_root: Path, output_dir: Path) -> None:
@@ -318,6 +348,7 @@ def bootstrap(
     print(f"  package:      {identity.package}")
     print(f"  display name: {identity.display_name}")
     print(f"  pascal name:  {identity.pascal_name}")
+    print(f"  gradle root:  {identity.gradle_root_name}")
     print(f"  slug:         {identity.slug}")
     print(f"  iOS bundle:   {identity.ios_bundle_id}")
     print(f"  output:       {output_dir}")
@@ -326,6 +357,9 @@ def bootstrap(
         print("\n[dry-run] Planned transforms:")
         print(f"  package trees to move: {len(find_package_dirs(template_root))}")
         print(f"  replacements: {identity.replacements()}")
+        print(
+            f'  settings.gradle.kts: rootProject.name = "{identity.gradle_root_name}"'
+        )
         print("\n[dry-run] Would rsync template, apply transforms, and git init.")
         return
 
