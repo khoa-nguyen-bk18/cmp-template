@@ -66,3 +66,4 @@ store/.raw/*
 store/output/*
 !store/output/.gitkeep
 scripts/store/.venv/
+scripts/.venv/

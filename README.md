@@ -1,11 +1,10 @@
-## For Interviewers
-
-**Primary focus:** a Kotlin Multiplatform template that sets up an environment where **AI coding agents** can generate features that stay within **Clean Architecture**, pass **automated quality gates**, and meet **security expectations** — while keeping **codebase complexity** visible and bounded (Konsist layer rules, Detekt, coverage, SonarQube).
-
 **What is in place today:**
 
-- Kotlin Multiplatform (Android + iOS) with enforced module boundaries (`domain` ← `data` ← app DI; `shared` → `domain` only)
-- Shared Compose Multiplatform UI, ViewModels, and Flow-based UDF
+- Kotlin Multiplatform (Android + iOS) with enforced module boundaries (`domain` ← `data` ← app DI; `shared` → `domain` + optional platform facades)
+- Shared Compose Multiplatform UI, ViewModels, and Flow-based UDF — features live under `shared/.../feature/<name>/{api,impl}/`
+- Reference app shell: splash → onboarding → main tabs (Browse, Collection, Settings, card detail, legal, app promotion)
+- **Browse** uses **Paging 3 + Room + RemoteMediator** via a presentation port (`BrowseCardPagerFactory`) bound at app entry — see [docs/browse-paging-flow.md](docs/browse-paging-flow.md)
+- Optional standalone KMP modules: [`:analytics`](analytics/README.md) (Firebase Analytics + Crashlytics) and [`:billing`](billing/README.md) (RevenueCat IAP)
 - Ktor networking, Room KMP persistence, and Koin DI wired at app entry points
 - Quality automation: Spotless, Detekt, Android Security Lint, Konsist architecture tests, Kover, optional SonarQube, baseline profiles / macrobenchmarks
 - **Security on commit:** local [pre-commit](https://pre-commit.com/) hooks — **Gitleaks** scans staged content and **blocks** commits on secrets; **Snyk** warns on high+ dependency issues (non-blocking). Setup: [Local commit hooks](#local-commit-hooks-pre-commit). CI-style verification: `./gradlew qualityCheck`.
@@ -15,14 +14,15 @@
 - Deep links and navigation edge cases
 - Environment configuration for **dev / staging / prod** (build flavors, secrets via env / gitignored local files — not committed)
 - Native UI bridges (`expect`/`actual` or platform views where Compose Multiplatform is not enough)
-- Paging, guardrail scripts for agent loops, and other items in [Roadmap](#roadmap)
+- Guardrail scripts for agent loops and other items in [Roadmap](#roadmap)
 
 **Recommended review path:**
 
 1. Read [AGENTS.md](AGENTS.md) and [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) — how agents and humans are expected to add features.
-2. Start with `domain/` (pure business layer), then `data/` (Room, Ktor, platform code), then `shared/` (Compose + ViewModels).
-3. Run `./gradlew qualityCheck` for formatting, lint, tests, and architecture rules.
-4. Optionally install pre-commit (`./scripts/setup-pre-commit.sh --baseline`) and skim [`.pre-commit-config.yaml`](.pre-commit-config.yaml) for commit-time security.
+2. Skim [Project structure](#project-structure) and the [Modules](#modules) table, then walk `domain/` → `data/` → `shared/feature/`.
+3. For Firebase or RevenueCat, read [analytics/README.md](analytics/README.md) and [billing/README.md](billing/README.md).
+4. Run `./gradlew qualityCheck` for formatting, lint, tests, and architecture rules.
+5. Optionally install pre-commit (`./scripts/setup-pre-commit.sh --baseline`) and skim [`.pre-commit-config.yaml`](.pre-commit-config.yaml) for commit-time security.
 
 ---
 
@@ -30,8 +30,8 @@
 
 ```mermaid
 sequenceDiagram
-    participant Screen as shared/Screen
-    participant VM as shared/ViewModel
+    participant Screen as shared/feature/impl Screen
+    participant VM as shared/feature/impl ViewModel
     participant UC as domain/UseCase
     participant Repo as domain/Repository
     participant Impl as data/RepositoryImpl
@@ -51,6 +51,8 @@ sequenceDiagram
     VM-->>Screen: UiState
 ```
 
+Browse paging follows a parallel path: `BrowseViewModel` → `BrowseCardPagerFactory` (port in `shared/feature/browse/api`) → `BrowseCardPagerFactoryImpl` (in `data`), bound at app entry via `browsePagingModule`. See [docs/browse-paging-flow.md](docs/browse-paging-flow.md).
+
 
 
 ---
@@ -62,15 +64,17 @@ sequenceDiagram
 
 # CMPTemplate
 
-Kotlin Multiplatform template for **Android** and **iOS** that demonstrates **Clean Architecture**: a pure `domain` layer, a `data` layer for persistence and networking, and a `shared` Compose Multiplatform presentation layer. Dependency injection is wired at the app entry points, and layer boundaries are enforced with Konsist tests.
+Kotlin Multiplatform template for **Android** and **iOS** that demonstrates **Clean Architecture**: a pure `domain` layer, a `data` layer for persistence and networking, a `shared` Compose Multiplatform presentation layer, and optional **platform service** modules (`:analytics`, `:billing`) that sit beside the core stack. Dependency injection is wired at the app entry points, and layer boundaries are enforced with Konsist tests.
 
-The included **reference feature** is a Browse tab that lists collectible cards (category filters, search, card detail). Data flows through use cases into ViewModels with unidirectional UI state. Local catalog data is stored in **Room**; remote fetch uses a **Ktor** client (with a fake remote source for offline development). The main shell follows a Stitch-inspired navigation layout ([`MainScreen`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/main/MainScreen.kt)).
+The included **reference app** is a Stitch-inspired collectible-card shell ([`MainScreen`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/main/MainScreen.kt)): splash and onboarding, then bottom-nav tabs for **Browse** (paged catalog with search and filters), **Collection**, **Settings**, plus card detail, legal documents, and in-app review promotion. Most features flow **ViewModel → use case → repository**; Browse paging uses a **`BrowseCardPagerFactory` port** in `shared` with `BrowseCardPagerFactoryImpl` in `data`, bound via `browsePagingModule` at startup. Local catalog data lives in **Room**; remote sync uses **Ktor** (with a fake remote source for offline development).
 
 **What you get**
 
+- Feature packages under `shared/.../feature/<name>/{api,impl}/` with Koin modules registered in [`AppDomainModule`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/core/di/AppDomainModule.kt)
 - UDF ViewModels and Compose Multiplatform screens shared across platforms
-- Koin modules split between domain (shared) and platform `data` bindings (app layer only)
-- `./gradlew qualityCheck` — formatting, Detekt, **Android Security Lint**, unit tests, and architecture rules
+- Optional `:analytics` and `:billing` facades (Firebase, RevenueCat) — integration guides in each module's README
+- Koin modules split between domain (shared), platform `data` bindings, and app-layer service init (Android `Application`, iOS `doInitKoin`)
+- `./gradlew qualityCheck` — formatting, Detekt, **Android Security Lint**, unit tests (`:domain`, `:data`, `:analytics`, `:billing`, `:shared`), and architecture rules
 - Optional local **SonarQube** + **Kover** coverage upload
 
 ## Architecture at a glance
@@ -88,14 +92,21 @@ flowchart TB
     domain[domain]
     data[data]
   end
+  subgraph services [Platform services optional]
+    analytics[analytics Firebase]
+    billing[billing RevenueCat]
+  end
   subgraph quality [Quality]
     arch[architecture Konsist]
     bench[benchmark]
   end
   androidApp --> shared
   androidApp --> data
+  androidApp --> analytics
   iosApp --> shared
   shared --> domain
+  shared --> analytics
+  shared --> billing
   data --> domain
   arch -.-> domain
   arch -.-> data
@@ -103,7 +114,7 @@ flowchart TB
   bench -.-> androidApp
 ```
 
-**Dependency direction:** `domain` ← `data` ← app DI; `shared` → `domain` only. iOS `shared` `iosMain` also links `:data` solely for Koin bootstrap (not for direct data imports in screens).
+**Dependency direction:** `domain` ← `data` ← app DI; `shared` → `domain` + optional `:analytics` / `:billing` (service facades, not repository implementations). iOS `shared` `iosMain` also links `:data` solely for Koin bootstrap and paging module wiring — not for direct `data` imports in screens or ViewModels.
 
 Feature implementation guide: [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md).
 
@@ -111,16 +122,54 @@ Feature implementation guide: [docs/kmp-feature-playbook.md](docs/kmp-feature-pl
 
 | Module / path | Role |
 |---------------|------|
-| [`:domain`](domain/) | Models, repository interfaces, use cases (e.g. `ObserveBrowseCardsUseCase`) |
-| [`:data`](data/) | Room (`BrowseDatabase`), Ktor client, repository implementations, platform `expect`/`actual` |
-| [`:shared`](shared/) | Compose Multiplatform UI, ViewModels, navigation, theme |
-| [`:androidApp`](androidApp/) | Android application, `platformDataModule()`, baseline profile consumer |
-| [`iosApp/`](iosApp/) | Xcode project; embeds the `Shared` framework and runs iOS Koin init |
-| [`:architecture`](architecture/) | Konsist JVM tests enforcing layer and package rules |
+| [`:domain`](domain/) | Pure Kotlin models, repository interfaces, use cases (`carddetail`, `onboarding`, `settings`, `startup`, `user`) |
+| [`:data`](data/) | Room (`BrowseDatabase`), Ktor client, `*RepositoryImpl`, platform DataSources, `BrowseCardPagerFactoryImpl`, `platformDataModule()` |
+| [`:shared`](shared/) | Compose Multiplatform UI, `core/` (DI, navigation, theme), `feature/*/{api,impl}/` ViewModels and screens |
+| [`:analytics`](analytics/) | Standalone Firebase Analytics + Crashlytics facade; public `AnalyticsClient` API — [analytics/README.md](analytics/README.md) |
+| [`:billing`](billing/) | Standalone RevenueCat IAP facade; public `BillingClient` API — [billing/README.md](billing/README.md) |
+| [`:androidApp`](androidApp/) | Android application, `platformDataModule()`, Firebase/Billing init, baseline profile consumer |
+| [`iosApp/`](iosApp/) | Xcode project, `Shared` framework, `KotlinMultiplatformLinkedPackage` (SPM linkage for Firebase), iOS Koin init |
+| [`:architecture`](architecture/) | Konsist JVM tests enforcing layer, package, and feature api/impl boundaries |
 | [`:benchmark`](benchmark/) | Baseline profile generator and startup macrobenchmarks for `:androidApp` |
 | [`store/`](store/) | App Factory store listing pipeline — metadata, screenshots, validate, internal release; see [store/README.md](store/README.md) |
+| [`maestro/`](maestro/) | YAML E2E flows (Browse search, filters, pagination, detail) — [maestro/README.md](maestro/README.md) |
+| [`scripts/`](scripts/) | Bootstrap generator, pre-commit setup, store capture helpers |
 
-Dependency injection is wired at the app layer: `androidApp` and iOS `doInitKoin` supply `platformDataModule()`; `:shared` depends on `:domain` only (iOS `iosMain` also links `:data` for Koin bootstrap). Presentation code must not import `data` — enforced by Konsist.
+Dependency injection is wired at the app layer: `androidApp` and iOS `doInitKoin` supply `platformDataModule()`, `browsePagingModule`, and optional `analyticsFeatureModule` / `billingFeatureModule`. Presentation code must not import `data` types or `*RepositoryImpl` — enforced by Konsist.
+
+## Project structure
+
+```
+cmp-template/
+├── domain/                 # models/, repository/, usecase/ — no Android, Compose, Ktor, or Koin
+├── data/                   # source/local|remote/, network/, di/, coroutines/
+├── shared/
+│   └── src/commonMain/.../
+│       ├── core/           # AppDomainModule, navigation shell, theme, shared UI
+│       └── feature/        # one folder per feature, each with api/ + impl/
+│           ├── browse/     # paged catalog (BrowseCardPagerFactory port)
+│           ├── carddetail/
+│           ├── collection/
+│           ├── main/       # bottom-nav shell + tab NavHost
+│           ├── onboarding/
+│           ├── settings/
+│           ├── splash/
+│           ├── legal/
+│           └── apppromotion/
+├── analytics/              # api/ + impl/ — Firebase default, NoOp when disabled
+├── billing/                # api/ + impl/ — RevenueCat default, NoOp when disabled
+├── androidApp/             # Application, MainActivity, google-services.json
+├── iosApp/                 # Xcode project + KotlinMultiplatformLinkedPackage/
+├── architecture/           # Konsist boundary tests
+├── benchmark/              # baseline profiles + macrobenchmarks
+├── docs/                   # playbooks, paging flow, superpowers specs
+├── maestro/                # E2E YAML flows
+├── store/                  # Play / App Store metadata pipeline
+├── scripts/                # bootstrap-app.sh, pre-commit, store helpers
+└── gradle/libs.versions.toml
+```
+
+Per-feature notes live next to the code, e.g. [`shared/.../feature/browse/README.md`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/browse/README.md).
 
 ## Technologies
 
@@ -145,12 +194,18 @@ Pinned versions live in [`gradle/libs.versions.toml`](gradle/libs.versions.toml)
 ### Data
 
 - [Room](https://developer.android.com/kotlin/multiplatform/room) (KMP) + KSP + [bundled SQLite](https://developer.android.com/jetpack/androidx/releases/sqlite)
+- [AndroidX Paging 3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview) — Browse catalog (`RemoteMediator` + Room `PagingSource`); port/impl split documented in [docs/browse-paging-flow.md](docs/browse-paging-flow.md)
 - [Ktor](https://ktor.io/) client — OkHttp on Android, Darwin on iOS; kotlinx.serialization JSON
 - [ksafe](https://github.com/ioannisa/KSafe) for sensitive field handling in the data layer
 
+### Platform services (optional modules)
+
+- [`:analytics`](analytics/README.md) — Firebase Analytics + Crashlytics (Android Gradle plugins + GitLive on iOS; SPM via `swiftPMDependencies`)
+- [`:billing`](billing/README.md) — RevenueCat [`purchases-kmp-core`](https://www.revenuecat.com/docs/getting-started/installation/kotlin-multiplatform) on Android and iOS
+
 ### Dependency injection
 
-- [Koin](https://insert-koin.io/) — `koin-core`, `koin-compose-viewmodel`, Android bindings in `androidApp` / `data`
+- [Koin](https://insert-koin.io/) — `koin-core`, `koin-compose-viewmodel`, Android bindings in `androidApp` / `data`; `analyticsFeatureModule` / `billingFeatureModule` at app entry
 
 ### Testing
 
@@ -166,7 +221,7 @@ Details: [docs/testing.md](docs/testing.md).
 
 ### Version catalog only (not wired yet)
 
-Coil and AndroidX **Paging 3** are declared in the catalog but not added to module dependencies yet. See [Roadmap](#roadmap).
+[Coil 3](https://github.com/coil-kt/coil) is declared in the catalog (`coil-compose`, `coil-network-ktor`) but not added to module dependencies yet. See [Roadmap](#roadmap).
 
 ## Code analysis & quality
 
@@ -177,7 +232,7 @@ Coil and AndroidX **Paging 3** are declared in the catalog but not added to modu
 | **Android Security Lint** | Google security checks on `:androidApp` (via `lintChecks`) | `./gradlew :androidApp:lint` (part of `qualityCheck`); HTML report under `androidApp/build/reports/` |
 | **Konsist** | Clean Architecture boundaries (layers, imports, repositories) | `./gradlew :architecture:test` |
 | **Kover** | Unit-test coverage XML (feeds Sonar) | `./gradlew koverXmlReport` |
-| **qualityCheck** | Full gate: Spotless + Detekt + `:androidApp:lint` + KMP unit tests + architecture | `./gradlew qualityCheck` |
+| **qualityCheck** | Full gate: Spotless + Detekt + `:androidApp:lint` + `:domain` / `:data` / `:analytics` / `:billing` / `:shared` tests + Konsist | `./gradlew qualityCheck` |
 | **SonarQube** (Docker) | Dashboard analysis + coverage upload | See [SonarQube (local)](#sonarqube-local) below |
 | **CodeGraph** | Tree-sitter knowledge graph for symbols, callers, and impact | Cursor MCP in [`.cursor/mcp.json`](.cursor/mcp.json); run `codegraph init -i` if `.codegraph/` is missing; see [AGENTS.md](AGENTS.md) |
 | **`:benchmark`** | Baseline profiles and startup macrobenchmarks | Device required; see [Benchmarks](#benchmarks) below |
@@ -242,6 +297,28 @@ Config: [`.pre-commit-config.yaml`](.pre-commit-config.yaml), [`.gitleaks.toml`]
 
 **Prerequisites:** Android SDK path in `local.properties` (see [`local.properties.example`](local.properties.example)). Docker optional (SonarQube only).
 
+### Bootstrap a new app (fresh git history)
+
+Copy this template into a new directory with renamed package, app IDs, Kotlin source trees, Maestro/store config, and Konsist roots — then `git init` with a single initial commit. The template repo is not modified.
+
+```bash
+./scripts/bootstrap-app.sh \
+  --package com.acme.myvault \
+  --display-name "My Vault" \
+  --output-dir ../my-vault
+```
+
+| Flag | Purpose |
+|------|---------|
+| `--dry-run` | Preview derived names and transform counts |
+| `--force` | Replace an existing output directory |
+| `--no-git` | Skip `git init` / initial commit |
+| `--verify` | Run `./gradlew qualityCheck` in the output directory |
+
+After bootstrap: `cp local.properties.example local.properties`, set `sdk.dir`, run `./gradlew qualityCheck`. Replace Firebase placeholders (`androidApp/google-services.json`, `iosApp/iosApp/GoogleService-Info.plist`) before release.
+
+Design: [docs/superpowers/specs/2026-06-27-app-bootstrap-generator-design.md](docs/superpowers/specs/2026-06-27-app-bootstrap-generator-design.md).
+
 ```bash
 # Android debug APK
 ./gradlew :androidApp:assembleDebug
@@ -287,17 +364,21 @@ Planned work not implemented in the template yet:
 
 | # | Item | Scope |
 |---|------|--------|
-| 1 | **Paging 3 on Browse** | Wire `androidx.paging` from the version catalog through `domain`/`data` (paged repository or `PagingSource`) into [`BrowseViewModel`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/browse/BrowseViewModel.kt) and replace the all-items [`LazyColumn`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/browse/BrowseScreen.kt) with `LazyPagingItems` + `collectAsLazyPagingItems` for large catalogs |
+| 1 | ~~**Paging 3 on Browse**~~ | **Done** — `BrowseCardPagerFactory` port in `shared`, `BrowseCardPagerFactoryImpl` + `RemoteMediator` in `data`, `LazyPagingItems` in [`BrowseScreen`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/feature/browse/impl/BrowseScreen.kt); see [docs/browse-paging-flow.md](docs/browse-paging-flow.md) |
 | 2 | **Project guardrail automation** | Script(s) under `scripts/` to run `qualityCheck` and `sonarAnalysis` locally, aggregate reports (Detekt, Lint HTML, Kover, Sonar), and support an agent loop: run → parse failures → prompt AI fix → re-run until green or max iterations |
-| 3 | **Template generator script** | Parameterized bootstrap (package name, application ID, module prefixes, Konsist package patterns in `:architecture`, optional feature stubs) to fork this repo without manual find-and-replace |
-| 4 | **Native UI via expect/actual** | Add reusable platform UI in `:shared` (`commonMain` `@Composable expect` or wrapper API + `androidMain` / `iosMain` `actual` implementations), following existing patterns such as [`AppWindowInsets`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/ui/insets/AppWindowInsets.kt); use for views Compose Multiplatform does not cover (e.g. `UIKit`/`AndroidView` bridges, platform pickers, maps). Keep `domain`/`data` expect/actual for I/O only — see [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) Step 0 |
-| 5 | **Store publishing pipeline** | Metadata, Maestro screenshot capture, validation, Fastlane upload to Play internal + TestFlight — [store/README.md](store/README.md), design [docs/superpowers/specs/2026-06-26-store-publishing-pipeline-design.md](docs/superpowers/specs/2026-06-26-store-publishing-pipeline-design.md) |
+| 3 | ~~**Template generator script**~~ | **Done** — [`scripts/bootstrap-app.sh`](scripts/bootstrap-app.sh) copies the repo, renames package/IDs, moves Kotlin trees, and inits fresh git; see [Bootstrap a new app](#bootstrap-a-new-app-fresh-git-history) |
+| 4 | **Coil image loading** | Wire catalog `coil-compose` + `coil-network-ktor` for card thumbnails and detail art in Browse / Collection |
+| 5 | **Native UI via expect/actual** | Add reusable platform UI in `:shared` (`commonMain` `@Composable expect` or wrapper API + `androidMain` / `iosMain` `actual` implementations), following existing patterns such as [`AppWindowInsets`](shared/src/commonMain/kotlin/com/devindie/cmptemplate/core/ui/insets/AppWindowInsets.kt); use for views Compose Multiplatform does not cover (e.g. `UIKit`/`AndroidView` bridges, platform pickers, maps). Keep `domain`/`data` expect/actual for I/O only — see [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) Step 0 |
+| 6 | **Store publishing pipeline** | Metadata, Maestro screenshot capture, validation, Fastlane upload to Play internal + TestFlight — [store/README.md](store/README.md), design [docs/superpowers/specs/2026-06-26-store-publishing-pipeline-design.md](docs/superpowers/specs/2026-06-26-store-publishing-pipeline-design.md) |
 
 Contributions should follow [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) and keep `qualityCheck` green.
 
 ## Documentation
 
 - [docs/kmp-feature-playbook.md](docs/kmp-feature-playbook.md) — adding features layer by layer
+- [docs/browse-paging-flow.md](docs/browse-paging-flow.md) — Browse paging port/impl and RemoteMediator
+- [analytics/README.md](analytics/README.md) — Firebase Analytics + Crashlytics integration
+- [billing/README.md](billing/README.md) — RevenueCat IAP integration
 - [docs/testing.md](docs/testing.md) — module test map, fakes, Turbine
 - [docs/coroutines-conventions.md](docs/coroutines-conventions.md) — dispatchers and `runTest`
 - [docs/code-documentation.md](docs/code-documentation.md) — KDoc conventions
@@ -330,7 +411,7 @@ Third-party **tools** wired into this repo (not runtime app libraries such as Kt
 | **Sonar Gradle plugin** | Uploads analysis + Kover XML to Sonar | `./gradlew sonarAnalysis` / `sonarLocalAnalysis` |
 | **Docker Compose** + **PostgreSQL 16** | Local SonarQube stack | `./gradlew sonarUp` / `sonarDown`; see [`docker-compose.yml`](docker-compose.yml) |
 | **[Kover](https://github.com/Kotlin/kotlinx-kover)** | Unit-test coverage XML | Feeds Sonar; `./gradlew koverXmlReport` |
-| **`qualityCheck`** (Gradle aggregate) | Spotless → Detekt → Lint → all KMP unit tests → Konsist | Single pre-PR gate: `./gradlew qualityCheck` |
+| **`qualityCheck`** (Gradle aggregate) | Spotless → Detekt → Lint → `:domain` / `:data` / `:analytics` / `:billing` / `:shared` tests → Konsist | Single pre-PR gate: `./gradlew qualityCheck` |
 
 ### Compose / UI performance diagnostics
 
@@ -387,6 +468,6 @@ See [Benchmarks](#benchmarks) above.
 | When | Tools |
 |------|--------|
 | **`git commit`** | pre-commit → Gitleaks (**block**), Snyk (**warn**) |
-| **`./gradlew qualityCheck`** | Spotless, Detekt, `:androidApp:lint`, `:domain` / `:data` / `:shared` tests, Konsist |
+| **`./gradlew qualityCheck`** | Spotless, Detekt, `:androidApp:lint`, `:domain` / `:data` / `:analytics` / `:billing` / `:shared` tests, Konsist |
 | **Manual / optional** | SonarQube (`sonarLocalAnalysis`), Maestro, `composeCompilerReports`, `stabilityCheck`, `:benchmark` on device |
 | **IDE (Cursor)** | CodeGraph MCP, Maestro MCP |
