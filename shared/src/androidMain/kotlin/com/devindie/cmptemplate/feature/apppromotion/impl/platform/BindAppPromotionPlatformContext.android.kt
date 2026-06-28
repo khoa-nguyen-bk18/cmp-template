@@ -8,11 +8,10 @@ import androidx.compose.ui.platform.LocalContext
 internal actual fun BindAppPromotionPlatformContext() {
     val context = LocalContext.current
     DisposableEffect(context) {
-        AppPromotionContextHolder.context = context
+        val activity = context.findActivity()
+        activity?.let { AppPromotionContextHolder.bind(it) }
         onDispose {
-            if (AppPromotionContextHolder.context == context) {
-                AppPromotionContextHolder.context = null
-            }
+            activity?.let { AppPromotionContextHolder.clear(it) }
         }
     }
 }
