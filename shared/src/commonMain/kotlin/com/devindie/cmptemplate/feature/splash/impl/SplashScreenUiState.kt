@@ -14,5 +14,5 @@ enum class SplashPhase {
 sealed interface SplashPostStartupDestination {
     data object Main : SplashPostStartupDestination
 
-    data object Onboarding : SplashPostStartupDestination
+    data object Auth : SplashPostStartupDestination
 }

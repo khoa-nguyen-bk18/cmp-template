@@ -20,7 +20,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SplashScreen(
     onNavigateToMain: () -> Unit,
-    onNavigateToOnboarding: () -> Unit,
+    onNavigateToAuth: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = koinViewModel(),
 ) {
@@ -29,7 +29,7 @@ fun SplashScreen(
     LaunchedEffect(state.postStartupDestination) {
         when (state.postStartupDestination) {
             SplashPostStartupDestination.Main -> onNavigateToMain()
-            SplashPostStartupDestination.Onboarding -> onNavigateToOnboarding()
+            SplashPostStartupDestination.Auth -> onNavigateToAuth()
             null -> Unit
         }
     }

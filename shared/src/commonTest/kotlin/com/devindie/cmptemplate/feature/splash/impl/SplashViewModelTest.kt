@@ -1,9 +1,10 @@
 package com.devindie.cmptemplate.feature.splash.impl
 
-import com.devindie.cmptemplate.domain.usecase.onboarding.HasCompletedOnboardingUseCase
 import com.devindie.cmptemplate.domain.usecase.startup.InitializeAppUseCase
+import com.devindie.cmptemplate.domain.usecase.user.GetUserSessionUseCase
+import com.devindie.cmptemplate.domain.model.user.UserSession
 import com.devindie.cmptemplate.fake.FakeAppStartupRepository
-import com.devindie.cmptemplate.fake.FakeOnboardingRepository
+import com.devindie.cmptemplate.fake.FakeUserRepository
 import com.devindie.cmptemplate.test.advanceMainUntilIdle
 import com.devindie.cmptemplate.test.runViewModelTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,7 +17,7 @@ import kotlin.test.assertNull
 class SplashViewModelTest {
     @Test
     fun startup_navigatesToMainAfterOneSecondWhenInitIsFast() = runViewModelTest {
-        val viewModel = createViewModel(onboardingCompleted = true)
+        val viewModel = createViewModel(hasSession = true)
 
         advanceTimeBy(SplashViewModel.MIN_DISPLAY_MS)
         advanceMainUntilIdle()
@@ -35,7 +36,7 @@ class SplashViewModelTest {
         val viewModel =
             SplashViewModel(
                 initializeApp = InitializeAppUseCase(repository),
-                hasCompletedOnboarding = HasCompletedOnboardingUseCase(FakeOnboardingRepository(completed = true)),
+                getUserSession = GetUserSessionUseCase(FakeUserRepository(session = UserSession("a", "r"))),
             )
 
         advanceTimeBy(SplashViewModel.MIN_DISPLAY_MS)
@@ -55,7 +56,7 @@ class SplashViewModelTest {
         val viewModel =
             SplashViewModel(
                 initializeApp = InitializeAppUseCase(repository),
-                hasCompletedOnboarding = HasCompletedOnboardingUseCase(FakeOnboardingRepository(completed = true)),
+                getUserSession = GetUserSessionUseCase(FakeUserRepository()),
             )
 
         advanceTimeBy(SplashViewModel.MIN_DISPLAY_MS)
@@ -75,7 +76,7 @@ class SplashViewModelTest {
         val viewModel =
             SplashViewModel(
                 initializeApp = InitializeAppUseCase(repository),
-                hasCompletedOnboarding = HasCompletedOnboardingUseCase(FakeOnboardingRepository(completed = true)),
+                getUserSession = GetUserSessionUseCase(FakeUserRepository(session = UserSession("a", "r"))),
             )
         advanceTimeBy(SplashViewModel.MIN_DISPLAY_MS)
         advanceMainUntilIdle()
@@ -90,18 +91,18 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun startup_navigatesToOnboardingWhenNotCompleted() = runViewModelTest {
-        val viewModel = createViewModel(onboardingCompleted = false)
+    fun startup_navigatesToAuthWhenNoSession() = runViewModelTest {
+        val viewModel = createViewModel(hasSession = false)
 
         advanceTimeBy(SplashViewModel.MIN_DISPLAY_MS)
         advanceMainUntilIdle()
 
-        assertEquals(SplashPostStartupDestination.Onboarding, viewModel.uiState.value.postStartupDestination)
+        assertEquals(SplashPostStartupDestination.Auth, viewModel.uiState.value.postStartupDestination)
     }
 
     @Test
-    fun startup_navigatesToMainWhenOnboardingCompleted() = runViewModelTest {
-        val viewModel = createViewModel(onboardingCompleted = true)
+    fun startup_navigatesToMainWhenSessionPresent() = runViewModelTest {
+        val viewModel = createViewModel(hasSession = true)
 
         advanceTimeBy(SplashViewModel.MIN_DISPLAY_MS)
         advanceMainUntilIdle()
@@ -109,10 +110,19 @@ class SplashViewModelTest {
         assertEquals(SplashPostStartupDestination.Main, viewModel.uiState.value.postStartupDestination)
     }
 
-    private fun createViewModel(onboardingCompleted: Boolean): SplashViewModel = SplashViewModel(
-        initializeApp = InitializeAppUseCase(FakeAppStartupRepository(result = Result.success(Unit))),
-        hasCompletedOnboarding = HasCompletedOnboardingUseCase(
-            FakeOnboardingRepository(completed = onboardingCompleted),
-        ),
-    )
+    private fun createViewModel(hasSession: Boolean): SplashViewModel =
+        SplashViewModel(
+            initializeApp = InitializeAppUseCase(FakeAppStartupRepository(result = Result.success(Unit))),
+            getUserSession =
+                GetUserSessionUseCase(
+                    FakeUserRepository(
+                        session =
+                            if (hasSession) {
+                                UserSession(accessToken = "access", refreshToken = "refresh")
+                            } else {
+                                null
+                            },
+                    ),
+                ),
+        )
 }

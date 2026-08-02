@@ -2,8 +2,8 @@ package com.devindie.cmptemplate.feature.splash.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devindie.cmptemplate.domain.usecase.onboarding.HasCompletedOnboardingUseCase
 import com.devindie.cmptemplate.domain.usecase.startup.InitializeAppUseCase
+import com.devindie.cmptemplate.domain.usecase.user.GetUserSessionUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class SplashViewModel(
     private val initializeApp: InitializeAppUseCase,
-    private val hasCompletedOnboarding: HasCompletedOnboardingUseCase,
+    private val getUserSession: GetUserSessionUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SplashScreenUiState())
     val uiState: StateFlow<SplashScreenUiState> = _uiState.asStateFlow()
@@ -47,10 +47,10 @@ class SplashViewModel(
             result
                 .onSuccess {
                     val destination =
-                        if (hasCompletedOnboarding()) {
+                        if (getUserSession() != null) {
                             SplashPostStartupDestination.Main
                         } else {
-                            SplashPostStartupDestination.Onboarding
+                            SplashPostStartupDestination.Auth
                         }
                     _uiState.update { it.copy(postStartupDestination = destination) }
                 }
