@@ -2,6 +2,11 @@ package com.devindie.cmptemplate.core.di
 
 import com.devindie.cmptemplate.apppromotion.appPromotionConfigForTemplate
 import com.devindie.cmptemplate.domain.usecase.carddetail.GetCardDetailUseCase
+import com.devindie.cmptemplate.domain.usecase.auth.GetSupportedCountriesUseCase
+import com.devindie.cmptemplate.domain.usecase.auth.ResendOtpUseCase
+import com.devindie.cmptemplate.domain.usecase.auth.SendOtpUseCase
+import com.devindie.cmptemplate.domain.usecase.auth.ValidatePhoneNumberUseCase
+import com.devindie.cmptemplate.domain.usecase.auth.VerifyOtpUseCase
 import com.devindie.cmptemplate.domain.usecase.onboarding.CompleteOnboardingUseCase
 import com.devindie.cmptemplate.domain.usecase.onboarding.HasCompletedOnboardingUseCase
 import com.devindie.cmptemplate.domain.usecase.startup.InitializeAppUseCase
@@ -33,6 +38,11 @@ val appDomainModule =
         factoryOf(::ClearUserSessionUseCase)
         factoryOf(::HasCompletedOnboardingUseCase)
         factoryOf(::CompleteOnboardingUseCase)
+        factoryOf(::GetSupportedCountriesUseCase)
+        factoryOf(::ValidatePhoneNumberUseCase)
+        factoryOf(::SendOtpUseCase)
+        factoryOf(::ResendOtpUseCase)
+        factoryOf(::VerifyOtpUseCase)
         factoryOf(::GetSettingUseCase)
         factory { ObserveSettingUseCase(get(), get()) }
         factory { ObserveSettingsScreenUseCase(get(), get()) }
