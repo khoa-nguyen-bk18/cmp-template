@@ -1,6 +1,6 @@
 {
-  "pid": 7997,
-  "version": "0.9.7",
+  "pid": 25327,
+  "version": "1.5.0",
   "socketPath": "/Users/khoa/PROJECTS/cmp-template/.codegraph/daemon.sock",
-  "startedAt": 1782550914791
+  "startedAt": 1785643829879
 }

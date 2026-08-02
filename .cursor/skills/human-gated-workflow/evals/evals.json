@@ -1,0 +1,48 @@
+{
+  "skill_name": "human-gated-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a favorites screen to this Android app. Users can mark artworks as favorite and see them in a list. The project has AGENTS.md — follow the workflow.",
+      "expected_output": "Phase 1 executable contract only: models, fake repo, ViewModel logic, Compose UI skeleton with fakes, behavior tests, test matrix, Phase 1 report with Mermaid diagrams, ends with AWAITING_PHASE_1_APPROVAL. No real Room/Retrofit/network dependencies.",
+      "files": [],
+      "assertions": [
+        "Agent read AGENTS.md before producing feature code",
+        "Final response contains exactly AWAITING_PHASE_1_APPROVAL with a feature-id",
+        "Phase 1 report file was created with at least one Mermaid diagram",
+        "Test case matrix file was created with stable case IDs",
+        "Production code uses fake/simulated persistence — no Room, Retrofit, or network client in new production code",
+        "app/build.gradle.kts was not modified to add new external dependencies",
+        "Behavior tests were created for favorites flows",
+        "Agent did not end with AWAITING_PHASE_2_APPROVAL or implement real database/network integration"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Phase 1 for favorites was approved. Implement real persistence with Room as proposed in the phase-1 report.",
+      "expected_output": "Checks Phase 2 entry gate, implements Room per approved plan, preserves Phase 1 contract and tests, Phase 2 report, ends with AWAITING_PHASE_2_APPROVAL. Does not change approved interfaces or behavior tests.",
+      "files": [],
+      "assertions": [
+        "Agent read AGENTS.md and/or the human-gated-workflow skill before acting",
+        "Agent explicitly checked Phase 2 entry conditions (approval record, contract version, approved tech)",
+        "Agent did not modify approved Phase 1 behavior test assertions without returning to Phase 1",
+        "If implementation proceeded, Phase 2 report was created",
+        "Final response contains AWAITING_PHASE_2_APPROVAL OR PHASE_2_BLOCKED_NOT_APPROVED with feature-id",
+        "Agent did not treat conversational approval alone as sufficient without workflow mechanism verification"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Looks good, go ahead and wire up the API for favorites.",
+      "expected_output": "Does NOT treat casual approval as Phase 2 authorization. Either asks for explicit workflow approval or outputs PHASE_2_BLOCKED_NOT_APPROVED if Phase 1 not formally approved. Does not add network code without gate clearance.",
+      "files": [],
+      "assertions": [
+        "Agent did not add network/API client code (Retrofit, Ktor, OkHttp service interfaces, etc.)",
+        "Agent did not treat casual 'looks good' as formal phase approval",
+        "Final response contains PHASE_2_BLOCKED_NOT_APPROVED OR explicitly requests formal workflow approval",
+        "Agent did not output AWAITING_PHASE_2_APPROVAL as if API wiring was completed",
+        "Agent read AGENTS.md or human-gated-workflow skill before responding"
+      ]
+    }
+  ]
+}
