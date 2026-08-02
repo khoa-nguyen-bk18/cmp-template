@@ -5,6 +5,7 @@ import com.devindie.cmptemplate.domain.model.auth.AuthError
 import com.devindie.cmptemplate.domain.model.auth.PhoneNumber
 import com.devindie.cmptemplate.domain.model.auth.PhoneNumberInput
 import com.devindie.cmptemplate.domain.model.auth.SupportedCountries
+import com.devindie.cmptemplate.domain.model.auth.VerifyOtpRequest
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
