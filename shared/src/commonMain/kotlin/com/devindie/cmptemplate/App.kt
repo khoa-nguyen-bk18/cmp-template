@@ -8,9 +8,9 @@ import androidx.navigation.compose.rememberNavController
 import com.devindie.cmptemplate.core.navigation.MainShellRoute
 import com.devindie.cmptemplate.feature.apppromotion.api.AppPromotionPlatformBinding
 import com.devindie.cmptemplate.core.ui.theme.AppTheme
+import com.devindie.cmptemplate.feature.auth.api.AuthRoute
+import com.devindie.cmptemplate.feature.auth.api.AuthScreen
 import com.devindie.cmptemplate.feature.main.api.MainScreen
-import com.devindie.cmptemplate.feature.onboarding.api.OnboardingRoute
-import com.devindie.cmptemplate.feature.onboarding.api.OnboardingScreen
 import com.devindie.cmptemplate.feature.splash.api.SplashRoute
 import com.devindie.cmptemplate.feature.splash.api.SplashScreen
 
@@ -31,18 +31,18 @@ fun App(modifier: Modifier = Modifier) {
                             popUpTo<SplashRoute> { inclusive = true }
                         }
                     },
-                    onNavigateToOnboarding = {
-                        navController.navigate(OnboardingRoute) {
+                    onNavigateToAuth = {
+                        navController.navigate(AuthRoute) {
                             popUpTo<SplashRoute> { inclusive = true }
                         }
                     },
                 )
             }
-            composable<OnboardingRoute> {
-                OnboardingScreen(
-                    onNavigateToMain = {
+            composable<AuthRoute> {
+                AuthScreen(
+                    onAuthComplete = {
                         navController.navigate(MainShellRoute) {
-                            popUpTo<OnboardingRoute> { inclusive = true }
+                            popUpTo<AuthRoute> { inclusive = true }
                         }
                     },
                 )

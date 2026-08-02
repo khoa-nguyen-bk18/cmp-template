@@ -18,6 +18,7 @@ import com.devindie.cmptemplate.domain.usecase.settings.ObserveSettingUseCase
 import com.devindie.cmptemplate.domain.usecase.settings.ObserveSettingsScreenUseCase
 import com.devindie.cmptemplate.domain.usecase.settings.UpdateSettingUseCase
 import com.devindie.cmptemplate.feature.apppromotion.api.appPromotionFeatureModule
+import com.devindie.cmptemplate.feature.auth.api.authFeatureModule
 import com.devindie.cmptemplate.feature.browse.api.browseFeatureModule
 import com.devindie.cmptemplate.feature.carddetail.api.cardDetailFeatureModule
 import com.devindie.cmptemplate.feature.collection.api.collectionFeatureModule
@@ -53,6 +54,7 @@ val appDomainModule =
             mainFeatureModule,
             collectionFeatureModule,
             splashFeatureModule,
+            authFeatureModule,
             onboardingFeatureModule,
             legalFeatureModule,
             settingsFeatureModule,
