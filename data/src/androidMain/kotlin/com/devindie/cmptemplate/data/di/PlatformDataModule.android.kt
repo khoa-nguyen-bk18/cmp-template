@@ -1,6 +1,7 @@
 package com.devindie.cmptemplate.data.di
 
 import android.content.Context
+import com.devindie.cmptemplate.data.auth.FakeAuthRepository
 import com.devindie.cmptemplate.data.auth.UserRepositoryImpl
 import com.devindie.cmptemplate.data.coroutines.AndroidDispatcherProvider
 import com.devindie.cmptemplate.data.coroutines.DispatcherProvider
@@ -20,6 +21,7 @@ import com.devindie.cmptemplate.domain.repository.AppStartupRepository
 import com.devindie.cmptemplate.domain.repository.CardDetailRepository
 import com.devindie.cmptemplate.domain.repository.OnboardingRepository
 import com.devindie.cmptemplate.domain.repository.SettingsRepository
+import com.devindie.cmptemplate.domain.repository.AuthRepository
 import com.devindie.cmptemplate.domain.repository.UserRepository
 import eu.anifantakis.lib.ksafe.KSafe
 import org.koin.core.module.Module
@@ -54,6 +56,9 @@ actual fun platformDataModule(): Module = module {
     }
     single<UserRepository> {
         UserRepositoryImpl(tokenStore = get())
+    }
+    single<AuthRepository> {
+        FakeAuthRepository(dispatchers = get())
     }
     single<AppStartupRepository> {
         AppStartupRepositoryImpl(browseCardDao = get())
