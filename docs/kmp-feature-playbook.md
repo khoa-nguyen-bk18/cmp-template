@@ -15,22 +15,28 @@ Step-by-step guide for implementing features in cmp templatethat follow Clean Ar
 
 ---
 
+
+
 ## Module map (What / Where / Why)
 
-| Layer | What | Where | Why |
-|-------|------|-------|-----|
-| Domain model | Plain Kotlin types the UI needs | `domain/src/commonMain/.../model/` | Stable, testable; no platform types |
-| Repository contract | What the app needs, not how | `domain/.../repository/*Repository.kt` | Dependency inversion |
-| Use case | One user-visible operation | `domain/.../usecase/<feature>/*UseCase.kt` | Thin ViewModels; reusable logic |
-| DataSource contract | Platform I/O port | `data/.../commonMain/.../*DataSource.kt` | Hides Android/iOS from repository |
-| Platform impl | Native API calls | `data/.../androidMain/`, `data/.../iosMain/` | Only place for `android.*` / `platform.*` |
-| Repository impl | Orchestration + mapping | `data/.../commonMain/.../*RepositoryImpl.kt` | Single coordination point |
-| ViewModel | UI state, calls use cases | `shared/.../feature/<feature>/impl/` | Internal; wired via `<feature>/api/*FeatureModule` |
-| Screen entry + navigation | Public Compose / NavGraph API | `shared/.../feature/<feature>/api/` | Imported by app shell and other features |
-| Feature DI | ViewModel bindings | `shared/.../feature/<feature>/api/*FeatureModule.kt` | `core.di` includes api modules only |
-| Domain DI | Use cases | `shared/.../core/di/AppDomainModule.kt` | No `data` imports; includes `*FeatureModule` from api |
-| Platform DI | Bind platform classes | `data/.../di/PlatformDataModule.{kt,android.kt,ios.kt}` | Wired at app entry only |
-| App entry | `startKoin` + `Context` | `androidApp/`, `shared/.../KoinIos.kt` | Only layer that imports `data.di` |
+
+| Layer                     | What                            | Where                                                   | Why                                                   |
+| ------------------------- | ------------------------------- | ------------------------------------------------------- | ----------------------------------------------------- |
+| Domain model              | Plain Kotlin types the UI needs | `domain/src/commonMain/.../model/`                      | Stable, testable; no platform types                   |
+| Repository contract       | What the app needs, not how     | `domain/.../repository/*Repository.kt`                  | Dependency inversion                                  |
+| Use case                  | One user-visible operation      | `domain/.../usecase/<feature>/*UseCase.kt`              | Thin ViewModels; reusable logic                       |
+| DataSource contract       | Platform I/O port               | `data/.../commonMain/.../*DataSource.kt`                | Hides Android/iOS from repository                     |
+| Platform impl             | Native API calls                | `data/.../androidMain/`, `data/.../iosMain/`            | Only place for `android.*` / `platform.*`             |
+| Repository impl           | Orchestration + mapping         | `data/.../commonMain/.../*RepositoryImpl.kt`            | Single coordination point                             |
+| ViewModel                 | UI state, calls use cases       | `shared/.../feature/<feature>/impl/`                    | Internal; wired via `<feature>/api/*FeatureModule`    |
+| Screen entry + navigation | Public Compose / NavGraph API   | `shared/.../feature/<feature>/api/`                     | Imported by app shell and other features              |
+| Feature DI                | ViewModel bindings              | `shared/.../feature/<feature>/api/*FeatureModule.kt`    | `core.di` includes api modules only                   |
+| Domain DI                 | Use cases                       | `shared/.../core/di/AppDomainModule.kt`                 | No `data` imports; includes `*FeatureModule` from api |
+| Platform DI               | Bind platform classes           | `data/.../di/PlatformDataModule.{kt,android.kt,ios.kt}` | Wired at app entry only                               |
+| App entry                 | `startKoin` + `Context`         | `androidApp/`, `shared/.../KoinIos.kt`                  | Only layer that imports `data.di`                     |
+
+
+
 
 ### Dependency direction (enforced by Konsist)
 
@@ -47,30 +53,40 @@ domain
 
 ---
 
+
+
 ## Step 0 — Choose the abstraction
 
-| Situation | Pattern | Why |
-|-----------|---------|-----|
-| Platform I/O behind a repository (scan folder, DB, crypto) | **Interface in `data/commonMain` + `Android*` / `Ios*` classes** | Easy to mock; Koin injects `Context` / platform services |
-| Tiny platform utility (epoch millis, paths) | **`internal expect` / `actual` in `data`** | Small surface; not part of public API |
-| Platform DI graph differs | **`expect fun platformDataModule()`** | App entry supplies bindings |
-| Business rules on all platforms | **Pure Kotlin in `domain`** | Never `expect` in domain |
+
+| Situation                                                  | Pattern                                                                      | Why                                                      |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Platform I/O behind a repository (scan folder, DB, crypto) | **Interface in** `data/commonMain` **+** `Android`* **/** `Ios`* **classes** | Easy to mock; Koin injects `Context` / platform services |
+| Tiny platform utility (epoch millis, paths)                | `internal expect` **/** `actual` **in** `data`                               | Small surface; not part of public API                    |
+| Platform DI graph differs                                  | `expect fun platformDataModule()`                                            | App entry supplies bindings                              |
+| Business rules on all platforms                            | **Pure Kotlin in** `domain`                                                  | Never `expect` in domain                                 |
+
 
 **Never** put `expect`/`actual` in `domain`. Domain must not import Android, Compose, Koin, Ktor, or `data`.
 
 **Prefer interface + platform class** when implementations are large or need DI.
 
-**Use `expect`/`actual`** only for small, `internal` helpers or library requirements (e.g. Room `RoomDatabaseConstructor`).
+**Use** `expect`**/**`actual` only for small, `internal` helpers or library requirements (e.g. Room `RoomDatabaseConstructor`).
 
 ---
 
+
+
 ## Implementation steps
+
+
 
 ### Step 1 — Domain models
 
 - **What:** `data class` / `sealed interface` — no `Uri`, `Context`, framework types.
 - **Where:** `domain/src/commonMain/kotlin/.../model/`
 - **Why:** Same types on Android and iOS; tests without platforms.
+
+
 
 ### Step 2 — Repository interface
 
@@ -88,6 +104,8 @@ interface VaultFolderRepository {
 }
 ```
 
+
+
 ### Step 3 — Use cases
 
 - **What:** One class per operation; `suspend operator fun invoke`.
@@ -95,6 +113,8 @@ interface VaultFolderRepository {
 - **Why:** ViewModels depend on use cases, not `*RepositoryImpl`.
 - **How:** Use `UseCase<P, R>` or `UseCaseNoParams<R>` from `domain.usecase`.
 - **Register:** `factoryOf(::YourUseCase)` in `shared/.../di/VaultDomainModule.kt`.
+
+
 
 ### Step 4 — DataSource interface (platform port)
 
@@ -110,6 +130,8 @@ fun interface VaultFolderScannerDataSource {
     suspend fun scan(storageKey: String, folderDisplayName: String): Result<VaultFolderSummary>
 }
 ```
+
+
 
 ### Step 5 — Android + iOS implementations
 
@@ -128,12 +150,16 @@ internal expect fun currentEpochMillis(): Long
 // androidMain / iosMain — actual implementations
 ```
 
+
+
 ### Step 6 — Repository implementation
 
 - **What:** `XxxRepositoryImpl` implementing domain interface.
 - **Where:** `data/src/commonMain/.../`
 - **Why:** Coordinates data sources; maps to `Result` / `Flow`; no UI.
-- **How:** Constructor takes **interfaces**, never `Android*` / `Ios*` types directly.
+- **How:** Constructor takes **interfaces**, never `Android`* / `Ios*` types directly.
+
+
 
 ### Step 7 — Koin wiring (per platform)
 
@@ -161,12 +187,64 @@ Provide `Context` in `androidPlatformModule` in `androidApp`, not in `:shared`.
 
 - **What:** `StateFlow` UI state; call use cases in `viewModelScope`.
 - **Where:** `shared/.../feature/<feature>/impl/` (ViewModel), `shared/.../feature/<feature>/api/` (screen entry + navigation)
-- **Why:** Shared UI logic; no `data` or `*RepositoryImpl` imports.
+- **Why:** Shared UI logic; no `data` or `*RepositoryImpl` imports
+- **How:** Apply [`jetpack-compose`](../.agents/skills/jetpack-compose/SKILL.md) and [`mobile-android-design`](../.agents/skills/mobile-android-design/SKILL.md) when building the screen entry point:
+
+  **Split responsibilities**
+
+  | File | Role |
+  | ---- | ---- |
+  | `api/<Feature>Screen.kt` | Public entry — wires ViewModel, navigation callbacks, `modifier` |
+  | `impl/<Feature>ViewModel.kt` | `StateFlow` state; calls use cases; emits one-shot navigation via `SharedFlow` |
+  | `impl/<Feature>Content.kt` | Stateless UI — receives state + callbacks only (state hoisting) |
+  | `api/<Feature>Navigation.kt` | `@Serializable` routes + `NavGraphBuilder.<feature>Destination()` |
+
+  **Screen entry pattern** (state holder in `api/` or thin `impl/` screen):
+
+  ```kotlin
+  // api/OnboardingScreen.kt — public entry
+  @Composable
+  fun OnboardingScreen(
+      onNavigateToMain: () -> Unit,
+      modifier: Modifier = Modifier,
+      viewModel: OnboardingViewModel = koinViewModel(),
+  ) {
+      val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+      LaunchedEffect(state.isStartupComplete) {
+          if (state.isStartupComplete) onNavigateToMain()
+      }
+
+      OnboardingContent(
+          state = state,
+          onPageChanged = viewModel::onPageChanged,
+          onNextClick = viewModel::onNextClick,
+          onGetStartedClick = viewModel::onGetStartedClick,
+          modifier = modifier,
+      )
+  }
+  ```
+
+  **Compose + Material 3 rules** (from mobile-android-design):
+
+  - Hoist state to the entry/screen; keep `*Content` stateless and previewable.
+  - Use `MaterialTheme.colorScheme` / `typography` — never hard-coded colors.
+  - `modifier = Modifier` as the first optional parameter; pass it down to layout roots.
+  - Collect UI state with `collectAsStateWithLifecycle()`; use `LaunchedEffect` / `SharedFlow` for navigation and snackbars.
+  - Use `rememberSaveable` for input that must survive config change; `derivedStateOf` for derived enablement.
+  - Prefer `LazyColumn` + stable `key` for lists; minimum 48dp touch targets; `contentDescription` on interactive icons.
+  - Add `@Preview` on the stateless `*Content` composable wrapped in `AppTheme`.
+
+  **Feature-internal navigation** (multi-step flows): expose a single public `api/<Feature>Screen` with an internal `NavHost` — see `AuthScreen`.
+
+  **Register:** `viewModelOf(::YourViewModel)` in `api/<Feature>FeatureModule.kt`; include module in `AppDomainModule`.
 
 **Platform-only UI** (folder picker, permission dialog):
 
 - Keep picker in `androidApp` / iOS app shell (or platform callback at app layer).
 - Pass **domain types** into use cases (e.g. `VaultFolderSelection`), not `Uri` into domain.
+
+
 
 ### Step 9 — Verify
 
@@ -176,11 +254,13 @@ Provide `Context` in `androidPlatformModule` in `androidApp`, not in `:shared`.
 ./gradlew qualityCheck
 ```
 
+
+
 ### Remote API + Room SSOT
 
 When a feature needs network data but the UI should read from local storage:
 
-1. **RemoteDataSource** (`data/remote/<feature>/`) — `suspend fun fetch…(): ApiResult<Dto>` (Ktor or `Fake*` for dev).
+1. **RemoteDataSource** (`data/remote/<feature>/`) — `suspend fun fetch…(): ApiResult<Dto>` (Ktor or `Fake`* for dev).
 2. **LocalDataSource + Room** (`data/local/<feature>/`) — DAO, entities, `replaceAllCatalog`; UI observes DAO `Flow` (SSOT).
 3. **RepositoryImpl** (`data/local/<feature>/`) — on sync: remote → map DTO → local upsert.
 4. **Shared infra** (`data/auth`, `data/network`, `data/di`, `data/coroutines`) — [KSafe](https://github.com/ioannisa/KSafe) encrypted tokens (`KSafeTokenStore`), HttpClient, Koin.
@@ -188,6 +268,8 @@ When a feature needs network data but the UI should read from local storage:
 Browse reference: `remote/browse/BrowseCardRemoteDataSource`, `local/browse/BrowseCardRepositoryImpl`, `networkModule()` in `data/di`.
 
 ---
+
+
 
 ## Decision tree: `expect`/`actual` vs interface
 
@@ -219,6 +301,8 @@ Vaulty examples:
 
 ---
 
+
+
 ## Flow diagram
 
 ```mermaid
@@ -244,7 +328,11 @@ sequenceDiagram
     VM-->>Screen: UiState
 ```
 
+
+
 ---
+
+
 
 ## Checklist
 
@@ -260,6 +348,8 @@ sequenceDiagram
 10. [ ] `./gradlew :architecture:test` green
 
 ---
+
+
 
 ## File tree template
 
@@ -295,20 +385,27 @@ shared/iosMain/.../KoinIos.kt
 
 ---
 
+
+
 ## Common mistakes
 
-| Mistake | Why it breaks |
-|---------|----------------|
-| `expect` in `domain` | Domain must compile without platforms |
-| ViewModel imports `*RepositoryImpl` or `data` | Konsist layer tests |
-| `Uri` / `Context` in domain models | Leaks Android into iOS domain |
-| `platformDataModule()` registered in `:shared` commonMain | `shared` cannot import `data` |
-| Business logic in `AndroidXxxDataSource` | Belongs in use case or `RepositoryImpl` |
-| `expect class` for every service | Harder DI/testing; prefer interface + impl |
+
+| Mistake                                                   | Why it breaks                              |
+| --------------------------------------------------------- | ------------------------------------------ |
+| `expect` in `domain`                                      | Domain must compile without platforms      |
+| ViewModel imports `*RepositoryImpl` or `data`             | Konsist layer tests                        |
+| `Uri` / `Context` in domain models                        | Leaks Android into iOS domain              |
+| `platformDataModule()` registered in `:shared` commonMain | `shared` cannot import `data`              |
+| Business logic in `AndroidXxxDataSource`                  | Belongs in use case or `RepositoryImpl`    |
+| `expect class` for every service                          | Harder DI/testing; prefer interface + impl |
+
 
 ---
+
+
 
 ## References
 
 - [AGENTS.md](../AGENTS.md) — project conventions and Konsist summary
 - Existing feature: vault folder — `VaultFolderRepository`, `VaultFolderScannerDataSource`, `platformDataModule()`
+
