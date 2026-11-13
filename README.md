@@ -1,5 +1,7 @@
 # Compose Multiplatform Template
 
+[![CodeQL](https://github.com/khoa-nguyen-bk18/cmp-template/actions/workflows/codeql.yml/badge.svg)](https://github.com/khoa-nguyen-bk18/cmp-template/actions/workflows/codeql.yml)
+[![Secret Scanning](https://img.shields.io/badge/Secret%20Scanning-Protected-green?logo=github)](https://github.com/khoa-nguyen-bk18/cmp-template/security)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
