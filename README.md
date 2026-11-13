@@ -1,3 +1,13 @@
+# Compose Multiplatform Template
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=khoa-nguyen-bk18_cmp-template&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=khoa-nguyen-bk18_cmp-template)
+
+---
+
 **What is in place today:**
 
 - Kotlin Multiplatform (Android + iOS) with enforced module boundaries (`domain` ← `data` ← app DI; `shared` → `domain` + optional platform facades)
